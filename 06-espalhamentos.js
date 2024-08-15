@@ -4,7 +4,7 @@ let maximo = Math.max(2, -7, 8, 4, 0)
 
 console.log({ minimo, maximo })
 
-//e se esses numeros estiverem em um vetor?
+//E se esses numeros estiverem em um vetor?
 
 const nums = [2, -7, 8, 4, 0]
 

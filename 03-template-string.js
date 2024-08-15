@@ -1,10 +1,12 @@
-const nome = 'Valcicleide'
-const idade = 20
+const nome = 'Rafaela'
+const idade = 19
 const cidade = 'Franca/SP'
-//diferença entre const, var e let:
-// const é uma constante que quando vc declara, vc não pode mudar depois-- NÃO É MUTAVEL
-// let é para declarar uma variavel que vc precisa mudar depois -- É MUTAVEL
-// var é uma bagunça-> deixa ter 2 variaveis com o mesmo o nome e etc-----> NÃO USAR 
+/*
+diferença entre const, var e let:
+ const é uma constante que quando vc declara, vc não pode mudar depois-- NÃO É MUTAVEL
+ let é para declarar uma variavel que vc precisa mudar depois -- É MUTAVEL
+ var é uma bagunça-> deixa ter 2 variaveis com o mesmo o nome e etc-----> NÃO USAR 
+*/
 
 //mesclando strings como variaveis usando concatenação 
 console.log('Meu nome é ' + nome + ', tenho ' + idade + ' anos e moro em ' + cidade + '.')

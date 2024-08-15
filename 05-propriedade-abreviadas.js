@@ -31,7 +31,7 @@ console.log(user)
 const userInfo = {
     fullName,
     userName,
-    password: 'rafinha123',
+    password: 'rafinha1234',
     group,
     last_login: '2024-08-14 17:47:03'
 }
