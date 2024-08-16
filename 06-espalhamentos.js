@@ -66,7 +66,7 @@ const hortifruti = [...frutas, ...verduras]
 console.log(hortifruti)
 
 
-/*********************************************/
+/************************************************************/
 
 //PROBLEMA: escrever uma função que recebe um numero arbitrario de parametros
 
