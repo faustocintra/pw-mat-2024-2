@@ -56,7 +56,7 @@ console.log({x,y})
 //Traço separador
 console.log('-'.repeat(80))
 
-//DESESTYRUTURAÇÃO DE OBJETOS
+//DESESTRUTURAÇÃO DE OBJETOS
 const pessoa = {
     nome: 'Orkutilson Orozimbo Osório',
     sexo: 'M',
