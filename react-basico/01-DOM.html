@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script>
+        //criando um novo paragrafo no documento usando javaScript
+        const parag = document.createElement('p')
+        parag.textContent = 'Este paragrafo foi criado com javaScript'
+
+        //captura o elemento correspondente à div existente, cujo id é root 
+        const root = document.getElementById('root')
+        //faz com que o paragrafo criado seja "adotado" pela div root 
+        root.appendChild(parag)
+
+        const novaDiv = document.createElement('div')
+
+        //ajustando os atributos de novaDiv
+        novaDiv.textContent = 'Div criada com javaScript'
+        novaDiv.style.border = '3px dotted purple'
+        novaDiv.style.background = 'pink'
+        novaDiv.style.padding = '10px'
+        novaDiv.style.marginTop = '50px'
+        novaDiv.style.textAlign = 'center'
+        novaDiv.id = 'div-verde'
+
+        //fazendo com que a div root "adote" novaDiv como filha 
+        root.appendChild(novaDiv)
+    </script>
+</body>
+
+</html>

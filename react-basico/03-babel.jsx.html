@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+
+    <div id="root"></div>
+    <script type="text/babel">
+        const div1 = React.createElement(
+            'div',
+            {id: 'div1', className: 'formata'},
+            'DIV criada com React "cru"'
+        )
+        const div2= <div id= "div2" className="formata">DIV criada com JSX+Babel </div>
+        const container = React.createElement(
+            'div',
+            {id: 'container', children: [div1, div2]}
+        )
+        const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(container)
+    </script>
+</body>
+</html>
