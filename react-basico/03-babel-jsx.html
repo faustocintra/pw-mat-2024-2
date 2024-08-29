@@ -39,11 +39,11 @@
         const div1 = React.createElement(
             'div',
             { id: 'div1', className: 'formata' },
-            'DIV criada com React "cru"'
+            'DIV1 criada com React "cru"'
         )
         
-
-
+        //DESABILITEI TEMPORARIAMENTE.
+        /*
         //DECLARADO COM JSX
         const div2 = <div id="div2" className="formata"> DIV criada com JSX+Babel</div>
         const container = React.createElement(
@@ -52,7 +52,58 @@
         )
 
         const root = ReactDOM.createRoot(document.getElementById('root'))
-        root.render(container)
+        root.render(container)*/
+
+
+
+
+
+        //DIV CRIADA COM A SINTAXE JSX que será processada pelo Babel e
+        //transpilada para Javascriupt puro
+        const div2 = <div id="div2" className="formata">DIV criada com JSX+Babel</div>
+
+        const nomeClasse = 'formata'
+        const id = 'div3'
+        const conteudo = 'DIV3 criada com JSX+BABEL usando interpolaão de variaveis'
+
+        //Para exibir o conteudo de variáveis dengro do JSX, usamos{}
+        //isso se chama INTERPOLAção
+            
+            const div3 = <div id = {id} className={nomeClasse} > {conteudo} </div>
+
+            //CRIANDO UM OBJETO DE PROPS
+            const propsDiv4 = {
+                id: 'div4',
+                className: 'formata',
+                children: 'DIV4 criada com JSX+ Babel e eespalhamento de props'
+            }
+
+            //Em JSX quando não temos a tag de fechamento, é OBRIGATÓRIO terminar 
+            //o elemento com "/>""
+            const div4 = <div {...propsDiv4}  />
+
+    
+
+
+
+
+
+            //MANEIRA 1 DE UNIFICANDO OS ELEMENTOS
+            // const container = React.createElement(
+            //     'div',
+            //     {id:'container', children: [div1, div2, div3, div4]}
+            // )
+
+
+
+            //MANEIRA 2 DE UNIFICANDO OS ELEMENTOS
+            //Container em sintaxe JSX
+            const container = <div id="container"> {div1} {div2} {div3} {div4} </div>
+
+
+            //APRESENTANDO OS ARQUIVOS
+            const root = ReactDOM.createRoot(document.getElementById('root'))
+            root.render(container)
 
 
     </script>

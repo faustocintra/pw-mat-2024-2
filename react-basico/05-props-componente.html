@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--COPIE SEMPRE ESTA PARTE-->
+    <style>
+        .msg {
+            border-radius: 4px;
+            border: 2px solid red;
+            background-color: khaki;
+            padding: 10px;
+            font-family: Calibri, sans;
+            margin-bottom: 16px;
+            text-align:center;
+        }
+    </style>
+    <!--ATÉ AQUI-->
+</head>
+
+<body>
+
+    <!--COPIE SEMPRE ESTA PARTE-->
+    <!--BIBLIOTECA do REACT-->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+
+    <div id="root"></div>
+    <!--ATÉ O SCRIPT-->
+
+    <script type="text/babel">
+        /*PROPS GENÉRICAS E PERSONALIZADAS
+        Uma função de componente React pode receber dois tipos de props:
+        1-> Props GENÉRICAS: são passadas por meio de um único objeto, e
+        normalemnte são aplicadas ao componente por meio de espalhamento
+        2->Props PERSONALIZADAS: são passadas nominalmente à função.
+        */
+
+        // Componente que recebe apenas props genéricas
+        // function Mensagem(props) {
+        //     return <div className="msg" {...props} />
+        // }
+        //è comum que funções de ocmponentes mais simples sejam escritas 
+        const Mensagem = props => <div className="msg" {...props} />
+        
+        //PROP PERSONALIZADA Função de componente que recebe apenas propspersonalizadas
+        const Aviso = ({id, children}) => <div className="msg" id={id}>{children}</div>
+
+        /*se não tem chave, é GENÉRICA*, então se usa o espalhamento*/
+        const container = <>
+            <Mensagem id="msg1" title="Primeira mensagem" children="Cuidado com a escada" legume="batata" />
+            <Mensagem id="msg2" tile="Segunda Mensagem">Tem café na copa</Mensagem>
+            <Aviso id="aviso" title="Primeiro aviso" verdura="alface">Jogo do tigrinho é golpe!"</Aviso>
+        </>
+
+
+         /*COPIAR ESTA PARTE*/
+         const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(container)
+        /*ATÉ AQUI*/
+
+
+    </script>
+
+</body>
+
+</html>
