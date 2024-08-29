@@ -26,18 +26,43 @@
 
   <script type="text/babel">
 
+    // DIV criada com React "cru"
     const div1 = React.createElement(
       'div',
       { id: 'div1', className: 'formata' },
       'DIV criada com React "cru"'
     )
 
+    // DIV criada com a sintaxe JSX, que será processada pelo Babel e
+    // transpilada para JavaScript puro
     const div2 = <div id="div2" className="formata">DIV criada com JSX+Babel</div>
 
-    const container = React.createElement(
-      'div',
-      { id: 'container', children: [div1, div2]}
-    )
+    const nomeClasse = 'formata'
+    const id = 'div3'
+    const conteudo = 'DIV criada com JSX+Babel usando interpolação de variáveis'
+
+    // Para exibir o conteúdo de variáveis dentro do JSX, usamos {}.
+    // Isso se chama INTERPOLAÇÃO.
+    const div3 = <div id={id} className={nomeClasse}> {conteudo} </div>
+
+    // Criando um objeto de props
+    const propsDiv4 = {
+      id: 'div4',
+      className: 'formata',
+      children: 'DIV criada com JSX+Babel e espalhamento de props'
+    }
+
+    // Em JSX, quando não temos a tag de fechamento, é OBRIGATÓRIO terminar
+    // o elemento com />
+    const div4 = <div {...propsDiv4} />
+
+    // const container = React.createElement(
+    //   'div',
+    //   { id: 'container', children: [div1, div2, div3, div4]}
+    // )
+
+    // Container em sintaxe JSX
+    const container = <div id="container"> {div1} {div2} {div3} {div4} </div>
 
     const root = ReactDOM.createRoot(document.getElementById('root'))
     root.render(container)
