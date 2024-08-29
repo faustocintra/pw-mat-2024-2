@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-        div.formata {
-          font-family: Consolas, monospace;
-          color: blue;
-          background: powderblue;
-          text-align: center;
-          margin-bottom: 15px;
-          border: 2px solid blue;
-          border-radius: 8px;
-          padding: 10px;
-        }
-      </style>
-</head>
-<body>
+      div.formata {
+        font-family: Consolas, monospace;
+        color: blue;
+        background: powderblue;
+        text-align: center;
+        margin-bottom: 15px;
+        border: 2px solid blue;
+        border-radius: 8px;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
     <script
       src="https://unpkg.com/react@18/umd/react.development.js"
       crossorigin
@@ -34,21 +34,56 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const div1 = React.createElement(
-          "div", // Tipo do elemento
-          { id: "div", className: "formata" }, // Atributos do elemento
-          'DIV criada com React "cru"' // Conteúdo interno do elemento
-        );
+      const div1 = React.createElement(
+        "div",
+        { id: "div1", className: "formata" },
+        "DIV criada com React 'cru'"
+      );
 
-        const div2 = <div id="div2" className="formata"> DIV criada com JSX </div>;
+      const div2 = (
+        <div id="div2" className="formata">
+          DIV criada com JSX+Babel
+        </div>
+      );
 
-        const container = React.createElement(
-            "div",
-            { id: "container", children:[div1, div2] },
-        );
+      const nomeClasse = "formata";
+      const id = "div3";
+      const conteudo =
+        "DIV criada com JSX+Babel usando interpolação de variaveis";
 
-        const root = ReactDOM.createRoot(document.getElementById("root"));
-        root.render(container);
+      // Para exibir o conteúdo de uma variável dentro de um JSX, usamos {}.
+      // Isso se chama INTERPOLAÇÃO.
+      const div3 = (
+        <div id={id} className={nomeClasse}>
+          {" "}
+          {conteudo}{" "}
+        </div>
+      );
+
+      // Criando um objeto de props
+      const propsDiv4 = {
+        id: "div4",
+        className: "formata",
+        children: "DIV criada com JSX+Babel e espalhamento de props",
+      };
+
+      // Em JSX, quando não temos a tag de fechamento, é OBRIGATÓRIO terminar o elemnto com />
+      const div4 = <div {...propsDiv4} />;
+
+      /* const container = React.createElement("div", {
+        id: "container",
+        children: [div1, div2, div3, div4],
+      }); */
+
+      // Container em sintaxe JSX
+      const container = (
+        <div id="container">
+          {div1} {div2} {div3} {div4}
+        </div>
+      );
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(container);
     </script>
-</body>
+  </body>
 </html>
