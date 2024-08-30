@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .soma {
+            border-radius: 5px;
+            border: 3px solid royalblue;
+            padding: 5px;
+            margin: 5px;
+        }
+
+        .direita {
+            text-align: right;
+            background-color: lightgreen;
+            padding: 8px;
+
+        }
+
+        .centro {
+            text-align: center;
+            background-color: tan;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!--COPIE SEMPRE ESTA PARTE-->
+    <!--BIBLIOTECA do REACT-->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+
+    <div id="root"></div>
+    <!--ATÉ O SCRIPT-->
+
+    <script type="text/babel">
+
+        /*Um mesmo componente pode combinar props personalizadas e gené<ricas>*/
+        const Soma = ({ num1, num2, ...props }) =>
+            <p className="soma" {...props}>
+                A soma de {num1} com {num2} é {num1 + num2}.
+            </p>
+
+        //componente que recebe apenas props genéricas
+        const ParagCentro = props => <p className="centro" {...props} />
+
+        //componente que recebe apenas props personalizadas
+        const ParagDireita = ({ id, children }) =>
+            <p className="direita" id={id}>{children}</p>
+
+
+            
+
+        const container = <>
+            <Soma id="soma1" title="Primeira soma" num1="25" num2="19" />
+
+            {/*Quando o valor de uma prop não for string ela deve ser passada entre {} chaves*/}
+            <Soma id="soma2" title="Segunda soma" num1={25} num2={19} />
+
+            {/*Parágrafo irá renderizar qualquer prop passada*/}
+            <ParagCentro id="parag1" title="centralizado" seila="numsei">
+                Texto centralizado
+            </ParagCentro>
+
+            {/*Parágrafo irá renderizar apenas as props id e children*/}
+            <ParagDireita id="parag2" title="à direita" numsei="seila">
+                Texto alinhado à direita
+            </ParagDireita>
+        </>
+
+
+        /*COPIAR ESTA PARTE*/
+        const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(container)
+        /*ATÉ AQUI*/
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
