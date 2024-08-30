@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .primeiraCor {
+            color: blue;
+        }
+
+        .segundaCor {
+            color: brown;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Função de componente que recebe props personalizadas
+        const Pessoa = ({ nome, sobrenome, dia, mes, ano }) => {
+            // Calcula a idade ao final do ano de 2024
+            const idadeFinalDoAno = 2024 - ano;
+            return <>
+                {/*paragrafo com o nome completo*/}
+                <p className="primeiraCor">
+                    Nome : {nome} {sobrenome}
+                </p>
+                {/*paragrafo com a data*/}
+                <p className="segundaCor">
+                    Data De Nascimento: {dia}/{mes}/{ano}
+                </p>
+                {/* Div que exibe a idade calculada */}
+                <div>
+                    Idade ao final de 2024: {idadeFinalDoAno} anos
+                </div>
+            </>
+        }
+        const container = <>
+            <Pessoa id="pessoa1" title="primeira pessoa" nome="Rafaela" sobrenome="Aparecida Dos Santos"
+                dia="18" mes="06" ano={2005}
+            > </Pessoa>
+        </>
+        const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(container)
+
+    </script>
+
+</body>
+
+</html>
