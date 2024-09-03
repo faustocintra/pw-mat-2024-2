@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        *{
+          font-family: Cambria, serif;
+        }
+        .idade {
+          background: indigo;
+          border-radius: 50px;
+          color: white;
+          box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+          padding: 12px;
+          text-align: center;
+          margin-bottom: 16px;
+        }
+        .amarelo {
+            border: 3px solid black;
+            border-radius: 50px;
+            text-align: center;
+            padding: 8px;
+            color: yellow;
+            background-color: blue;
+        }
+        .preto {
+            border: 3px solid black;
+            border-radius: 50px;
+            text-align: center;
+            padding: 8px;
+            color: black;
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        
+        const Dados = ({nome, sobrenome, dia, mes, ano}) => {
+          return (
+            <>
+              <p className="amarelo">{nome} {sobrenome}</p>
+              <p className="preto">{dia}/{mes}/{ano}</p>
+              <div className="idade">Idade ao final de 2024: {2024 - ano} anos</div>
+            </>
+          )
+        }
+
+        const container = 
+        <>
+          <Dados nome="Leonardo Henrique" sobrenome="Mazza" dia={14} mes={1} ano={2005} />
+        </>
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(container);
+    </script>
+</body>
+</html>
