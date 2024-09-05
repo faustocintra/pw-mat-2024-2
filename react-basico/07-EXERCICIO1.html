@@ -5,7 +5,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  </head>
+	<style>
+		/*
+			1) Crie dois estilos CSS, um que coloque o texto em uma cor
+		   e outro que coloque o texto em outra cor.
+		*/
+		.azul {
+			color: blue;
+		}
+		.rosa {
+			color: deeppink;
+		}
+	</style>
+</head>
 <body>
 
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -18,23 +30,46 @@
     /*
       EXERCÍCIO DE FIXAÇÃO nº 1
 
-		1) Crie dois estilos CSS, um que coloque o texto em uma cor
-		   e outro que coloque o texto em outra cor.
 		2) Declare uma função de componente que receba as seguintes
 		   props personalizadas: nome, sobrenome, dia, mes e ano.
-		3) Na função de componente, coloque um fragment e, dentro dele,
-		  dois parágrafos: no primeiro, deve ser aplicada a classe que
-		  deixa a cor do texto em uma cor e, no outro, a classe que deixa
-		  a cor na outra cor.
-		4) No primeiro parágrafo, deve ser exibido o nome completo, composto
-		  por nome e sobrenome.
-		5) No segundo parágrafo, deve ser exibida a data de nascimento, 
-		  composta pelo dia, pelo mês e pelo ano, separados por /.
-		6) No componente, crie, ainda, uma div. Dentro dela, deve ser exibida
-		  a idade que a pessoa terá ao final do ano, calculada por meio de
-		  um cálculo simples (2024 menos o ano de nascimento informado).
-		7) Faça os comentários que julgar necessários no código.
-      */
+
+		*/
+		function Pessoa({nome, sobrenome, dia, mes, ano}) {
+			/*
+				3) Na função de componente, coloque um fragment e, dentro dele,
+					dois parágrafos: no primeiro, deve ser aplicada a classe que
+					deixa a cor do texto em uma cor e, no outro, a classe que deixa
+					a cor na outra cor.
+			*/
+			return <>
+				{ /*  
+					4) No primeiro parágrafo, deve ser exibido o nome completo, composto
+		         por nome e sobrenome.
+				*/ }
+				<p className="azul">{nome} {sobrenome}</p>
+
+				{ /* 
+					5) No segundo parágrafo, deve ser exibida a data de nascimento, 
+				     composta pelo dia, pelo mês e pelo ano, separados por /.
+				*/}
+				<p className="rosa">{dia}/{mes}/{ano}</p>
+
+				{ /* 
+					6) No componente, crie, ainda, uma div. Dentro dela, deve ser exibida
+		         a idade que a pessoa terá ao final do ano, calculada por meio de
+		         um cálculo simples (2024 menos o ano de nascimento informado).
+				*/ }
+				<div>Idade: {2024 - ano}</div>
+			</>
+		}
+
+		const container = <>
+			<Pessoa nome="Tonho" sobrenome="Torresmo" dia="27" mes="04" ano={1964} />
+		</>
+
+		const root = ReactDOM.createRoot(document.getElementById('root'))
+		root.render(container)
+
   </script>
   
 </body>
