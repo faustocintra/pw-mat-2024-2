@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        /*let valorReais, cotacaoDolar, valorConvertido
+
+        valorConvertido = valorReais / cotacaoDolar
+        */
+
+        function Form() {
+            //Declaração das variáveis de Estado
+            const [valorReais, setValorReais] = React.useState('')
+            const [cotacaoDolar, setCotacaoDolar] = React.useState('')
+
+            //Valores calculados não precisam ser variáveis de estado
+            //isso é chamado ESTAD CALCULADO
+            const  valorConvertido = valorReais / cotacaoDolar
+
+
+            return <>
+                <h1>Conversor de moedas </h1>
+                <form>
+
+                    <div>
+                        <label>
+                            <span>Valor em reais</span><br />
+                            <input type="number"
+                                onChange={event => setValorReais(Number(event.target.value))} />
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <span>Cotação do Dólar</span><br />
+                            <input type="number"
+                                onChange={event => setCotacaoDolar(Number(event.target.value))} />
+                        </label>
+                    </div>
+
+
+                    {/*Resultado*/}
+                    <div>
+                        {
+                            valorConvertido.toLocaleString(
+                                'en-US', //Faz a formatação para a lingua  pais dinicados. Port.bras.: pt-BR
+                                {
+                                    style: 'currency', //Formata como moeda
+                                    currency: 'USD' //Usa o símbolo do dolar americano($). Real Brasileiro: BRL
+                                }
+                            )}
+
+                    </div>
+
+
+
+
+
+
+                </form>
+
+
+            </>
+        }
+
+
+
+
+
+
+        /*COPIAR ESTA PARTE*/
+        const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(<Form />)
+        /*ATÉ AQUI*/
+
+
+
+
+    </script>
+
+</body>
+
+</html>

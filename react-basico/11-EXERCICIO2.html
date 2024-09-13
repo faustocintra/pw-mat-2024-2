@@ -29,6 +29,61 @@
       Este exercício contará para a nota de Participação e Assiduidade (PA).
     */
 
+    const App = () => {
+  // Definindo referências para os elementos do DOM
+  const valorReaisRef = React.useRef();
+  const cotacaoDolarRef = React.useRef();
+  const resultadoRef = React.useRef();
+
+  // Função para lidar com as mudanças nos inputs
+  const handleChange = () => {
+    // Obtendo os valores dos inputs diretamente
+    /* Se o resultado de parseFloat(valorReaisRef.current.value) for um valor "falsy" 
+    (como NaN, null, undefined, "", ou 0), o lado direito do operador (0) será usado.*/
+    const reais = parseFloat(valorReaisRef.current.value) || 0;
+    const dolar = parseFloat(cotacaoDolarRef.current.value) || 1; // Evita divisão por zero
+
+    // Calculando o resultado
+    const resultado = (reais / dolar).toFixed(2);
+
+    // Atualizando o texto da div de resultado
+    resultadoRef.current.innerText = `Valor convertido: ${resultado}`;
+  };
+
+  return (
+    <div>
+      {/* Formulário e inputs */}
+      <form>
+        <label>
+          Valor em reais:
+          <input
+            type="number"
+            ref={valorReaisRef}
+            onChange={handleChange}
+          />
+        </label>
+        <br />
+        <label>
+          Cotação do dólar:
+          <input
+            type="number"
+            ref={cotacaoDolarRef}
+            onChange={handleChange}
+          />
+        </label>
+      </form>
+
+      {/* Div para exibir o resultado */}
+      <div ref={resultadoRef}>Valor convertido: 0.00</div>
+    </div>
+  );
+};
+
+// Renderizando o componente React na div com id 'root'
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+
+
   </script>
   
 </body>

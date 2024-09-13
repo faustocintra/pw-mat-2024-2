@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+
+        function Form() {
+            // Crie e coloque hooks useRef nos três elementos criados.
+            const valorReaisRef = React.useRef()
+            const cotacaoDolarRef = React.useRef()
+            const resultadoRef = React.useRef()
+
+            /*5) Escreva uma única função handleChange para interceptar a mundança nos dois inputs
+            e atualizar variáveis quando o respectivo valor mudar.*/
+            function handleChange(value){
+                const valorReais = Number(valorReaisRef.current.value)
+                const cotacaoDolar = Number(cotacaoDolarRef.current.value)
+
+                const valorConvertido = valorReais / cotacaoDolar
+
+                /*6) Usando as variáveis que foram atualizadas em handleChange, exiba na div de resultado
+                o valor convertido.*/
+
+                resultadoRef.current.textContent = valorConvertido.toLocaleString(
+                    'en-US', //Faz a formatação para a lingua  pais dinicados. Port.bras.: pt-BR
+                    {
+                        style: 'currency', //Formata como moeda
+                        currency: 'USD' //Usa o símbolo do dolar americano($). Real Brasileiro: BRL
+                    }
+                )
+
+            }
+
+
+            return <>
+                <h1>Conversor de Moedas</h1>
+                <form>
+                    {  /* 1) Crie um formulário e coloqu nle um input numio com o valor em Reais*/}
+                    <div>
+                        <label>
+                            <span> Valor em Reais: </span><br />
+                            <input type="number" ref={valorReaisRef} onChange={handleChange} />
+                        </label>
+                    </div>
+                    {/* 2) Coloque outro input numerico com o label "Cotação do dolar*/}
+                    <div>
+                        <label>
+                            <span> Cotação do Dólar </span><br />
+                            <input type="number" ref={cotacaoDolarRef} onChange={handleChange}/>
+                        </label>
+                    </div>
+                    {/*Coloque, também, uma div para exibir o resultao da conversãode moeda*/}
+                    <div ref={resultadoRef}> </div>
+                </form>
+            </>
+        }
+
+        /*
+      1) Crie um formulário e coloque nele um input numérico com o label "Valor em reais".
+      2) Coloque outro input numérico com o label "Cotação do dólar".
+      3) Coloque, também, uma div para exibir o resultado da conversão de moeda.
+      4) Crie e coloque hooks useRef nos três elementos criados.
+      5) Escreva uma única função handleChange para interceptar a mundança nos dois inputs
+         e atualizar variáveis quando o respectivo valor mudar.
+      6) Usando as variáveis que foram atualizadas em handleChange, exiba na div de resultado
+         o valor convertido.
+      
+      Este exercício contará para a nota de Participação e Assiduidade (PA).
+    */
+
+
+     /*COPIAR ESTA PARTE*/
+     const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(<Form />)
+        /*ATÉ AQUI*/
+
+
+
+
+    </script>
+
+</body>
+
+</html>
