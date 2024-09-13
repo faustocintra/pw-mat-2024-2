@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="br">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,6 +29,58 @@
       Este exercício contará para a nota de Participação e Assiduidade (PA).
     */
 
+    // Correção
+    function Form(){
+      
+      // 4) Crie e coloque hooks useRef nos três elementos criados.
+      const valorReaisRef = React.useRef()
+      const cotacaoDolarRef = React.useRef()
+      const resultadoRef = React.useRef()
+      
+      // 5) Escreva uma única função handleChange para interceptar a mundança nos dois inputs
+      //    e atualizar variáveis quando o respectivo valor mudar.
+      function handleChange(value){
+
+        const valorReais = Number(valorReaisRef.current.value)
+        const cotacaoDolar = Number(cotacaoDolarRef.current.value)
+
+        const valorConvertido = valorReais / cotacaoDolar
+
+        resultadoRef.current.textContent = valorConvertido.toLocaleString('en-US', //Faz a formatação para a língua e pais indicados. Port. bras.: pt-BR
+          {
+            style: 'currency',  // Formata como moeda
+            currency: 'USD'     // Usa o símbolo de dólar americano ($). Real brasileiro: BRL
+          }
+        )
+      }
+
+      return <>
+        <h1>Conversor de moedas</h1>
+        <form>
+          {/*1) Crie um formulário e coloque nele um input numérico com o label "Valor em reais".*/}
+          <div>
+            <label>
+              <span>Valor em reais</span><br />
+              <input type="number" ref={valorReaisRef} onChange={handleChange} />  
+            </label>  
+          </div>
+
+          {/*2) Coloque outro input numérico com o label "Cotação do dólar".*/}
+          <div>
+            <label>
+              <span>Cotação do dólar</span><br />
+              <input type="number" ref={cotacaoDolarRef} onChange={handleChange} />  
+            </label>  
+          </div>
+
+          {/*3) Coloque, também, uma div para exibir o resultado da conversão de moeda.*/}
+          <div ref={resultadoRef}></div>
+        </form>
+      </>
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<Form />)
   </script>
   
 </body>
