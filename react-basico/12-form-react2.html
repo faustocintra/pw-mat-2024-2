@@ -28,7 +28,7 @@
             const [cotacaoDolar, setCotacaoDolar] = React.useState('')
 
             //Valores calculados não precisam ser variáveis de estado
-            //isso é chamado ESTAD CALCULADO
+            //isso é chamado ESTADO CALCULADO
             const  valorConvertido = valorReais / cotacaoDolar
 
 
@@ -57,7 +57,7 @@
                     <div>
                         {
                             valorConvertido.toLocaleString(
-                                'en-US', //Faz a formatação para a lingua  pais dinicados. Port.bras.: pt-BR
+                                'en-US', //Faz a formatação para a lingua  pais indicados. Port.bras.: pt-BR
                                 {
                                     style: 'currency', //Formata como moeda
                                     currency: 'USD' //Usa o símbolo do dolar americano($). Real Brasileiro: BRL
