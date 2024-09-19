@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+      function Form() {
+        const [nomeOriginal, setNomeOriginal] = React.useState("");
+        const [maiusc, setMaiusc] = React.useState(false);
+
+        function handleCheckboxChange(event) {
+          const isChecked = event.target.checked;
+          setMaiusc(isChecked);
+        }
+
+        function handleSubmit(event) {
+          event.preventDefault();
+          const nome = maiusc ? nomeOriginal.toUpperCase() : nomeOriginal;
+          alert(`Olá, ${nome}!`);
+        }
+
+        return (
+          <>
+            <h1>Formulário React</h1>
+            <form onSubmit={handleSubmit}>
+              <div>
+                <label>
+                  <span>Nome</span>
+                  <br />
+                  <input
+                    value={nomeOriginal}
+                    onChange={(event) => setNomeOriginal(event.target.value)}
+                  />
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={maiusc}
+                    onChange={handleCheckboxChange}
+                  />
+                  <span>Colocar nome em maiúsculas</span>
+                </label>
+              </div>
+              <div>{maiusc ? nomeOriginal.toUpperCase() : nomeOriginal}</div>{" "}
+              <div>
+                <button type="submit">Enviar</button>
+              </div>
+            </form>
+          </>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<Form />);
+    </script>
+  </body>
+</html>
