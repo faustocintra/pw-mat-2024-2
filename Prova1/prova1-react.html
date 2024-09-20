@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo do Índice de Massa Corporal (IMC)</title>
+</head>
+<body>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <div id="root"></div>
+
+    <script type="text/babel">
+        
+        function Form(){
+            
+            // Declaração das variáveis
+            // hooks useState()
+            const [peso, setPeso] = React.useState('')
+            const [altura, setAltura] = React.useState('')
+            
+            // Calculo do IMC
+            const imc = peso / (altura ** 2)
+
+            //Criação do formulário
+            return <>
+                <h1>Cálculo do Índice de Massa Corporal</h1>
+                <form>
+                    <div>
+                        <label>
+                            <span>Peso:</span><br />
+                            <input type="number" onChange={event => setPeso(Number(event.target.value))} />  
+                        </label>  
+                    </div>
+                    <div>
+                        <label>
+                            <span>Altura:</span><br />
+                            <input type="number" onChange={event => setAltura(Number(event.target.value))} />    
+                        </label>    
+                    </div>
+                    {/* Conversão para padrão do Brasil */}
+                    <div>{'IMC: ' + imc.toLocaleString(
+                        'pt-br', {
+                            minimumFractionDigits: 4,
+                            maximumFractionDigits: 4
+                        }
+                    )}
+                    </div>
+                </form>
+            </>
+                
+        }
+        const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(<Form />)
+
+    </script>
+</body>
+</html>
