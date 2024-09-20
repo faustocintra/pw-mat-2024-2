@@ -34,7 +34,7 @@
     <script type="text/babel">
         //BABEL É UM TRANSPILADOR: PEGA O JSX E TRANSFORMA EM JAVASCRIPT.
 
-        //DECLARADO COM JAVASCRIPT
+        //DECLARADO UMA DIV COM JAVASCRIPT
         
         const div1 = React.createElement(
             'div',
@@ -58,24 +58,25 @@
 
 
 
-        //DIV CRIADA COM A SINTAXE JSX que será processada pelo Babel e
+        //DIV CRIADA HTML COM A SINTAXE JSX que será processada pelo Babel e
         //transpilada para Javascriupt puro
-        const div2 = <div id="div2" className="formata">DIV criada com JSX+Babel</div>
+        const div2 = <div id="div2" className="formata">DIV no formato HTML criada com JSX+Babel</div>
 
+
+        //DIV CRIADA COM INTERPOLAÇÃO DE VARIÁVEIS.
         const nomeClasse = 'formata'
         const id = 'div3'
-        const conteudo = 'DIV3 criada com JSX+BABEL usando interpolaão de variaveis'
+        const conteudo = 'DIV3 criada usando interpolação de variaveis com JSX+BABEL '
 
         //Para exibir o conteudo de variáveis dengro do JSX, usamos{}
-        //isso se chama INTERPOLAção
-            
-            const div3 = <div id = {id} className={nomeClasse} > {conteudo} </div>
+        //isso se chama INTERPOLAção.
+        const div3 = <div id = {id} className={nomeClasse} > {conteudo} </div>
 
             //CRIANDO UM OBJETO DE PROPS
             const propsDiv4 = {
                 id: 'div4',
                 className: 'formata',
-                children: 'DIV4 criada com JSX+ Babel e eespalhamento de props'
+                children: 'DIV4 criada com PROPS e passada como PARÂMETRO'
             }
 
             //Em JSX quando não temos a tag de fechamento, é OBRIGATÓRIO terminar 
@@ -88,7 +89,7 @@
 
 
 
-            //MANEIRA 1 DE UNIFICANDO OS ELEMENTOS
+            //MANEIRA 1 DE UNIFICAR OS ELEMENTOS para dar RENDER DEPOIS.
             // const container = React.createElement(
             //     'div',
             //     {id:'container', children: [div1, div2, div3, div4]}
@@ -96,7 +97,7 @@
 
 
 
-            //MANEIRA 2 DE UNIFICANDO OS ELEMENTOS
+            //MANEIRA 2 DE UNIFICAR OS ELEMENTOS para dar RENDER DEPOIS
             //Container em sintaxe JSX
             const container = <div id="container"> {div1} {div2} {div3} {div4} </div>
 

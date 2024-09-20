@@ -33,31 +33,33 @@
 
     <script type="text/babel">
 
-        /*Em React, os elementos construídos dinâmicamente são chamados COMPONENTES e podem ser produzidos por meio de funções.
+        /*Em React, os elementos construídos dinâmicamente são chamados COMPONENTES e 
+        podem ser produzidos por meio de funções.
         Uma função de componente React possui três caracterísitcas:
         1-> Seu nome começa com letra MAIÚSCULA.
         2-> Podem receber props como parâmetro, entre{}
         3->retornam um único elemento, que pode ser um container para outros elementos
         */
 
-        //Exemplo de função de componente React
+        //EXEMPLO DE FUNÇÃO QUE RETORNA HTML COM JSX
         function Saudacao({ nome, msg }) {
             return <div className="sauda"> {msg},{nome}!</div>
         }
 
+        //CHAMANDO A FUNÇÃO E GUARDANDO DENTRO DE UMA VARIÁVEL
         //Criando um componente a partir de uma chamada explícita à função
         const saudacao1 = Saudacao({ msg: 'Bom dia', nome: 'Dona Clementina' })
 
 
-
-        //Criando um componente a artir da função usando a sintase JSX
+        //CHAMANDO A FUNÇÃO DENTRO DE UM HTML E GUARDANDO O HTML DENTRO DE UMA VARIÁVEL
+        //Criando um componente a partir da função usando a sintase JSX
         //React sempre começa com letra MAIÚSCULA, tanto a tag quanto a função
         //chamou a função dentro do jsx
         const saudacao2 = <Saudacao nome="Seu Bita" msg="O sol já nasceu lá na fazendinha" />
 
 
 
-
+        //COLOCANDO VARIÁVEIS E CHAMANDO FUNÇÕES DENTRO DE UM HTML E GUARDANDO NUMA VARIÁVEL
         //<> </> é um recurso do React chamado FRAGMENT. Ele permite agrupar
         //vários elementos sem gerar um elemento HTML   (como uma div, p. ex:)
         //no resultado final

@@ -14,18 +14,18 @@
 
     <script>
         
-        //CRIA O PAI
+        //CAPTURA O PAI 'ROOT' USANDO ID
         //Captura o elemento correspondente à div existente,
         //cujo id é root
         const root = document.getElementById('root')
 
 
-        //DECLARA A FILHA
+        //DECLARA UMA FILHA "PARAG" DO TIPO 'P'
         //Criando um novo parágrafo no documento usando Javascript
         const parag = document.createElement('p');
         parag.textContent = 'Este parágrafo foi criado com Javascript';
 
-        //CRIA A FILHA
+        //APENSA A FILHA 'PARAG' AO PAI 'ROOT'
         //Faz com que o parágrafo criado seja "adotado pela div root"
         root.appendChild(parag)
 
@@ -33,10 +33,10 @@
 
 
 
-        //DECLARA A NOVA FILHA
+        //DECLARA A NOVA FILHA 'DIV' CHAMADA 'NOVADIV'
         const novaDiv = document.createElement('div')
 
-        //Ajustando os atributos de novaDiv
+        //COLOA OS ATRIBUTOS DESSA NOVA FILHA 'DIV' CHAMADA 'NOVADIV'
         novaDiv.textContent = 'Div criada com JavaScript'
         novaDiv.style.border = '3px dotted green'
         novaDiv.style.background = 'limegreen'
@@ -45,7 +45,7 @@
         novaDiv.style.textAlign = 'center'
         novaDiv.id = 'div-verde'
 
-        //CRIA A NOVA FILHA
+        //APENSA A FILHA 'NOVADIV' AO PAI 'ROOT'
         //Fazendo com que a div root "adote" novaDiv como filha
         root.appendChild(novaDiv)
 

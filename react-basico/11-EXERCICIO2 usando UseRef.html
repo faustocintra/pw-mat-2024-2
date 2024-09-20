@@ -38,8 +38,13 @@
   // Função para lidar com as mudanças nos inputs
   const handleChange = () => {
     // Obtendo os valores dos inputs diretamente
+
     /* Se o resultado de parseFloat(valorReaisRef.current.value) for um valor "falsy" 
     (como NaN, null, undefined, "", ou 0), o lado direito do operador (0) será usado.*/
+    /*Se a string não puder ser convertida em um número, parseFloat retorna NaN (Not a Number).
+    Uso do Operador ||: O operador || é utilizado aqui para garantir que, 
+    se parseFloat retornar NaN (por exemplo, se o valor do input estiver vazio ou for inválido),
+    a variável reais será definida como 0 em vez de NaN - um valor padrão*/
     const reais = parseFloat(valorReaisRef.current.value) || 0;
     const dolar = parseFloat(cotacaoDolarRef.current.value) || 1; // Evita divisão por zero
 
@@ -56,20 +61,14 @@
       <form>
         <label>
           Valor em reais:
-          <input
-            type="number"
-            ref={valorReaisRef}
-            onChange={handleChange}
+          <input type="number" ref={valorReaisRef} onChange={handleChange}
           />
         </label>
         <br />
         <label>
           Cotação do dólar:
-          <input
-            type="number"
-            ref={cotacaoDolarRef}
-            onChange={handleChange}
-          />
+          <input type="number" ref={cotacaoDolarRef} onChange={handleChange} />
+          
         </label>
       </form>
 

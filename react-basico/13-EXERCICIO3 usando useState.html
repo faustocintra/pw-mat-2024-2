@@ -33,7 +33,7 @@
         function Form() {
 
             //JEITO
-            //Declaração das variáveis de Estado
+            //DECLARE AS PRÉ-FUNÇÕES
             const [valorNome, setValorNome] = React.useState('')
             const [valorMaiusc, setValorMaiusc] = React.useState('')
             const [valorResultado, setValorResultado] = React.useState('');
@@ -57,6 +57,8 @@
                 alert(`Olá!, ${nomeFinal}!`)
 
                 setValorResultado(nomeFinal);
+
+                
             }
 
 
@@ -80,6 +82,7 @@
                         </label>
                     </div>
 
+                    
                     <div>{valorResultado}</div>
 
                     <div>

@@ -65,12 +65,16 @@
         //meio da propriedade children no objeto props
         const botao1 = React.createElement('button', propsBotao)
 
+
+
+        //DECLARANDO UM PARÁGRAFO SIMPLES.
         //Criando um elemento de forma rápida, sem props, apenas com
         //o conteúdo interno
+        //onde está o null coloca os props
         const parag = React.createElement('p', null, 'Parágrafo simples')
 
 
-         //DECLARANDO UM CONTAINER COM A DIV E O BOTÃO DENTRO
+         //DECLARANDO UMA DIV COM UM DIV, BOTAO E PARÁGRAFO.
         //Criando um  container para exibir os outros elementos dentro dele
         const container = React.createElement('div',{
             ID: 'container',
