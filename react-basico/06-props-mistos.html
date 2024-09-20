@@ -41,21 +41,20 @@
 
     <script type="text/babel">
 
+        //COMPONENTE COM PROP PERSONALIZADA E GENÉRICA
         /*Um mesmo componente pode combinar props personalizadas e gené<ricas>*/
         const Soma = ({ num1, num2, ...props }) =>
             <p className="soma" {...props}>
                 A soma de {num1} com {num2} é {num1 + num2}.
             </p>
 
-        //componente que recebe apenas props genéricas
+        //COMPONENTE 'PARAG' COM PROP APENAS GENÉRICA 
         const ParagCentro = props => <p className="centro" {...props} />
 
-        //componente que recebe apenas props personalizadas
+        //COMPONENTE 'PARAG' COM PROP APENAS PERSONALIZADA
         const ParagDireita = ({ id, children }) =>
             <p className="direita" id={id}>{children}</p>
 
-
-            
 
         const container = <>
             <Soma id="soma1" title="Primeira soma" num1="25" num2="19" />
@@ -63,12 +62,12 @@
             {/*Quando o valor de uma prop não for string ela deve ser passada entre {} chaves*/}
             <Soma id="soma2" title="Segunda soma" num1={25} num2={19} />
 
-            {/*Parágrafo irá renderizar qualquer prop passada*/}
+            {/*FUNÇÃO ParágCentro CRIA PROPS GENÉRICAS*/}
             <ParagCentro id="parag1" title="centralizado" seila="numsei">
                 Texto centralizado
             </ParagCentro>
 
-            {/*Parágrafo irá renderizar apenas as props id e children*/}
+            {/*FUNÇÃO ParagDireita CRIA PROP PERSONALIZADA*/}
             <ParagDireita id="parag2" title="à direita" numsei="seila">
                 Texto alinhado à direita
             </ParagDireita>
