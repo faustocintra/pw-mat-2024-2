@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prova 1</title>
+</head>
+<body>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+    <script type="text/babel">
+        //função que cria o formulário 
+        function Form(){
+
+            //criando referencias para os elementos
+            const pesoRef = React.useRef()
+            const alturaRef = React.useRef()
+            const imcRef = React.useRef()
+
+            // essa função serve para interceptar a mundança nos inputs 
+            // e atualizar variáveis quando o respectivo valor mudar.
+            function onChange(value){
+                const peso = Number(pesoRef.current.value) // Number() pega o valor do peso e converte para número 
+                const altura = Number(alturaRef.current.value)
+
+                //Calcula o IMC
+                const imc = peso /altura ** 2
+                
+                //Usa as variáveis que foram atualizadas em onChange, e exiba na div 
+                //de resultado o valor convertido
+                imcRef.current.textContent = 'IMC: ' + imc.toLocaleString('pt-br',{
+                    maximumFractionDigits:4,
+                    maximumFractionDigits:4
+                })
+            }
+
+            return <> 
+            <h1>Cálculo do Índice de Massa Corporal</h1>
+            <form>
+                <div>
+                    <label>
+                        <span>Peso:</span>
+                        <br/>
+                        <input type="number" ref={pesoRef} onChange={onChange}/>
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <span>Altura:</span>
+                        <br/>
+                        <input type="number" ref={alturaRef} onChange={onChange}/>
+                    </label>
+                </div>
+                <div ref={imcRef}></div>
+            </form>
+            </>
+
+        }
+        const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(<Form />)
+    </script>
+</body>
+</html>
