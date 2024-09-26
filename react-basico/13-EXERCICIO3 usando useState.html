@@ -1,112 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
-
 <body>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <div id="root"></div>
 
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
 
-    <div id="root"></div>
+    function Form() {
 
-    <script type="text/babel">
+      const [nome, setNome] = React.useState('')
+      const [maiusc, setMaiusc] = React.useState(false)
 
-        /*
-          1) Crie um formulário e coloque nele um input numérico com o label "Valor em reais".
-          2) Coloque outro input numérico com o label "Cotação do dólar".
-          3) Coloque, também, uma div para exibir o resultado da conversão de moeda.
-          4) Crie e coloque hooks useRef nos três elementos criados.
-          5) Escreva uma única função handleChange para interceptar a mundança nos dois inputs
-             e atualizar variáveis quando o respectivo valor mudar.
-          6) Usando as variáveis que foram atualizadas em handleChange, exiba na div de resultado
-             o valor convertido.
-          
-          Este exercício contará para a nota de Participação e Assiduidade (PA).
-        */
+      // Se maiusc estiver marcado, o resultado será o nome em maiúsculas
+      // Caso contrário, será o próprio nome
+      const resultado = maiusc ? nome.toUpperCase() : nome
 
-        function Form() {
+      function handleSubmit(event) {
+        event.preventDefault()
+        alert(`Olá, ${resultado}!`)
+      }
 
-            //JEITO
-            //DECLARE AS PRÉ-FUNÇÕES
-            const [valorNome, setValorNome] = React.useState('')
-            const [valorMaiusc, setValorMaiusc] = React.useState('')
-            const [valorResultado, setValorResultado] = React.useState('');
+      return <>
+        <h1>Formulário React</h1>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>
+              <span>Nome</span><br />
+              <input onChange={event => setNome(event.target.value)} />
+            </label>
+          </div>
+          <div>
+            <label>
+              <input type="checkbox" onChange={event => setMaiusc(event.target.checked)} />
+              <span>Colocar nome em maiúsculas</span>
+            </label>
+          </div>
+          <div>{resultado}</div>
+          <div>
+            <button type="submit">Enviar</button>
+          </div>
+        </form>
+      </>
 
-            function handleChange(event) {
-                setValorNome(event.target.value);
-            }
+    }
 
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<Form />)
+    
+  </script>
 
-            function handleCheckboxChange(event) {
-                setValorMaiusc(event.target.checked);
-            }
-
-
-
-            function handleSubmit(event) {
-                event.preventDefault()
-
-                const nomeFinal = valorMaiusc ? valorNome.toUpperCase() : valorNome;
-
-                alert(`Olá!, ${nomeFinal}!`)
-
-                setValorResultado(nomeFinal);
-
-                
-            }
-
-
-            return <>
-                <h1>Formulário usando Use State()</h1>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label>
-                            <span> Nome </span> <br />
-                            <input type="text" value={valorNome} onChange={handleChange} />
-                        </label>
-                    </div>
-
-                    <div>
-                        <label>
-
-                            <input type="checkbox" checked={valorMaiusc} onChange={handleCheckboxChange} />
-                            <span> Colocar nome em maiúsculas</span>
-
-
-                        </label>
-                    </div>
-
-                    
-                    <div>{valorResultado}</div>
-
-                    <div>
-                        <button type="submit">Enviar</button>
-                    </div>
-
-
-                </form>
-            </>
-        }
-
-
-
-
-
-
-        /*COPIAR ESTA PARTE*/
-        const root = ReactDOM.createRoot(document.getElementById('root'))
-        root.render(<Form />)
-        /*ATÉ AQUI*/
-
-
-    </script>
-
+  
 </body>
-
 </html>

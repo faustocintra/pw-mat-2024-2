@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+
+        function Form() {
+
+            //JEITO
+            //DECLARE AS PRÉ-FUNÇÕES
+            const [valorPeso, setValorPeso] = React.useState('')
+            const [valorAltura, setValorAltura] = React.useState('')
+            const [valorResultado, setValorResultado] = React.useState('');
+
+
+
+            function handlePesoChange(value) {
+                setValorPeso(event.target.value);
+
+                const imc = Number(valorPeso) / (Number(valorAltura) ** 2)
+
+            setValorResultado(imc.toLocaleString(
+                    'pt-br', //Faz a formatação para a lingua  pais dinicados. Port.bras.: pt-BR
+                    {
+                        minimumFractionDigits: 4,
+                        maximumFractionDigits: 4
+                    }
+                )
+                )
+            }
+
+            function handleAlturaChange(value){
+                setValorAltura(event.target.value);  
+
+                const imc = Number(valorPeso) / Number(valorAltura) ** 2
+
+            setValorResultado(imc.toLocaleString(
+                    'pt-br', //Faz a formatação para a lingua  pais dinicados. Port.bras.: pt-BR
+                    {
+                        minimumFractionDigits: 4,
+                        maximumFractionDigits: 4
+                    }
+                )
+                )
+            }
+
+        
+
+            return <>
+                <h1>Cálculo do Índice de Massa Corporal</h1>
+                <form>
+                    <div>
+                        <label>
+                            <span>Peso:</span>
+                            <input type="number" value={valorPeso} onChange={handlePesoChange} />
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <span>Altura:</span>
+                            <input type="number" value={valorAltura} onChange={handleAlturaChange} />
+                        </label>
+                    </div>
+
+
+                    <div>{valorResultado}</div>
+
+                </form>
+            </>
+        }
+
+
+        /*COPIAR ESTA PARTE*/
+        const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(<Form />)
+        /*ATÉ AQUI*/
+
+
+    </script>
+
+</body>
+
+</html>
