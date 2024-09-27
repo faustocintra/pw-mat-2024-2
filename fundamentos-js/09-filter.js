@@ -1,26 +1,32 @@
-const numeros = [1, 2, -3, 4, 5, -6, 7, 8, 9, 10];
-const frutas = ['banana', 'maçã', 'laranja', 'melancia', 'abacaxi', 'uva'];
+/*
+  O método filter() cria um NOVO VETOR contendo apenas os elementos
+  do vetor de origem que atendam ao critério representado pela 
+  função passada como parâmetro
+*/
+
+const numeros = [12, 19, 3, -4, 13, -11, 15, -1, 0]
+const frutas = ['laranja', 'abacaxi', 'maçã', 'uva', 'jabuticaba', 'maracujá']
 
 // Números negativos
-const negativos = numeros.filter(n => n < 0);
-console.log("Números negativos:", negativos);
+const negativos = numeros.filter(n => n < 0)
+console.log('Números negativos:', negativos)
 
 // Números pares
-const pares = numeros.filter(n => n % 2 === 0);
-console.log("Números pares:", pares);
+const pares = numeros.filter(x => x % 2 === 0)
+console.log('Números pares:', pares)
 
 // Números maiores que 20
-const maioresQue20 = numeros.filter(n => n > 20);
-console.log("Números maiores que 20:", maioresQue20);
+const maiores20 = numeros.filter(i => i > 20)
+console.log('Números maiores que 20:', maiores20)
 
-// Frutas que começam com a letra 'm'
-const frutasComM = frutas.filter(f => f.charAt(0) === 'm');
-console.log("Frutas que começam com 'm':", frutasComM);
+// Frutas que começam com a letra "m"
+const mInicial = frutas.filter(f => f.charAt(0) === 'm')
+console.log('Frutas que começam com a letra "m":', mInicial)
 
-// Frutas que terminam com a letra 'i'
-const frutasComI = frutas.filter(f => f.slice(-1) === 'i');
-console.log("Frutas que terminam com 'i':", frutasComI);
+// Frutas que terminam com a letra "i"
+const iFinal = frutas.filter(a => a.slice(-1) === 'i')
+console.log('Frutas que terminam com a letra "i":', iFinal)
 
-// Frutas que terminam com a letra 'r'
-const frutasComR = frutas.filter(f => f.slice(-1) === 'r');
-console.log("Frutas que terminam com 'r':", frutasComR);
+// Frutas que terminam com a letra "r"
+const rFinal = frutas.filter(y => y.slice(-1) === 'r')
+console.log('Frutas que terminam com a letra "r":', rFinal)

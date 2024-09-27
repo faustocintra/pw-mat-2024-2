@@ -1,32 +1,59 @@
-const fullname = 'Fernando Daciuk';
-const username = 'fdaciuk';
-const group = 'professor';
+// Alguns dados de um usuário
+const fullname = 'Jonicleisson Junqueira Júnior'
+const username = 'junin'
+const group = 'alunos'
 
-// Criando um objeto a partir das variáveis acima, note que o nome das propriedades é igual ao nome das variáveis
+/*
+  CRIANDO UM OBJETO A PARTIR DAS VARIÁVEIS ACIMA
+  Note que o nome das propriedades (à esquerda) coincide com
+  o nome das variáveis (à direita)
+*/
+// const user = {
+//   fullname: fullname,
+//   username: username,
+//   group: group
+// }
+
+/*
+  Criando um objeto equivalente ao comentado acima, usando
+  propriedades abreviadas. Quando o nome das propriedades
+  é idêntico ao das propriedades, não é necessária a repetição
+*/
 const user = {
-    fullname: fullname,
-    username: username,
-    group: group
-}; 
+  fullname,
+  username,
+  group
+}
 
-console.log(user);
+console.log(user)
 
-// Um objeto pode misturar propriedades abreviadas e propriedades comuns
+// Um objeto pode misturar propriedades abreviadas e não abreviadas
 const userInfo = {
-    fullname,
-    username,
-    password: '123',
-    group,
-    last_login: new Date()
-};
+  fullname,
+  username,
+  password: 'todopoderoso123',
+  group,
+  last_login: '2024-08-14 17:47:03'
+}
 
-console.log(userInfo);
+console.log(userInfo)
 
-// Depuração usando propriedades abreviadas
-const x = 10, y = 'caju';
+/*
+  DEPURAÇÃO USANDO PROPRIEDADES ABREVIADAS
+*/
 
-// Observe que os valores são mostrados, mas a saída não informa de quais variáveis eles vieram
-console.log(x, y);
+const x = 10, y = 'batata'
 
-// Usando propriedades abreviadas, é possível identificar de onde os valores vieram
-console.log({ x, y });
+/*
+  Exibindo o valor de duas variáveis com console.log().
+  Observe que os valores são mostrados, mas a saída não
+  informa de quais variáveis provêm os valores
+*/
+console.log(x, y)
+
+/*
+  Saída melhorada: passando um objeto formado pelas variáveis
+  como propriedades abreviadas para console.log(), conseguimos
+  saber de onde vêm os valores
+*/
+console.log({x, y})

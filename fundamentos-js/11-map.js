@@ -1,24 +1,25 @@
 // Vetores para teste
-const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const nomes = ['Ana', 'Bia', 'Carla', 'Duda', 'Eva', 'Fê', 'Gabi', 'Helo', 'Iara', 'Jana'];
+const nums = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
+const nomes = ['Aurival', 'Joender', 'Neurivânia', 'Terebintina', 'Leucimar']
 
 /*
-    O método map() cria um novo vetor com o resultado da função passada como argumento
-    aplicada a cada elemento do vetor original.
+  O método map() cria um NOVO VETOR, de tamanho IDÊNTICO ao do vetor
+  original, em que cada elemento corresponde a uma transformação feita,
+  no vetor de origem, pela função passada como parâmetro
 */
 
-// map() que cria um novo vetor númerico em que cada elemento é o quadrado do elemento correspondente
+// map() que cria um novo vetor numérico em que cada elemento corresponde
+// ao quadrado do elemento do vetor original
+const quadrados = nums.map(n => n ** 2)
 
-const quadrados = nums.map(n => n ** 2);
+console.log('Vetor original:', nums)
+console.log('Vetor com quadrados:', quadrados)
 
-console.log("Vetor original:", nums);
-console.log("Vetor com os quadrados dos elementos:", quadrados);
-
-// map() que transforma os elementos do vetor orignial em itens de lista
+// map() que transforma os elementos do vetor original em itens de lista
 // para uso em uma página HTML (aplicação frequente em React)
-const itensLista = nomes.map(nome => `<li>${nome}</li>`);
+const itensLista = nomes.map(nome => `<li>${nome}</li>`)
 
-console.log('<h1>OS NOMES MAIS BONITOS DO BRASIL</h1>');
-console.log('<ul>');
+console.log('<h1>OS NOMES MAIS BONITOS DO BRASIL</h1>')
+console.log('<ul>')
 for(let i of itensLista) console.log(i)
-console.log('</ul>');
+console.log('</ul>')

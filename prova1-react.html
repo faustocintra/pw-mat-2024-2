@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cálculo do Índice de Massa Corporal (IMC)</title>
+</head>
+<body>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+    function Form() {
+      // Declara as variáveis de estado 
+      const [peso, setPeso] = React.useState('')
+      const [alt, setAlt] = React.useState('')
+
+      // Calcula o valor do IMC seguindo os exemplos em aula
+      // utilizando o estado calculado
+      const imc =  peso / (alt ** 2)
+
+      // Retorna a visualização do formulário, utilizando as variáveis de estado
+      // e o estado calculado, utilizando do evento onChange para atualizar
+      return <>
+        <h1>Cálculo do Índice de Massa Corporal</h1>
+        <form>
+          <div>
+            <label>
+              <span>Peso:</span><br />
+              <input type="number" 
+                onChange={event => setPeso(Number(event.target.value)) } />
+            </label>
+          </div>
+          <div>
+            <label>
+              <span>Altura:</span><br />
+              <input type="number" 
+                onChange={event => setAlt(Number(event.target.value)) } />
+            </label>
+          </div>
+          <div>
+            { imc ? `IMC: ${imc.toLocaleString('pt-br', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}` : '' }
+          </div>
+        </form>
+      </>
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<Form />)
+  </script>
+</body>
+</html>
