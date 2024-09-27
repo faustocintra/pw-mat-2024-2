@@ -20,22 +20,13 @@
 
     <script type="text/babel">
       function Form() {
-        let nome, maiusc;
+        // Usando useState para armazenar os estados
+        const [nome, setNome] = React.useState("");
+        const [maiusc, setMaiusc] = React.useState(false);
 
-        // Criando referências para os elementos
-        const nomeRef = React.useRef();
-        const maiuscRef = React.useRef();
-        const resultadoRef = React.useRef();
-
-        function handleChange(event) {
-          maiusc = maiuscRef.current.checked;
-          if (maiusc) {
-            nome = nomeRef.current.value.toUpperCase();
-          } else {
-            nome = nomeRef.current.value;
-          }
-          resultadoRef.current.textContent = nome;
-        }
+        //Se maisc estiver marcado, o resultado será o nome em maiusculas
+        //Caso contrario, será o proprio nome
+        const result = maiusc ? nome.toUpperCase() : nome
 
         function handleSubmit(event) {
           event.preventDefault();
@@ -50,20 +41,20 @@
                 <label>
                   <span>Nome</span>
                   <br />
-                  <input ref={nomeRef} onChange={handleChange} />
+                  <input value={nome} onChange={handleChange} />
                 </label>
               </div>
               <div>
                 <label>
                   <input
                     type="checkbox"
-                    ref={maiuscRef}
-                    onChange={handleChange}
+                    checked={maiusc}
+                    onChange={handleCheckboxChange}
                   />
                   <span>Colocar nome em maiúsculas</span>
                 </label>
               </div>
-              <div ref={resultadoRef}></div>
+              <div>{nome}</div>
               <div>
                 <button type="submit">Enviar</button>
               </div>
