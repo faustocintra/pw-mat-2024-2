@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        /*  No campo de entrada para o peso o valor inserido é convertido em número
+            e armazenado no estado 'peso' por meio do hook setPeso, o mesmo ocorre no compo de entrada altura.
+            o onChange atualiza sempre que há alguma alteração e o event.target.value captura a alteração.
+            <span>Peso:</span><br />  
+            <input type="number"
+             onChange={event => setPeso (Number(event.target.value))} /> */
+
+        /*  O resultado do imc é atualizado automaticamente a cada mudança no peso ou altura 
+            <p>{'IMC: ' + imc.toFixed(2)}</p> */
+
+            function Form() {
+            //      Cria dois estados usando React.useState para armazenar o peso e a altura fornecidos pelo usuário iniciando com (0) zero.
+            const [peso, setPeso] = React.useState(0)
+            const [altura, setAltura] = React.useState(0)
+
+
+            const imc = altura > 0 ? (peso / (altura ** 2)) : 0;
+
+            //  <> </> é um recurso React chamado fragment. Ele permite agrupar
+            //  varios elementos sem gerar um elemento HTML no resultado final 
+
+            return <>
+                <h1>Cálculo do Índice de Massa Corporal</h1>
+                <form>
+                    <div>
+                        <label>
+                            <span>Peso:</span><br />
+                            <input type="number"
+                                onChange={event => setPeso(Number(event.target.value))} />
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <span>Altura</span><br />
+                            <input type="number"
+                                onChange={event => setAltura(Number(event.target.value))} />
+                        </label>
+                    </div>
+                    <div>
+                        <p>{'IMC: ' + imc.toFixed(2)}</p>
+                    </div>
+                </form>
+            </>
+        }
+        // ReactDOM.render é usado para renderizar o componente Form no div com id root
+        const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(<Form />)
+        
+    </script>
+</body>
+
+</html>
