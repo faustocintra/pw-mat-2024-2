@@ -7,6 +7,7 @@ import {
 }from 'react-router-dom'
 
 import Exercicio01 from './exercicios/01'
+import Exercicio02 from './exercicios/02'
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
       <ul>
       <li><Link to="/">Início</Link></li>
         <li><Link to="/01">Exercício 01</Link></li>
+        <li><Link to="/02">Exercício 02</Link></li>
       </ul>
       <hr />
 
@@ -28,6 +30,7 @@ function App() {
         }/>
 
         <Route path="/01" element ={<Exercicio01/>}/>
+        <Route path="/02" element ={<Exercicio02/>}/>
 
       </Routes>
       </BrowserRouter>
