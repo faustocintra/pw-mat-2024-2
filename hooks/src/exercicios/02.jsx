@@ -4,8 +4,23 @@ function Greeting({initialName = ''}) {
   // 🐨 inicialize o estado como o valor do localStorage
   // 💰 window.localStorage.getItem('name') ?? initialName
   const [name, setName] = React.useState(
-    window.localStorage.getItem('name') ?? initialName
+
+    //  Lazy initializer é uma técnica com a qual garantimos 
+    //  que o valor inicial de uma varíavel de estado seja 
+    //  carregado apenas uma vez, na fase de carregamento 
+    //  (mount) do componente correspondente 
+
+    //  Para habilitar o lazy initializer, basta fazer com 
+    //  que o valor inicaial do estado seja retornado por uma função
+   
+    // () => readLocalStorage()
+    () => window.localStorage.getItem('name') ?? initialName
   )
+  
+  // function readLocalStorage(){
+  //   console.count('Leu local Storage')
+  //   return windows.localStorage.getItem('name')?? initialName
+  // }
 
   const [count, setCount] = React.useState(0)
 
@@ -16,6 +31,7 @@ function Greeting({initialName = ''}) {
     window.localStorage.setItem('name', name)
     console.count('Atualizou')
   }, [name])
+ 
   // [name] é vetor de dependências
   // Este useEffect() somente será executado quando o valor da variável name mudar
 
