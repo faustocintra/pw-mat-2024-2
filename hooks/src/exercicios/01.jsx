@@ -1,28 +1,29 @@
-import * as React from 'react';
+import * as React from 'react'
+import { useState } from 'react'
 
-// eslint-disable-next-line react/prop-types
-function Greeting({ initialName }) {
-  // 💣 exclua esta declaração de variável e troque por uma chamada de React.useState
-  const [name, setName] = React.useState(initialName);
+function Greeting({initialName}) {
+  // 💣 exclua esta declaração de variável e troque por uma chamada a React.useState
+  //const [name, setName] = React.useState('')
+  const [name, setName] = useState(initialName)
 
   function handleChange(event) {
     // 🐨 atualize o nome aqui baseado em event.target.value
-    setName(event.target.value);
+    setName(event.target.value)
   }
 
   return (
     <div>
       <form>
         <label htmlFor="name">Nome: </label>
-        <input onChange={handleChange} id="name" value={name} />
+        <input onChange={handleChange} id="name" />
       </form>
       {name ? <strong>Olá {name}</strong> : 'Por favor, informe seu nome'}
     </div>
-  );
+  )
 }
 
 function Exercicio01() {
-  return <Greeting initialName="Turíbio" />;
+  return Greeting({initialName: "Catifunda"})
 }
 
-export default Exercicio01;
+export default Exercicio01
