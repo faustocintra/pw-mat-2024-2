@@ -13,7 +13,24 @@ import {
 
 function PokemonInfo({pokemonName}) {
   // 🐨 crie o estado para o pokémon (null)
-  const [pokemon, setPokemon] = React.useState(null)
+  // const [pokemon, setPokemon] = React.useState(null)
+  // const [error, setError] = React.useState(false)
+  // const [status, setStatus] = React.useState('ocioso')
+
+  // COnvertendo 3 variáveis de estado avulsas para uma única 
+  // variável de estado em forma de objeto
+  const [state, setState] = React.useState({
+    pokemon: null,
+    error: false,
+    status: 'ocioso'
+  })
+  // Para facilitar o código, podemos criar variáveis somente leitura
+  // a partir da variável de estado de objeto usando desestruturação
+  const { pokemon, error, status } = state
+
+  React.useEffect(() => {
+    console.count('Atualizou estado')
+  }) // Sem vetor de dependências, será executado em 
 
   // 🐨 crie React.useEffect de modo a ser chamado sempre que pokemonName mudar.
   // 💰 NÃO SE ESQUEÇA DO VETOR DE DEPENDÊNCIAS!
@@ -24,21 +41,45 @@ function PokemonInfo({pokemonName}) {
   
     // 🐨 antes de chamar `fetchPokemon`, limpe o estado atual do pokemon
     // ajustando-o para null.
-    setPokemon(null)
-  
-    // (Isso é para habilitar o estado de carregamento ao alternar entre diferentes
-    // pokémon.)
-    // 💰 Use a função `fetchPokemon` para buscar um pokémon pelo seu nome:
-    //   fetchPokemon('Pikachu').then(
-    //     pokemonData => {/* atualize todos os estados aqui */},
-    //   )
+
+    // // Para atualizar apenas o campo 'pokemon';
+    // const stateCopy = {...state}
+    // stateCopy.pokemon = 'novo valor'
+    // setState(stateCopy)
+    // // Para facilitar é possível fazer todas as operações numa única linha 
+    // setState({ ...state, pokemon: 'novo valor'})
+
+    // setPokemon(null)
+    // setError(false)
+    // setStatus('ocioso')
+    // Atualizando os três status simultaneamente, e gerando apenas
+    // UM redesenho do componente
+    setState({ pokemon: null, error: false, status: 'ocioso'})
     
     // fetchPokemon() enviará pokemonName para o servidor remoto e aguardará 
     // o retorno de pokemonData. Quando pokemonData for retornado, atualiza
     // a variável ed estado pokemon com as informações contidas em pokemonData  
-    fetchPokemon(pokemonName).then(
-      pokemonData => setPokemon(pokemonData)
-    )
+    // setStatus('pendente')
+    setState({ ...state, status: 'pendente'})
+    fetchPokemon(pokemonName)
+      // then() é chamado quando a requisição dá certo
+      .then(
+        pokemonData => {
+          // setPokemon(pokemonData)
+          // setStatus('resolvida')
+          setState({ ...state, pokemon: pokemonData, status: 'resolvida'})
+        }
+      )
+      // catch() é chamado quando a requisição dá erro
+      .catch(
+          // Guardamos o erro em um estado para depois exibir a
+          // respectiva mensagem 
+          error => {
+            // setError(error)
+            // setStatus('rejeitada')
+            setState({ ...state, error, status: 'rejeitada'})
+          }
+        )
 
   }, [pokemonName])
 
@@ -48,10 +89,33 @@ function PokemonInfo({pokemonName}) {
   //   2. tem pokemonName mas não pokemon: <PokemonInfoFallback name={pokemonName} />
   //   3. tem pokemon: <PokemonDataView pokemon={pokemon} />
 
-  if(! pokemonName) return 'Informe um pokemon' // 1.
-  else if(pokemonName && ! pokemon)
-    return <PokemonInfoFallback name={pokemonName} /> // 2.
-  else if (pokemon) return <PokemonDataView pokemon={pokemon} /> // 3.
+  // if(error) return <div role="alert">
+  //   Houve um erro: <pre style={{whiteSpace: 'normal'}}>
+  //     {error.message}
+  //   </pre>
+  // </div>
+  // if(! pokemonName) return 'Informe um pokemon' // 1.
+  // else if(pokemonName && ! pokemon)
+  //   return <PokemonInfoFallback name={pokemonName} /> // 2.
+  // else if (pokemon) return <PokemonDataView pokemon={pokemon} /> // 3.
+
+  switch (status){
+    case 'ocioso':
+      return 'Informe um pokemon'
+
+    case 'pendente':
+      return <PokemonInfoFallback name={pokemonName}/>
+
+    case 'resolvida':
+      return <PokemonDataView pokemon={pokemon} />
+
+    default:  // case 'rejeitada'
+      return <div role="alert">
+        Houve um erro: <pre style={{whiteSpace: 'normal'}}>
+          {error.message}
+        </pre>
+      </div>
+  }
 }
 
 function Exercicio06() {
