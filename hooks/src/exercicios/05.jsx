@@ -25,8 +25,8 @@ function Tilt({children}) {
     }
 
   }, [])
-  /*o vetor de dependencias pode estar com variável e então ele irá ser atualizado toda vez que este único for atualizado.
-  o vetor pode estar declarado mas não ter variável ele irá ser executado uma vez
+  /*o vetor de dependencias '[variavel]' pode estar com variável e então ele irá ser atualizado toda vez que este único for atualizado.
+  o vetor pode estar declarado '[]' mas não ter variável ele irá ser executado uma vez
   o vetor pode nao ter nada, então será executado sempre quando qualquer um dos usestates forem atualizados.
   */
 
