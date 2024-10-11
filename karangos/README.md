@@ -38,10 +38,24 @@ Verifique se está dentro da pasta karangos (se não estiver, execute o primeiro
 
 # Instalação da biblioteca Material UI
 
-(Se o projeto estiver sendo executado, derrube-o teclando ctrl + c no terminalnpm install @fontsource/roboto)
+(Se o projeto estiver sendo executando, derrube-o teclando Ctrl+C no terminal.)
 
-Verifique se está dentro da pasta karangos (se não estiver, execute o primeiro cd karangos)
+Verifique se está dentro da pasta karangos (se não estiver, execute primeiro cd karangos no terminal). 
     Em seguida, no terminal:
 
     npm install @mui/material @emotion/react @emotion/styled
+
+# Instalação das fontes Roboto
+Verifique se está dentro da pasta karangos (se não estiver, execute primeiro cd karangos no terminal). Em seguida, no terminal:
+
+    npm install @fontsource/roboto
+
+    Em seguida, cole as linhas seguintes no topo do arquivo App.jsx:
+
+    import '@fontsource/roboto/300.css'; import '@fontsource/roboto/400.css'; import '@fontsource/roboto/500.css'; import '@fontsource/roboto/700.css';
+# Instalação dos icones Material
+
+Verifique se está dentro da pasta karangos (se não estiver, execute primeiro cd karangos no terminal). Em seguida, no terminal:
+
+    npm install @mui/icons-material
     
