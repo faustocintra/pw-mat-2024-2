@@ -81,6 +81,7 @@ function PokemonInfo({ pokemonName }) {
           setState({ ...state, error, status: "rejeitada" });
         }
       );
+    p;
   }, [pokemonName]);
 
   // 🐨 retorne o seguinte baseado nos estados `pokemon` e `pokemonName`:
