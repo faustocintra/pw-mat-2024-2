@@ -130,8 +130,8 @@ switch (status)
     return 'Informe um pokémon'
   case 'pendente':
     return <PokemonInfoFallback name={pokemonName} />
-  case 'resolvida':
-    return <PokemonDataView name={pokemon} /> 
+    case 'resolvida':
+      return <PokemonDataView pokemon={pokemon} />
 
   default: //caso rejeitada
     return <div role='alert'>
@@ -140,9 +140,9 @@ switch (status)
         </pre>
     </div>
  }
+}
 
-
-function Exercicio06() {
+ function Exercicio06() {
   const [pokemonName, setPokemonName] = React.useState('')
 
   function handleSubmit(newPokemonName) {
@@ -158,8 +158,7 @@ function Exercicio06() {
       </div>
     </div>
   )
+}
 
-
-  
-
+// Aqui estava faltando o fechamento da função Exercicio06 e do export
 export default Exercicio06
