@@ -13,16 +13,24 @@ import { BrowserRouter } from 'react-router-dom'
 
 import TopBar from './ui/TopBar'
 
+import BottomBar from './ui/BottomBar'
+
+import theme from './ui/theme'
+import { ThemeProvider } from '@mui/material/styles'
+
 
 function App() {
   
 
   return (
     <>
-    <CssBaseline /> {/*Reseta o CSS*/}
-      <BrowserRouter>
-          <TopBar />
-      </BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <CssBaseline /> {/*Reseta o CSS*/}
+          <BrowserRouter>
+              <TopBar />
+              <BottomBar />
+          </BrowserRouter>
+      </ThemeProvider>
     </>
   )
 }
