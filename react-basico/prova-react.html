@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elipse</title>
+  </head>
+
+  <body>
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+      /*  No campo de entrada para as medidas o valor inserido é convertido em número
+            e armazenado no estado 'medidaMaior' por meio do hook setmedidaMaior, o mesmo ocorre no compo de entrada da medida menor.
+            o onChange atualiza sempre que há alguma alteração e o event.target.value captura a alteração.
+            <span>Medida Maior:</span><br />  
+            <input type="number"
+             onChange={(event) => setMedidaMaior(Number(event.target.value)) */
+
+      /*  O resultado do calculo da area é atualizado automaticamente a cada mudança na medida maior ou na medida menor
+            <p>{"Área: " + area.toFixed(2)}</p> */
+
+      function Form() {
+        // Cria dois estados usando React.useState para armazenar as medidas fornecidas pelo usuário
+        const [medidaMenor, setMedidaMenor] = React.useState(0);
+        const [medidaMaior, setMedidaMaior] = React.useState(0);
+
+        /*Testa se as medidas estão corretas, se por acaso não estiverem irá alertar o usuario sobre seu erro*/
+
+        if(medidaMaior < medidaMenor){
+            alert("Aviso!! A medida menor não pode ser maior ou igual a medida maior ")
+        }
+        
+        // Calcula a área da elipse
+        const pi = Math.PI;
+        const area = pi * medidaMaior * medidaMenor;
+        
+        
+
+        return (
+          <>
+            <h1>Cálculo da área de uma elipse</h1>
+            <form>
+              <div>
+                <label>
+                  <span>Medida do Raio Maior:</span>
+                  <br />
+                  <input
+                    type="number"
+                    value={medidaMaior}
+                    onChange={(event) =>
+                      setMedidaMaior(Number(event.target.value))
+                    }
+                  />
+                </label>
+              </div>
+              <div>
+                <label>
+                  <span>Medida do Raio Menor:</span>
+                  <br />
+                  <input
+                    type="number"
+                    value={medidaMenor}
+                    onChange={(event) =>
+                      setMedidaMenor(Number(event.target.value))
+                    }
+                  />
+                </label>
+              </div>
+              <div>
+                <p>{"Área: " + area.toFixed(2)}</p>
+              </div>
+            </form>
+          </>
+        );
+      }
+      // ReactDOM.render é usado para renderizar o componente Form no div com id root
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<Form />);
+    </script>
+  </body>
+</html>
