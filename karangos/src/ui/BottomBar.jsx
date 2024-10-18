@@ -1,31 +1,36 @@
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
+import CoffeeIcon from '@mui/icons-material/Coffee';
 
-export default function BottomBar(){
-    /* sx = Estilos estendidos do MUI, estende styles */
-    return(
-        <Toolbar 
+export default function BottomBar() {
+    /* sx = estilos estendidos do MUI, estente styles */
+    return (
+        <Toolbar
             variant="dense"
             sx={{
                 backgroundColor: 'action.disabledBackground',
-                justifyContent: ' center',
+                justifyContent: 'center',
                 position: 'fixed',
                 bottom: 0,
                 width: '100vw'
             }}
         >
             <Typography 
-                variant="caption" 
-                gutterBottom 
-                sx={{ 
-                    display: 'block',
-                    '& a': {
-                        color: 'secondary.light'
-                    }
-                }} 
-                >
-                Desenvolvido e mantido com café por <a 
-                    href="mailto:leonardomazza94@hotmail.com">Leonardo Henrique Mazza</a>
+            variant="caption" 
+            gutterBottom
+            sx={{
+                display: 'block',
+                '& a': {
+                    color: 'secondary.light'
+                }
+            }}
+            >
+            Desenvolvido e mantido com 
+            <CoffeeIcon 
+                fontSize="small"
+                sx={{ mb: -0.5 }}
+            /> 
+            por <a href="mailto:victorxdking@gmail.com">Leonardo Henrique Mazza</a>
             </Typography>
         </Toolbar>
     )
