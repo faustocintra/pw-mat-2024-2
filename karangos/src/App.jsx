@@ -9,6 +9,8 @@ import '@fontsource/roboto/700.css';
 
 //import './App.css'
 import CssBaseline from '@mui/material/CssBaseline'
+import Box from '@mui/material/Box'
+
 import { BrowserRouter } from 'react-router-dom'
 
 import TopBar from './ui/TopBar'
@@ -17,6 +19,9 @@ import BottomBar from './ui/BottomBar'
 
 import theme from './ui/theme'
 import { ThemeProvider } from '@mui/material/styles'
+
+
+import AppRoutes from './routes/AppRoutes'
 
 
 function App() {
@@ -28,6 +33,11 @@ function App() {
         <CssBaseline /> {/*Reseta o CSS*/}
           <BrowserRouter>
               <TopBar />
+                <Box sx={{
+                  m:'48px 24px',
+                }}>
+                <AppRoutes />
+              </Box>
               <BottomBar />
           </BrowserRouter>
       </ThemeProvider>

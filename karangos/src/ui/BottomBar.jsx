@@ -1,6 +1,8 @@
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
+import CoffeeIcon from '@mui/icons-material/Coffee';
+
 export default function BottomBar() {
     return (
 /*Estilos estendidos do MUI, estende styles */
@@ -20,15 +22,20 @@ export default function BottomBar() {
             variant="caption" 
             gutterBottom 
             sx={{
-                 display: 'block',
-                 '& a': {
+                    display: 'block',
+                    '& a': {
                     color: 'secondary.light' 
-                }
+                    }
 
                 }}
             
             >
-                Desenvolvido e mantido com café por <a href="mailto:ojevne.voigt@fatec.sp.gov.br">Aluno: Ojevne Eissimell Voigt</a>
+                Desenvolvido e mantido com 
+                <CoffeeIcon 
+                fontSize="small" 
+                sx={{ mb: -0.5}}
+                /> por <a href="mailto:ojevne.voigt@fatec.sp.gov.br">Aluno: Ojevne Eissimell Voigt</a>
+
             </Typography>
           
         </Toolbar>
