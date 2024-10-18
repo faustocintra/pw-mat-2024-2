@@ -1,5 +1,6 @@
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+import CoffeeIcon from '@mui/icons-material/Coffee';
 
 
 export default function BottomBar(){
@@ -26,7 +27,11 @@ export default function BottomBar(){
 
             }}
             >
-            Desenvolvido e mantido com cafe por <a href="mailto:rafaelasantosdeveloper@gmail.com">
+            Desenvolvido e mantido com  
+            <CoffeeIcon 
+            fontSize='small' 
+            sx={{mb: -0.5}}
+            /> por <a href="mailto:rafaelasantosdeveloper@gmail.com">
             Rafaela Aparecida Dos Santos</a>
             </Typography>     
         </Toolbar>
