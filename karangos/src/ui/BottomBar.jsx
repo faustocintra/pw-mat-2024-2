@@ -1,5 +1,6 @@
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import CoffeeIcon from "@mui/icons-material/Coffee";
 
 export default function BottomBar() {
   /* sx = estilos estendidos do MUI, estende styles */
@@ -24,7 +25,9 @@ export default function BottomBar() {
           },
         }}
       >
-        Desenvolvido e mantido com café por{" "}
+        Desenvolvido e mantido com
+        <CoffeeIcon fontSize="small" sx={{ mb: -0.5 }} />
+        por{" "}
         <a href="mailto:professor@faustocintra.com.br">Prof. Fausto Cintra</a>
       </Typography>
     </Toolbar>
