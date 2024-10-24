@@ -3,7 +3,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css'; 
 
-// import './App.css'
+import './App.css'
 import { BrowserRouter } from 'react-router-dom'
 
 import CssBaseline from '@mui/material/CssBaseline';
@@ -27,7 +27,7 @@ function App() {
         <BrowserRouter>
           <TopBar />
 
-          <Box sx={{
+          <Box id='innerRoot' sx={{
             m: '48px 24px'
           }}>
             <AppRoutes />
