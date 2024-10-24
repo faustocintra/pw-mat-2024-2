@@ -10,9 +10,9 @@ export default function TopBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" enableColorOnDark>
         <Toolbar variant="dense">
-          <MainMenu/>
+          <MainMenu />
           <Box>
-            <img src={logo} alt="Logotipo Karangos" style={{width: '300px'}} />
+            <img src={logo} alt="Logotipo Karangos" style={{ width: '300px' }} />
           </Box>
         </Toolbar>
       </AppBar>
