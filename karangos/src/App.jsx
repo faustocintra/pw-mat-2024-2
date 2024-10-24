@@ -7,7 +7,8 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 
-//import './App.css'
+import './App.css'
+
 import CssBaseline from '@mui/material/CssBaseline'
 import Box from '@mui/material/Box'
 
@@ -33,7 +34,7 @@ function App() {
         <CssBaseline /> {/*Reseta o CSS*/}
           <BrowserRouter>
               <TopBar />
-                <Box sx={{
+                <Box id="innerRoot" sx={{
                   m:'48px 24px',
                 }}>
                 <AppRoutes />
