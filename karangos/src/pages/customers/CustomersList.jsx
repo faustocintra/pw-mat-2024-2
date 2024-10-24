@@ -2,51 +2,95 @@ import Typography from '@mui/material/Typography'
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
-
-const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  {
-    field: 'firstName',
-    headerName: 'First name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'lastName',
-    headerName: 'Last name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-  },
-];
-
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+import { feedbackWait, feedbackNotify } from '../../ui/Feedback';
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteForeverIcon  from '@mui/icons-material/DeleteForever';
+import IconButton  from '@mui/material/IconButton';
+import { Link } from 'react-router-dom';
 
 export default function CustomersList() {
+
+  const columns = [
+    { 
+      field: 'id', 
+      headerName: 'Cód.', 
+      width: 90 
+    },
+    {
+      field: 'name',
+      headerName: 'Nome',
+      width: 200
+    },
+    {
+      field: 'birth_date',
+      headerName: 'Data Nasc.',
+      width: 150
+    },
+    {
+      field: 'municipality',
+      headerName: 'Município/UF',
+      width: 200,
+      valueGetter: (value, row) => row.municipality + '/' + row.state
+    },
+    {
+      field: 'phone',
+      headerName: 'Fone/Celular',
+      width: 160
+    },
+    {
+      field: 'email',
+      headerName: 'E-mail',
+      width: 200
+    },
+    {
+      field: 'actions',
+      headerName: 'Ações',
+      width: 150,
+      sortable: false,
+      renderCell: params => {
+       return <>
+        <Link to={'./' + params.id}>
+        <IconButton aria-label="editar">
+          <EditIcon/>
+        </IconButton>
+        </Link>
+
+        <IconButton aria-label="excluir">
+          <DeleteForeverIcon color="error" />
+        </IconButton>
+        </>
+      }
+    },
+  ];
+
+  const [state, setState] = React.useState({
+    customers: []
+  })
+  const {
+    customers
+  } = state
+
+  React.useEffect(() => {
+    loadData()
+  }, [])  // vetor de dependências vazio, executa uma vez no mount
+
+  async function loadData() {
+    feedbackWait(true)
+    try {
+      const response = await fetch('https://api.faustocintra.com.br/v2/customers')
+      const result = await response.json()
+
+      setState({ ...state, customers: result })
+    }
+    catch (error) {
+      console.log(error)
+      alert('ERRO: ' + error.message, 'error')
+    }
+    finally{
+      feedbackWait(false)
+    }
+  }
+
   return (
     <>
       { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
@@ -55,7 +99,7 @@ export default function CustomersList() {
       </Typography>
       <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={customers}
           columns={columns}
           initialState={{
             pagination: {
