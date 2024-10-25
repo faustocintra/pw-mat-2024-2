@@ -3,14 +3,18 @@ import Typography from '@mui/material/Typography'
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
-import { feedbackWait, feedbackNotify } from '../../ui/Feedback';
+import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import IconButton from '@mui/material/IconButton';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { width } from '@mui/system';
 
 export default function CustomersList() {
+ 
   const columns = [
     { field: 'id', headerName: 'Cód', width: 90 },
     {
@@ -21,13 +25,20 @@ export default function CustomersList() {
     {
       field: 'birth_date',
       headerName: 'Data Nasc',
-      width: 150
+      width: 150,
+      valueGetter: (value,row) => {
+        if(value){
+          const date = new Date(value)
+          return date.toLocaleDateString('pt-BR')
+        } 
+        else return ''
+      } 
     },
     {
       field: 'municipality',
       headerName: 'Municipio/UF',
       width: 200,
-      valueGetter: (value, row) => row.municipality + '/' + row.state 
+      valueGetter: (value, row) => row.municipality + '/' + row.state
     },
     {
       field: 'phone',
@@ -44,18 +55,18 @@ export default function CustomersList() {
       headerName: 'Ações',
       width: 150,
       sortable: false,
-      renderCell: params =>{
+      renderCell: params => {
 
-       return <>
-        <Link to={'./' + params.id}>
-          <IconButton aria-label="editar">
-            <EditIcon/>
+        return <>
+          <Link to={'./' + params.id}>
+            <IconButton aria-label="editar">
+              <EditIcon />
+            </IconButton>
+          </Link>
+          <IconButton aria-label="excluir"
+           onClick={() => handleDeleteButtonClick(params.id)}>
+            <DeleteForeverIcon color="error" />
           </IconButton>
-        </Link>
-
-        <IconButton aria-label="excluir">
-          <DeleteForeverIcon color="error"/>
-        </IconButton>
         </>
       }
     }
@@ -64,39 +75,80 @@ export default function CustomersList() {
   const [state, setState] = React.useState({
     customers: []
   })
-  const{
+  const {
     customers
-   } = state
+  } = state
 
-   React.useEffect(() => {
-      loadData()
-   }, []) //  Vetor de dependencias vazia executa apenas uma vez no mount
+  React.useEffect(() => {
+    loadData()
+  }, []) //  Vetor de dependencias vazia executa apenas uma vez no mount
 
-   async function loadData(){
+  async function loadData() {
     feedbackWait(true)
-    try{
-      const response = await fetch ('https://api.faustocintra.com.br/v2/customers')
+    try {
+      const response = await fetch(import.meta.env.VITE_API_BASE + '/customers')
       const result = await response.json()
 
-      setState({ ...state, customers: result})
+      setState({ ...state, customers: result })
 
     }
-    catch(error){
+    catch (error) {
       console.log(error)
       feedbackNotify('ERRO: ' + error.message, 'error')
     }
-    finally{
+    finally {
       feedbackWait(false)
     }
 
-   }
+  }
+
+  async function handleDeleteButtonClick(id) {
+    if (await feedbackConfirm('Deseja realmente excluir este item?')) {
+      feedbackWait(true)
+      try {
+        //Envia a requisição para exclusão
+        await fetch(import.meta.env.VITE_API_BASE + `/customer/${id}`,
+          { method: 'DELETE' }
+        )
+
+        //Atualiza os dados datagrid
+        loadData()
+
+        feedbackNotify('Exclusão efetuada com sucesso')
+      }
+      catch (error) {
+        console.log(error)
+        feedbackNotify('ERRO: ' + error.message, 'error')
+      }
+      finally {
+        feedbackWait(false)
+      }
+    }
+  }
 
   return (
     <>
-      { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
+      { /* gutterBottom coloca um espaçamento extra abaixo do componente */}
       <Typography variant="h1" gutterBottom>
         Listagem de clientes
       </Typography>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'right', //  ALinhado à direita
+        mb: 2 //  Margem inferior (margin-bottom)
+      }}>
+        <Link to="./new">
+        <Button variant="contained" 
+        size="large"
+        color='secondary'
+        startIcon={<AddCircleIcon/>}>
+          Novo Cliente
+        </Button>
+        
+        </Link>
+      </Box>
+
+
       <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={customers}
