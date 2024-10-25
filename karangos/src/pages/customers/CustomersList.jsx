@@ -2,11 +2,14 @@ import Typography from '@mui/material/Typography'
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
-import { feedbackWait, feedbackNotify } from '../../ui/Feedback';
+import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import EditIcon from '@mui/icons-material/Edit'
-import DeleteForeverIcon  from '@mui/icons-material/DeleteForever';
-import IconButton  from '@mui/material/IconButton';
-import { Link } from 'react-router-dom';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import IconButton from '@mui/material/IconButton'
+import { Link } from 'react-router-dom'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 export default function CustomersList() {
 
@@ -24,7 +27,13 @@ export default function CustomersList() {
     {
       field: 'birth_date',
       headerName: 'Data Nasc.',
-      width: 150
+      width: 150,
+      valueGetter: (value, row) => {
+        if(value){
+          const date = new Date(value)
+          return date.toDateString('pt-BR')
+        }else return ''
+      }
     },
     {
       field: 'municipality',
@@ -50,12 +59,16 @@ export default function CustomersList() {
       renderCell: params => {
         return <>
           <Link to={'./' + params.id}>
-          <IconButton aria-label ="editar">
-            <EditIcon/>
-          </IconButton>
-          </Link>  
-          <IconButton aria-label="excluir">
-            <DeleteForeverIcon color="error"/>
+            <IconButton aria-label="editar">
+              <EditIcon />
+            </IconButton>
+          </Link>
+
+          <IconButton 
+            aria-label="excluir"
+            onClick={() => handleDeleteButtonClick(params.id)}
+          >
+            <DeleteForeverIcon color="error" />
           </IconButton>
         </>
       }
@@ -76,17 +89,43 @@ export default function CustomersList() {
   async function loadData() {
     feedbackWait(true)
     try {
-      const response = await fetch('https://api.faustocintra.com.br/v2/customers')
+      const response = await fetch(
+        import.meta.env.VITE_API_BASE + '/customers')
       const result = await response.json()
 
       setState({ ...state, customers: result })
     }
     catch (error) {
       console.log(error)
-      feedbackNotify('Error' + error.message, 'error')
+      feedbackNotify('ERRO: ' + error.message, 'error')
     }
-    finally{
+    finally {
       feedbackWait(false)
+    }
+  }
+
+  async function handleDeleteButtonClick(id) {
+    if(await feedbackConfirm('Deseja realmente excluir este item?')) {
+      feedbackWait(true)
+      try {
+        // Envia a requisição para exclusão
+        await fetch(
+          import.meta.env.VITE_API_BASE + `/customers/${id}`,
+          { method: 'DELETE' }
+        )
+
+        // Atualiza os dados do datagrid
+        loadData()
+
+        feedbackNotify('Exclusão efetuada com sucesso.')
+      }
+      catch (error) {
+        console.log(error)
+        feedbackNotify('ERRO: ' + error.message, 'error')
+      }
+      finally {
+        feedbackWait(false)
+      }
     }
   }
 
@@ -96,6 +135,23 @@ export default function CustomersList() {
       <Typography variant="h1" gutterBottom>
         Listagem de clientes
       </Typography>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'right', //aliando à direita
+        md: 2 //margem inferior (margin-bottom)
+      }}>
+        <Link to="./new">
+        <Button 
+        variant="contained" 
+        size="large"
+        color="secondary"
+        startIcon={<AddCircleIcon/>}
+        >
+          Novo cliente
+          </Button>
+        </Link>
+      </Box>
+
       <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={customers}
