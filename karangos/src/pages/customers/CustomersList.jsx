@@ -2,11 +2,14 @@ import Typography from "@mui/material/Typography";
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
-import { feedbackWait, feedbackNotify } from "../../ui/Feedback";
+import { feedbackWait, feedbackNotify, feedbackConfirm } from "../../ui/Feedback";
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
+import Box from '@mui/material/Box'
+import Button from "@mui/material/Button";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 export default function CustomersList () {
 
@@ -24,7 +27,14 @@ export default function CustomersList () {
       {
         field: 'birth_date',
         headerName: 'Data Nasc.',
-        width: 150
+        width: 150,
+        valueGetter: (value, row) => {
+          if (value) {
+            const date = new Date(value)
+            return date.toLocaleDateString('pt-BR')
+          }
+          else return ''
+        }
       },
       {
         field: 'municipality',
@@ -57,7 +67,10 @@ export default function CustomersList () {
               </IconButton>
             </Link>
 
-            <IconButton aria-label="excluir">
+            <IconButton 
+              aria-label="excluir"
+              onClick={() => handleDeleteButtonClick(params.id)}
+            >
               <DeleteForever color="error" />
             </IconButton>
           </>
@@ -79,7 +92,9 @@ export default function CustomersList () {
   async function loadData(){
     feedbackWait(true)
     try {
-      const response = await fetch('https://api.faustocintra.com.br/v2/customers')
+      const response = await fetch(
+        import.meta.env.VITE_API_BASE + '/customers'
+        )
       const result = await response.json()
 
       setState({ ...state, customers: result })
@@ -93,12 +108,54 @@ export default function CustomersList () {
     }
   }
 
+  async function handleDeleteButtonClick(id){
+    if (await feedbackConfirm('Deseja realmente excluir este item?')){
+      feedbackWait(true)
+      try {
+        // Envia requisição para exclusão
+        await fetch(
+          import.meta.env.VITE_API_BASE + `/customers/${id}`, 
+          {method: 'DELETE'}
+        )
+
+        // Atualiza os dados do datagrid
+        loadData()
+
+        feedbackNotify('Exlcusão efetuada com sucesso.')
+      }
+      catch (error) {
+        console.log(error)
+        feedbackNotify('ERRO: ' + error.message, 'error')
+      }
+      finally {
+        feedbackWait(false)
+      }
+    }
+  }
+
     return (
         <>
             { /* gutterBottom coloca um espaçamento extra abaixo do componente */}
             <Typography variant="h1" gutterBottom>
                 Listagem de clientes
             </Typography>
+
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'right', // Alinhado à direita
+              mb: 2   // Margem inferior (margin-botton)
+            }}>
+              <Link to="./new">
+                <Button 
+                  variant="contained"
+                  size="large"
+                  color="secondary"
+                  startIcon={ <AddCircleIcon /> }
+                >
+                  Novo Cliente
+                </Button>
+              </Link>
+            </Box>
             <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
                 <DataGrid
                     rows={customers}

@@ -6,4 +6,19 @@
 /* Reexibe os botões do datagrid caso o mouse esteja por sobre a linha */
 .MuiDataGrid-row:hover button {
   visibility: visible;
+} 
+
+.form-fields form {
+  margin: 0 auto;
+  max-width: 95%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.form-fields .MuiFormControl-root {
+  min-width: 250px;
+  max-width: 500px;
+  width: 500px;
+  margin-bottom: 36px;
 }
