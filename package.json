@@ -1,5 +1,10 @@
 {
   "dependencies": {
-    "@mui/x-data-grid": "^7.21.0"
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/styled-engine": "^6.1.6",
+    "@mui/x-data-grid": "^7.21.0",
+    "@mui/x-date-pickers": "^7.22.0",
+    "date-fns": "^4.1.0"
   }
 }
