@@ -10,6 +10,9 @@ import { parseISO } from 'date-fns'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import { emphasize } from '@mui/material'
+import InputMask from 'react-input-mask'
+import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
+import {useNavigate} from 'react-router-dom'
 
 export default function CustomersForm() {
   /*
@@ -39,22 +42,29 @@ export default function CustomersForm() {
 
   ]
 
+  const phoneMaskFormatChars = {
+    '9': '[0-9]',                // Somente digitos
+    '%': '[\s0-9]'              //  digitos ou espaço em branco (\s)
+  }
+
   const formDefaults = {
-    name:'',
+    name: '',
     ident_document: '',
     birth_date: null,
     street_name: '',
     house_number: '',
-    complements:'',
-    district:'',
-    municipality:'',
-    state:'',
-    phone:'',
-    email:''
+    complements: '',
+    district: '',
+    municipality: '',
+    state: '',
+    phone: '',
+    email: ''
   }
 
+  const Navigate = useNavigate()
+
   const [state, setState] = React.useState({
-    customer: {...formDefaults}
+    customer: { ...formDefaults }
   })
   const {
     customer
@@ -64,14 +74,53 @@ export default function CustomersForm() {
     o campo correspondente do formulário por 
     modificado
   */
-  function handleFieldChange(event){
+  function handleFieldChange(event) {
+    //  Vamos observar no console as informações que chegam
+    //  a fundo handleFieldChange
+    console.log({ name: event.target.name, value: event.target.value })
+
     // Tira uma cópia da variavel de estado customer
-    const customerCopy = {...customer}
+    const customerCopy = { ...customer }
     // Altera em customerCopy apenas o campo da vez
     customerCopy[event.target.name] = event.target.value
     // Atualiza a variável de estado, substituindo o objeto
     // customer por sua cópia atualizada
-    setState({...state, customer:customerCopy})
+    setState({ ...state, customer: customerCopy })
+  }
+
+  async function handleFormSubmit(event){
+    event.preventDefault()             // Impede o carregamento da página
+    feedbackWait(true)
+    try{
+      //  Prepara as opções para o fetch 
+      const reqOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(customer)
+
+      }
+
+      //  invoca o fetch para enviar os dados do back-end
+
+      await fetch(
+        import.meta.env.VITE_API_BASE + '/customers',
+        reqOptions
+      )
+
+      feedbackNotify('Item salvo com sucesso.', 'success', 4000, () =>{
+        //  Retorna para a página de listagem
+        Navigate('..', {relative: 'path', replace: true})
+      })
+
+    }
+    catch(error){
+      console.log(error)
+      feedbackNotify('Erro: ' + error.message, 'error')
+
+    }
+    finally{
+      feedbackWait(false)
+    }
   }
   return (
     <>
@@ -81,7 +130,7 @@ export default function CustomersForm() {
       </Typography>
 
       <Box className="form-fields">
-        <form>
+        <form onSubmit={handleFormSubmit}> 
           {/* autoFocus = Foco do teclado no primeiro campo */}
           <TextField
             variant="outlined"
@@ -93,16 +142,30 @@ export default function CustomersForm() {
             value={customer.name}
             onChange={handleFieldChange}
           />
-          <TextField
-            variant="outlined"
-            name="ident_document"
-            label="CPF"
-            fullWidth
-            required
+
+          <InputMask
+            mask="999.999.999-99"
             value={customer.ident_document}
             onChange={handleFieldChange}
-          />
-
+          >
+            {
+              () =>
+                <TextField
+                  variant="outlined"
+                  name="ident_document"
+                  label="CPF"
+                  fullWidth
+                  required
+                />
+            }
+          </InputMask>
+          {/*
+            O evento onChange do componente DatePicker não passa 
+            o parâmetro event, como no TextField, e sim a própira 
+            data que foi modificada. Por isso, ao chamar a função 
+            handleFieldChange no DataPicker, precisamos criar um 
+            parâmetro event "fake" com as informações necessárias
+          */}
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
             adapterLocale={ptBR}
@@ -115,6 +178,10 @@ export default function CustomersForm() {
                   variant: 'outlined',
                   fullWidth: true
                 }
+              }}
+              onChange={date => {
+                const event = {target:{ name: 'birth_date', value: date } }
+                handleFieldChange(event)
               }}
             />
           </LocalizationProvider>
@@ -188,15 +255,26 @@ export default function CustomersForm() {
             }
           </TextField>
 
-          <TextField
-            variant="outlined"
-            name="phone"
-            label="Telefone/Celular"
-            fullWidth
-            required
+          <InputMask
+            formatChars={phoneMaskFormatChars}
+            mask="(99) %9999-9999"
             value={customer.phone}
+            maskChar=" "
             onChange={handleFieldChange}
-          />
+          >
+            {
+              () =>
+                <TextField
+                  variant="outlined"
+                  name="phone"
+                  label="Telefone/Celular"
+                  fullWidth
+                  required
+                  value={customer.phone}
+                  onChange={handleFieldChange}
+                />
+            }
+          </InputMask>
 
           <TextField
             variant="outlined"
@@ -212,30 +290,30 @@ export default function CustomersForm() {
             display: 'flex',
             justifyContent: 'space-around',
             width: '100%'
-           }}>
+          }}>
             <Button
-            variant='contained'
-            color='secondary'
-            type='submit'
+              variant='contained'
+              color='secondary'
+              type='submit'
             >
               Salvar
-              </Button>
+            </Button>
 
             <Button
-            variant='outlined'
+              variant='outlined'
             >
               Voltar</Button>
 
           </Box>
 
           <Box sx={{
-            fontFamily:'monospace',
+            fontFamily: 'monospace',
             display: 'flex',
             flexDirection: 'column',
-            width: '100%'
+            width: '100vw'
           }}>
-          {JSON.stringify(customer)}
-        
+            {JSON.stringify(customer, null, ' ')}
+
           </Box>
 
         </form>
