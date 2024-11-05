@@ -8,23 +8,15 @@ import { ptBR } from "date-fns/locale/pt-BR";
 import { parseISO } from "date-fns";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
+import InputMask from "react-input-mask";
+import {
+  feedbackWait,
+  feedbackNotify,
+  feedbackConfirm,
+} from "../../ui/Feedback";
+import { useNavigate } from "react-router-dom";
 
 export default function CustomersForm() {
-  /*
-    "id": 344,
-    "name": "Etelvina Eanes Essado",
-    "ident_document": "333.333.333-33",
-    "birth_date": "1957-7-7",
-    "street_name": "Rua do Sobe e Desce",
-    "house_number": "333",
-    "complements": null,
-    "district": "Centro",
-    "municipality": "Pequenópolis",
-    "state": "SP",
-    "phone": "(16) 3333-3333",
-    "email": "etel.eanes@gmail.com"
-  */
-
   const brazilianStates = [
     { value: "DF", label: "Distrito Federal" },
     { value: "ES", label: "Espírito Santo" },
@@ -35,6 +27,11 @@ export default function CustomersForm() {
     { value: "RJ", label: "Rio de Janeiro" },
     { value: "SP", label: "São Paulo" },
   ];
+
+  const phoneMaskFormatChars = {
+    9: "[0-9]", // somente dígitos
+    "%": "[s0-9]", // dígitos ou espaço em branco (\s)
+  };
 
   const formDefaults = {
     name: "",
@@ -50,6 +47,8 @@ export default function CustomersForm() {
     email: "",
   };
 
+  const navigate = useNavigate();
+
   const [state, setState] = React.useState({
     customer: { ...formDefaults },
   });
@@ -61,6 +60,10 @@ export default function CustomersForm() {
     modificado
   */
   function handleFieldChange(event) {
+    // Vamos observar no console as informações que chegam
+    // à função handleFieldChange
+    console.log({ name: event.target.name, value: event.target.value });
+
     // Tira uma cópia da variável de estado customer
     const customerCopy = { ...customer };
     // Altera em customerCopy apenas o campo da vez
@@ -68,6 +71,33 @@ export default function CustomersForm() {
     // Atualiza a variável de estado, substituindo o objeto
     // customer por sua cópia atualizada
     setState({ ...state, customer: customerCopy });
+  }
+
+  async function handleFormSubmit(event) {
+    event.preventDefault(); // Impede o recarregamento da página
+
+    feedbackWait(true);
+    try {
+      // Prepara as opções para o fetch
+      const reqOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(customer),
+      };
+
+      // Infoca o fetch para enviar os dados ao back-end
+      await fetch(import.meta.env.VITE_API_BASE + "/customers", reqOptions);
+
+      feedbackNotify("Item salvo com sucesso.", "success", 4000, () => {
+        // Retorna para a página de listagem
+        navigate("..", { relative: "path", replace: true });
+      });
+    } catch (error) {
+      console.log(error);
+      feedbackNotify("ERRO: " + error.message, "error");
+    } finally {
+      feedbackWait(false);
+    }
   }
 
   return (
@@ -78,7 +108,7 @@ export default function CustomersForm() {
       </Typography>
 
       <Box className="form-fields">
-        <form>
+        <form onSubmit={handleFormSubmit}>
           {/* autoFocus = foco do teclado no primeiro campo */}
           <TextField
             variant="outlined"
@@ -91,15 +121,29 @@ export default function CustomersForm() {
             onChange={handleFieldChange}
           />
 
-          <TextField
-            variant="outlined"
-            name="ident_document"
-            label="CPF"
-            fullWidth
-            required
+          <InputMask
+            mask="999.999.999-99"
             value={customer.ident_document}
-          />
+            onChange={handleFieldChange}
+          >
+            {() => (
+              <TextField
+                variant="outlined"
+                name="ident_document"
+                label="CPF"
+                fullWidth
+                required
+              />
+            )}
+          </InputMask>
 
+          {/*
+            O evento onChange do componente DatePicker não passa
+            o parâmetro event, como no TextField, e sim a própria
+            data que foi modificada. Por isso, ao chamar a função
+            handleFieldChange no DatePicker, precisamos criar um
+            parâmetro event "fake" com as informações necessárias
+          */}
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
             adapterLocale={ptBR}
@@ -113,6 +157,10 @@ export default function CustomersForm() {
                   fullWidth: true,
                 },
               }}
+              onChange={(date) => {
+                const event = { target: { name: "birth_date", value: date } };
+                handleFieldChange(event);
+              }}
             />
           </LocalizationProvider>
 
@@ -123,6 +171,7 @@ export default function CustomersForm() {
             fullWidth
             required
             value={customer.street_name}
+            onChange={handleFieldChange}
           />
 
           <TextField
@@ -132,6 +181,7 @@ export default function CustomersForm() {
             fullWidth
             required
             value={customer.house_number}
+            onChange={handleFieldChange}
           />
 
           <TextField
@@ -141,6 +191,7 @@ export default function CustomersForm() {
             fullWidth
             /* required */
             value={customer.complements}
+            onChange={handleFieldChange}
           />
 
           <TextField
@@ -150,6 +201,7 @@ export default function CustomersForm() {
             fullWidth
             required
             value={customer.district}
+            onChange={handleFieldChange}
           />
 
           <TextField
@@ -159,6 +211,7 @@ export default function CustomersForm() {
             fullWidth
             required
             value={customer.municipality}
+            onChange={handleFieldChange}
           />
 
           <TextField
@@ -169,6 +222,7 @@ export default function CustomersForm() {
             required
             value={customer.state}
             select
+            onChange={handleFieldChange}
           >
             {brazilianStates.map((s) => (
               <MenuItem key={s.value} value={s.value}>
@@ -177,14 +231,23 @@ export default function CustomersForm() {
             ))}
           </TextField>
 
-          <TextField
-            variant="outlined"
-            name="phone"
-            label="Telefone/Celular"
-            fullWidth
-            required
+          <InputMask
+            formatChars={phoneMaskFormatChars}
+            mask="(99) %9999-9999"
             value={customer.phone}
-          />
+            maskChar=" "
+            onChange={handleFieldChange}
+          >
+            {() => (
+              <TextField
+                variant="outlined"
+                name="phone"
+                label="Telefone/Celular"
+                fullWidth
+                required
+              />
+            )}
+          </InputMask>
 
           <TextField
             variant="outlined"
@@ -193,6 +256,7 @@ export default function CustomersForm() {
             fullWidth
             required
             value={customer.email}
+            onChange={handleFieldChange}
           />
 
           <Box
@@ -214,10 +278,10 @@ export default function CustomersForm() {
               fontFamily: "monospace",
               display: "flex",
               flexDirection: "column",
-              width: "100%",
+              width: "100vw",
             }}
           >
-            {JSON.stringify(customer)}
+            {JSON.stringify(customer, null, " ")}
           </Box>
         </form>
       </Box>
