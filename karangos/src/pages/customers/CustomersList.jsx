@@ -86,7 +86,8 @@ export default function CustomersList() {
   async function loadData() {
     feedbackWait(true)
     try {
-      const response = await fetch(import.meta.env.VITE_API_BASE + '/customers')
+      const response = await fetch(
+        import.meta.env.VITE_API_BASE + '/customers?by=name')
       const result = await response.json()
 
       setState({ ...state, customers: result })
