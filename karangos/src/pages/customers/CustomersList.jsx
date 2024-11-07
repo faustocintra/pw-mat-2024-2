@@ -93,7 +93,7 @@ export default function CustomersList() {
     feedbackWait(true);
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + "/customers"
+        import.meta.env.VITE_API_BASE + "/customers?by=name"
       );
       const result = await response.json();
 
