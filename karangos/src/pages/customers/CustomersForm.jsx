@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import InputMask from 'react-input-mask'
 import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export default function CustomersForm() {
 
@@ -45,13 +45,47 @@ export default function CustomersForm() {
   }
 
   const navigate = useNavigate()
+  const params = useParams()
 
   const [state, setState] = React.useState({
-    customer: { ...formDefaults }
+    customer: { ...formDefaults },
+    formModified: false
   })
   const {
-    customer
+    customer,
+    formModified
   } = state
+
+  // Se estivermos editando um cliente, precisamos carregar
+  // seus dados assim que o componente for carregado
+  React.useEffect(() => {
+    // Sabemos que estamos editando (e não cadastrando um novo)
+    // cliente quando a rota ativa contiver um parâmetro id
+    if (params.id) loadData()
+  }, [])
+
+  async function loadData() {
+    feedbackWait(true)
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_API_BASE + '/customers/' + params.id 
+      )
+      const result = await response.json()
+      
+      // Converte o formato da data armazenado no banco de dados
+      // para o formato reconhecido pelo componente DatePicker
+      if(result.birth_date) result.birth_date = parseISO(result.birth_date)
+
+      setState({ ...params, customer: result })
+    }
+    catch(error) {
+      console.log(error)
+      feedbackNotify('ERRO: ' + error.message, 'error')
+    }
+    finally {
+      feedbackWait(false)
+    }
+  }
 
   /*
     Preenche o campo do objeto customer conforme
@@ -69,7 +103,7 @@ export default function CustomersForm() {
     customerCopy[event.target.name] = event.target.value
     // Atualiza a variável de estado, substituindo o objeto
     // customer por sua cópia atualizada
-    setState({ ...state, customer: customerCopy })
+    setState({ ...state, customer: customerCopy, formModified: true })
   }
 
   async function handleFormSubmit(event) {
@@ -84,11 +118,23 @@ export default function CustomersForm() {
         body: JSON.stringify(customer)
       }
 
-      // Infoca o fetch para enviar os dados ao back-end
-      await fetch(
-        import.meta.env.VITE_API_BASE + '/customers',
-        reqOptions
-      )
+      // Infoca o fetch para enviar os dados ao back-end.
+      // Se houver parâmetro na rota, significa que estamos alterando
+      // um registro existente e, portanto, o verbo precisa ser PUT
+      if(params.id) {
+        reqOptions.method = 'PUT'
+        await fetch(
+          import.meta.env.VITE_API_BASE + '/customers/' + params.id,
+          reqOptions
+        )
+      }
+      // Senão, envia com o método POST para criar um novo registro
+      else {
+        await fetch(
+          import.meta.env.VITE_API_BASE + '/customers',
+          reqOptions
+        )
+      }
 
       feedbackNotify('Item salvo com sucesso.', 'success', 4000, () => {
         // Retorna para a página de listagem
@@ -105,11 +151,21 @@ export default function CustomersForm() {
     }
   }
 
+  async function handleBackButtonClick() {
+    if(
+      formModified && 
+      ! await feedbackConfirm('Há informações não salvas. Deseja realmente voltar?')
+    ) return // Sai da função sem fazer nada
+
+    // Aqui o usuário respondeu que quer voltar e perder os dados
+    navigate('..', { relative: 'path', 'replace': true })
+  }
+
   return (
     <>
       { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
       <Typography variant="h1" gutterBottom>
-        Cadastro de clientes
+        { params.id ? `Editar cliente #${params.id}` : 'Cadastrar novo cliente' }
       </Typography>
 
       <Box className="form-fields">
@@ -282,6 +338,7 @@ export default function CustomersForm() {
 
             <Button
               variant="outlined"
+              onClick={handleBackButtonClick}
             >
               Voltar
             </Button>
