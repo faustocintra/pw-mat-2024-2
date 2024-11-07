@@ -8,8 +8,8 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import IconButton from '@mui/material/IconButton'
 import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import Button from '@mui/material/Button'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 
 export default function CustomersList() {
 
@@ -29,10 +29,11 @@ export default function CustomersList() {
       headerName: 'Data Nasc.',
       width: 150,
       valueGetter: (value, row) => {
-        if(value){
+        if(value) {
           const date = new Date(value)
-          return date.toDateString('pt-BR')
-        }else return ''
+          return date.toLocaleDateString('pt-BR')
+        }
+        else return ''
       }
     },
     {
@@ -90,7 +91,8 @@ export default function CustomersList() {
     feedbackWait(true)
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + '/customers')
+        import.meta.env.VITE_API_BASE + '/customers?by=name'
+      )
       const result = await response.json()
 
       setState({ ...state, customers: result })
@@ -135,19 +137,20 @@ export default function CustomersList() {
       <Typography variant="h1" gutterBottom>
         Listagem de clientes
       </Typography>
+
       <Box sx={{
         display: 'flex',
-        justifyContent: 'right', //aliando à direita
-        md: 2 //margem inferior (margin-bottom)
+        justifyContent: 'right', // Alinhado à direita
+        mb: 2   // Margem inferior (margin-bottom)
       }}>
         <Link to="./new">
-        <Button 
-        variant="contained" 
-        size="large"
-        color="secondary"
-        startIcon={<AddCircleIcon/>}
-        >
-          Novo cliente
+          <Button 
+            variant="contained" 
+            size="large"
+            color="secondary"
+            startIcon={ <AddCircleIcon /> }
+          >
+            Novo cliente
           </Button>
         </Link>
       </Box>
