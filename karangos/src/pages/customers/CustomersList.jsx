@@ -7,17 +7,17 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import IconButton from '@mui/material/IconButton'
 import { Link } from 'react-router-dom'
-import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import AddCircleItem from '@mui/icons-material/AddCircle'
- 
+import Button from '@mui/material/Button'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+
 export default function CustomersList() {
- 
+
   const columns = [
-    {
-      field: 'id',
-      headerName: 'Cód.',
-      width: 90
+    { 
+      field: 'id', 
+      headerName: 'Cód.', 
+      width: 90 
     },
     {
       field: 'name',
@@ -29,10 +29,11 @@ export default function CustomersList() {
       headerName: 'Data Nasc.',
       width: 150,
       valueGetter: (value, row) => {
-        if(value){
+        if(value) {
           const date = new Date(value)
-          return date.toDateString('pt-BR')
-        }else return ''
+          return date.toLocaleDateString('pt-BR')
+        }
+        else return ''
       }
     },
     {
@@ -63,8 +64,8 @@ export default function CustomersList() {
               <EditIcon />
             </IconButton>
           </Link>
- 
-          <IconButton
+
+          <IconButton 
             aria-label="excluir"
             onClick={() => handleDeleteButtonClick(params.id)}
           >
@@ -74,25 +75,26 @@ export default function CustomersList() {
       }
     }
   ];
- 
+
   const [state, setState] = React.useState({
     customers: []
   })
   const {
     customers
   } = state
- 
+
   React.useEffect(() => {
     loadData()
   }, [])  // Vetor de dependências vazio, executa uma vez no mount
- 
+
   async function loadData() {
     feedbackWait(true)
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + '/customers')
+        import.meta.env.VITE_API_BASE + '/customers?by=name'
+      )
       const result = await response.json()
- 
+
       setState({ ...state, customers: result })
     }
     catch (error) {
@@ -103,7 +105,7 @@ export default function CustomersList() {
       feedbackWait(false)
     }
   }
- 
+
   async function handleDeleteButtonClick(id) {
     if(await feedbackConfirm('Deseja realmente excluir este item?')) {
       feedbackWait(true)
@@ -113,10 +115,10 @@ export default function CustomersList() {
           import.meta.env.VITE_API_BASE + `/customers/${id}`,
           { method: 'DELETE' }
         )
- 
+
         // Atualiza os dados do datagrid
         loadData()
- 
+
         feedbackNotify('Exclusão efetuada com sucesso.')
       }
       catch (error) {
@@ -128,7 +130,7 @@ export default function CustomersList() {
       }
     }
   }
- 
+
   return (
     <>
       { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
@@ -138,17 +140,17 @@ export default function CustomersList() {
 
       <Box sx={{
         display: 'flex',
-        justifyContent: 'right', //alinhado à direita
-        mb: 2 //margem inferior
+        justifyContent: 'right', // Alinhado à direita
+        mb: 2   // Margem inferior (margin-bottom)
       }}>
         <Link to="./new">
-          <Button
-           variant="contained" 
-           size="large"
-           color="secondary"
-           startIcon={<AddCircleItem/>}
-           >
-            Novo Cliente
+          <Button 
+            variant="contained" 
+            size="large"
+            color="secondary"
+            startIcon={ <AddCircleIcon /> }
+          >
+            Novo cliente
           </Button>
         </Link>
       </Box>
