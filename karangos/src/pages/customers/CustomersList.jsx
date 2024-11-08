@@ -1,82 +1,80 @@
-import Typography from "@mui/material/Typography";
+import Typography from '@mui/material/Typography'
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
-import { feedbackWait, feedbackNotify, feedbackConfirm } from "../../ui/Feedback";
+import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import EditIcon from '@mui/icons-material/Edit'
-import DeleteForever from "@mui/icons-material/DeleteForever";
-import IconButton from "@mui/material/IconButton";
-import { Link } from "react-router-dom";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import IconButton from '@mui/material/IconButton'
+import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
-import Button from "@mui/material/Button";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import Button from '@mui/material/Button'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 
-export default function CustomersList () {
+export default function CustomersList() {
 
   const columns = [
-      {
-         field: 'id', 
-         headerName: 'Cód.', 
-         width: 90 
-      },
-      {
-        field: 'name',
-        headerName: 'Nome',
-        width: 200
-      },
-      {
-        field: 'birth_date',
-        headerName: 'Data Nasc.',
-        width: 150,
-        valueGetter: (value, row) => {
-          if (value) {
-            const date = new Date(value)
-            return date.toLocaleDateString('pt-BR')
-          }
-          else return ''
+    { 
+      field: 'id', 
+      headerName: 'Cód.', 
+      width: 90 
+    },
+    {
+      field: 'name',
+      headerName: 'Nome',
+      width: 200
+    },
+    {
+      field: 'birth_date',
+      headerName: 'Data Nasc.',
+      width: 150,
+      valueGetter: (value, row) => {
+        if(value) {
+          const date = new Date(value)
+          return date.toLocaleDateString('pt-BR')
         }
-      },
-      {
-        field: 'municipality',
-        headerName: 'Município/UF',
-        type: 'number',
-        width: 200,
-        valueGetter: (value, row) => row.
-          municipality + '/' + row.state
-      },
-      {
-        field: 'phone',
-        headerName: 'Fone/Celular',
-        width: 160
-      },
-      {
-        field: 'email',
-        headerName: 'E-mail',
-        width: 200
-      },
-      {
-        field: '_actions',
-        headerName: 'Ações',
-        width: 150,
-        sortable: false,
-        renderCell: params => {
-          return <>
-            <Link to={'./' + params.id}>
-              <IconButton aria-label="editar">
-                <EditIcon />
-              </IconButton>
-            </Link>
-
-            <IconButton 
-              aria-label="excluir"
-              onClick={() => handleDeleteButtonClick(params.id)}
-            >
-              <DeleteForever color="error" />
-            </IconButton>
-          </>
-        }
+        else return ''
       }
-    ];
+    },
+    {
+      field: 'municipality',
+      headerName: 'Município/UF',
+      width: 200,
+      valueGetter: (value, row) => row.municipality + '/' + row.state
+    },
+    {
+      field: 'phone',
+      headerName: 'Fone/Celular',
+      width: 160
+    },
+    {
+      field: 'email',
+      headerName: 'E-mail',
+      width: 200
+    },
+    {
+      field: '_actions',
+      headerName: 'Ações',
+      width: 150,
+      sortable: false,
+      renderCell: params => {
+        return <>
+          <Link to={'./' + params.id}>
+            <IconButton aria-label="editar">
+              <EditIcon />
+            </IconButton>
+          </Link>
+
+          <IconButton 
+            aria-label="excluir"
+            onClick={() => handleDeleteButtonClick(params.id)}
+          >
+            <DeleteForeverIcon color="error" />
+          </IconButton>
+        </>
+      }
+    }
+  ];
 
   const [state, setState] = React.useState({
     customers: []
@@ -87,14 +85,14 @@ export default function CustomersList () {
 
   React.useEffect(() => {
     loadData()
-  }, []) // Vetor de dependências vzio, executa uma vez no mount
+  }, [])  // Vetor de dependências vazio, executa uma vez no mount
 
-  async function loadData(){
+  async function loadData() {
     feedbackWait(true)
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + '/customers'
-        )
+        import.meta.env.VITE_API_BASE + '/customers?by=name'
+      )
       const result = await response.json()
 
       setState({ ...state, customers: result })
@@ -108,20 +106,20 @@ export default function CustomersList () {
     }
   }
 
-  async function handleDeleteButtonClick(id){
-    if (await feedbackConfirm('Deseja realmente excluir este item?')){
+  async function handleDeleteButtonClick(id) {
+    if(await feedbackConfirm('Deseja realmente excluir este item?')) {
       feedbackWait(true)
       try {
-        // Envia requisição para exclusão
+        // Envia a requisição para exclusão
         await fetch(
-          import.meta.env.VITE_API_BASE + `/customers/${id}`, 
-          {method: 'DELETE'}
+          import.meta.env.VITE_API_BASE + `/customers/${id}`,
+          { method: 'DELETE' }
         )
 
         // Atualiza os dados do datagrid
         loadData()
 
-        feedbackNotify('Exlcusão efetuada com sucesso.')
+        feedbackNotify('Exclusão efetuada com sucesso.')
       }
       catch (error) {
         console.log(error)
@@ -133,45 +131,46 @@ export default function CustomersList () {
     }
   }
 
-    return (
-        <>
-            { /* gutterBottom coloca um espaçamento extra abaixo do componente */}
-            <Typography variant="h1" gutterBottom>
-                Listagem de clientes
-            </Typography>
+  return (
+    <>
+      { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
+      <Typography variant="h1" gutterBottom>
+        Listagem de clientes
+      </Typography>
 
-            <Box sx={{
-              display: 'flex',
-              justifyContent: 'right', // Alinhado à direita
-              mb: 2   // Margem inferior (margin-botton)
-            }}>
-              <Link to="./new">
-                <Button 
-                  variant="contained"
-                  size="large"
-                  color="secondary"
-                  startIcon={ <AddCircleIcon /> }
-                >
-                  Novo Cliente
-                </Button>
-              </Link>
-            </Box>
-            <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={customers}
-                    columns={columns}
-                    initialState={{
-                    pagination: {
-                        paginationModel: {
-                        pageSize: 5,
-                        },
-                    },
-                    }}
-                    pageSizeOptions={[5]}
-                    checkboxSelection
-                    disableRowSelectionOnClick
-                />
-            </Paper>
-        </>
-    )
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'right', // Alinhado à direita
+        mb: 2   // Margem inferior (margin-bottom)
+      }}>
+        <Link to="./new">
+          <Button 
+            variant="contained" 
+            size="large"
+            color="secondary"
+            startIcon={ <AddCircleIcon /> }
+          >
+            Novo cliente
+          </Button>
+        </Link>
+      </Box>
+
+      <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={customers}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
+          pageSizeOptions={[5]}
+          checkboxSelection
+          disableRowSelectionOnClick
+        />
+      </Paper>
+    </>
+  )
 }

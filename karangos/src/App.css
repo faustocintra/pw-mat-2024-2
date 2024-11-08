@@ -1,12 +1,13 @@
-/* oculta por padrão os botões de editar e excluir dos datagrids */
+/* Oculta por padrão os botões de editar e exclur dos datagrids */
 .MuiDataGrid-row button {
   visibility: hidden;
 }
 
-/* Reexibe os botões do datagrid caso o mouse esteja por sobre a linha */
+/* Reexibe os botões do datagrid caso o mouse esteja por sobre
+   a linha */
 .MuiDataGrid-row:hover button {
   visibility: visible;
-} 
+}
 
 .form-fields form {
   margin: 0 auto;
