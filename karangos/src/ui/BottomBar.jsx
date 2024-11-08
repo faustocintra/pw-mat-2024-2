@@ -30,7 +30,7 @@ export default function BottomBar() {
             fontSize="small" 
             sx={{ mb: -0.5 }} 
           /> 
-          por <a href="mailto:professor@faustocintra.com.br">Prof. Fausto Cintra</a>
+          por <a href="mailto:leonardo.mazza@fatec.sp.gov.com.br">Leonardo Henrique Mazza</a>
       </Typography>
     </Toolbar>
   )
