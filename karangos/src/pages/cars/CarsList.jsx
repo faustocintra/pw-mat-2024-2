@@ -20,33 +20,46 @@ export default function CarsList() {
       width: 90 
     },
     {
-      field: 'brand',
-      headerName: 'marca',
-      width: 200
-    },
-    {
-      field: 'model',
-      headerName: 'modelo',
-      width: 200
+      field: 'brand_model',
+      headerName: 'Marca e modelo',
+      width: 200,
+      renderCell: params => `${params.row.brand} ${params.row.model}`
+      
     },
     {
       field: 'color',
-      headerName: 'cor',
+      headerName: 'Cor',
       width: 200
     },
     {
       field: 'year_manufacture',
-      headerName: 'ano de fabricação',
+      headerName: 'Ano de fabricação',
       width: 200
     },
     {
       field: 'imported',
-      headerName: 'importado',
-      width: 200
+      headerName: 'Importado',
+      width: 200,
+
+      renderCell: params => (params.value == 1 ? 'Sim' : 'Não') 
     },
     {
       field: 'plates',
-      headerName: 'placas',
+      headerName: 'Placas',
+      width: 200
+    },
+    {
+      field: 'selling_price',
+      headerName: 'Preço de venda',
+      width: 200,
+
+      renderCell: params => (params.value.toLocaleString(
+        'pt-BR', {style: 'currency', currency: 'BRL'}
+        ))
+    },
+    {
+      field: 'selling_date',
+      headerName: 'Data de venda',
       width: 200
     },
     
@@ -89,7 +102,7 @@ export default function CarsList() {
     feedbackWait(true)
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + '/cars?by=name'
+        import.meta.env.VITE_API_BASE + '/cars?by=brand'
       )
       const result = await response.json()
 

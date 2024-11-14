@@ -11,6 +11,7 @@ import Button from '@mui/material/Button'
 import InputMask from 'react-input-mask'
 import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import { useNavigate, useParams } from 'react-router-dom'
+import { colors } from '@mui/material'
 
 export default function CarsForm() {
 
@@ -175,7 +176,7 @@ export default function CarsForm() {
           <TextField
             variant="outlined" 
             name="brand"
-            label="marca"
+            label="Marca"
             fullWidth
             required
             autoFocus
@@ -185,10 +186,9 @@ export default function CarsForm() {
           <TextField
             variant="outlined" 
             name="model"
-            label="modelo"
+            label="Modelo"
             fullWidth
             required
-            autoFocus
             value={car.model}
             onChange={handleFieldChange}
           />
@@ -198,38 +198,53 @@ export default function CarsForm() {
             label="cor"
             fullWidth
             required
-            autoFocus
-            value={car.color}
+            value={car.cor}
+            select
             onChange={handleFieldChange}
-          />
+          >
+           {colors}
+          </TextField>
           <TextField
             variant="outlined" 
             name="year_manufacture"
-            label="ano de fabricação"
+            label="Ano de fabricação"
             fullWidth
             required
-            autoFocus
             value={car.year_manufacture}
             onChange={handleFieldChange}
           />
           <TextField
             variant="outlined" 
             name="imported"
-            label="importado"
+            label="Importado"
             fullWidth
             required
-            autoFocus
             value={car.imported}
             onChange={handleFieldChange}
           />
           <TextField
             variant="outlined" 
             name="plates"
-            label="placas"
+            label="Placas"
             fullWidth
             required
-            autoFocus
             value={car.plates}
+            onChange={handleFieldChange}
+          />
+          <TextField
+            variant="outlined" 
+            name="selling_price"
+            label="Preço de venda"
+            fullWidth
+            value={car.selling_price}
+            onChange={handleFieldChange}
+          />
+          <TextField
+            variant="outlined" 
+            name="selling_date"
+            label="Data de venda"
+            fullWidth
+            value={car.selling_date}
             onChange={handleFieldChange}
           />
 
