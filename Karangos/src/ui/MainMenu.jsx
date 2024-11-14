@@ -68,7 +68,7 @@ export default function MainMenu() {
           component={Link}
           to="/cars"
         >
-          Listagem de veículos
+          Listagem de carros
         </MenuItem>
 
         <MenuItem 
@@ -76,7 +76,7 @@ export default function MainMenu() {
           component={Link}
           to="/cars/new"
         >
-          Cadastro de veículos
+          Cadastro de carros
         </MenuItem>
       </Menu>
     </div>

@@ -14,88 +14,116 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 export default function CarsList() {
 
   const columns = [
-    { 
-      field: 'id', 
-      headerName: 'Cód.', 
-      width: 90 
+    {
+      field: 'id',
+      headerName: 'Cód.',
+      type: 'number',
+      width: 80,
     },
     {
-      field: 'name',
-      headerName: 'Nome',
-      width: 200
-    },
-    {
-      field: 'birth_date',
-      headerName: 'Data Nasc.',
-      width: 150,
-      valueGetter: (value, row) => {
-        if(value) {
-          const date = new Date(value)
-          return date.toLocaleDateString('pt-BR')
-        }
-        else return ''
-      }
-    },
-    {
-      field: 'municipality',
-      headerName: 'Município/UF',
+      field: 'brand',
+      headerName: 'Marca/Modelo',
       width: 200,
-      valueGetter: (value, row) => row.municipality + '/' + row.state
+      renderCell: (params) => `${params.row.brand}/${params.row.model}`,
     },
     {
-      field: 'phone',
-      headerName: 'Fone/Celular',
-      width: 160
-    },
-    {
-      field: 'email',
-      headerName: 'E-mail',
-      width: 200
-    },
-    {
-      field: '_actions',
-      headerName: 'Ações',
+      field: 'color',
+      headerName: 'Cor do carro',
       width: 150,
-      sortable: false,
-      renderCell: params => {
-        return <>
-          <Link to={'./' + params.id}>
-            <IconButton aria-label="editar">
-              <EditIcon />
-            </IconButton>
-          </Link>
+    },
 
-          <IconButton 
-            aria-label="excluir"
-            onClick={() => handleDeleteButtonClick(params.id)}
-          >
-            <DeleteForeverIcon color="error" />
+    {
+      field: 'year_manufacture',
+      headerName: 'Ano de fabricação',
+      width: 150,
+    },
+    {
+      field: 'imported',
+      headerName: 'Importado?',
+      width: 100,
+      renderCell: (params) => (params.row.imported ? 'SIM' : ''),
+    },
+    {
+      field: 'plates',
+      headerName: 'Placa',
+      width: 100,
+    },
+    {
+      field: 'selling_date',
+      headerName: 'Data de venda',
+      width: 120,
+      renderCell: (params) =>
+        params.row.selling_date ? new Date(params.row.selling_date).toLocaleDateString('pt-BR') : '',
+    },
+    {
+      field: 'selling_price',
+      headerName: 'Preço de venda',
+      width: 120,
+      renderCell: (params) =>
+        params.row.selling_price?.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+    },
+    {
+      field: 'customer',
+      headerName: 'Cliente',
+      width: 250,
+      renderCell: (value) => value.row?.customer?.name
+    },
+    {
+      field: '_edit',
+      headerName: 'Editar',
+      headerAlign: 'center',
+      align: 'center',
+      sortable: 'false',
+      width: 90,
+      renderCell: (params) => (
+        <Link to={`./${params.id}`}>
+          <IconButton aria-label='Editar'>
+            <EditIcon />
           </IconButton>
-        </>
-      }
-    }
-  ];
+        </Link>
+      ),
+    },
+    {
+      field: '_delete',
+      headerName: 'Excluir',
+      headerAlign: 'center',
+      align: 'center',
+      sortable: 'false',
+      width: 90,
+      renderCell: (params) => (
+        <IconButton
+          aria-label='Excluir'
+          onClick={() => handleDeleteButtonClick(params.id)}
+        >
+          <DeleteForeverIcon color='error' />
+        </IconButton>
+      ),
+    },
+  ]
 
   const [state, setState] = React.useState({
-    cars: []
+    Cars: []
   })
   const {
-    cars
+    Cars
   } = state
 
   React.useEffect(() => {
     loadData()
-  }, [])  // Vetor de dependências vazio, executa uma vez no mount
+  }, [])  
 
   async function loadData() {
     feedbackWait(true)
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + '/cars?by=name'
+        import.meta.env.VITE_API_BASE + '/cars'
       )
       const result = await response.json()
 
-      setState({ ...state, cars: result })
+      setState({ ...state, Cars: result })
     }
     catch (error) {
       console.log(error)
@@ -112,7 +140,7 @@ export default function CarsList() {
       try {
         // Envia a requisição para exclusão
         await fetch(
-          import.meta.env.VITE_API_BASE + `/cars/${id}`,
+          `${import.meta.env.VITE_API_BASE}/cars/${id}`,
           { method: 'DELETE' }
         )
 
@@ -135,7 +163,7 @@ export default function CarsList() {
     <>
       { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
       <Typography variant="h1" gutterBottom>
-        Listagem de clientes
+        Listagem de carros
       </Typography>
 
       <Box sx={{
@@ -150,14 +178,14 @@ export default function CarsList() {
             color="secondary"
             startIcon={ <AddCircleIcon /> }
           >
-            Novo cliente
+            Novo carro
           </Button>
         </Link>
       </Box>
 
       <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={cars}
+          rows={Cars}
           columns={columns}
           initialState={{
             pagination: {
