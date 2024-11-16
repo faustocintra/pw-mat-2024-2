@@ -23,6 +23,7 @@ export default function CarsList() {
       field: 'brand',
       headerName: 'Marca/Modelo',
       width: 200,
+      // Exibe a marca e modelo juntos
       renderCell: (params) => `${params.row.brand} / ${params.row.model}`,
     },
     {
@@ -39,7 +40,7 @@ export default function CarsList() {
       field: 'imported',
       headerName: 'É Importado?',
       width: 200,
-      renderCell: (params) => (params.row.imported ? 'SIM' : ''),
+      renderCell: (params) => (params.row.imported ? 'SIM' : ''), // Mostra SIM se o carro for importado ou uma string vazia caso não for
     },
     {
       field: 'plates',
@@ -50,6 +51,7 @@ export default function CarsList() {
       field: 'selling_price',
       headerName: 'Preço de venda',
       width: 200,
+      // Formata o preço de venda, para o formato do Brasil
       renderCell: (params) => params.row.selling_price?.toLocaleString('pt-BR', {
          style: 'currency',
           currency: 'BRL',
@@ -59,6 +61,7 @@ export default function CarsList() {
       field: 'selling_date',
       headerName: 'Data de venda',
       width: 200,
+      // Formata a data de venda
       valueFormatter : (value) => 
         value ? new Date(value).toLocaleDateString('pt-BR') : '',
     },
@@ -69,12 +72,14 @@ export default function CarsList() {
       sortable: false,
       renderCell: (params) => {
         return <>
+        {/* Link para a página de edição do carro */}
           <Link to={'./' + params.id}>
             <IconButton aria-label="editar">
               <EditIcon />
             </IconButton>
           </Link>
 
+          {/* Botão para excluir o carro */}
           <IconButton 
             aria-label="excluir"
             onClick={() => handleDeleteButtonClick(params.id)}
@@ -97,6 +102,7 @@ export default function CarsList() {
     loadData()
   }, [])  // Vetor de dependências vazio, executa uma vez no mount
 
+  // Função para carregar os dados da API
   async function loadData() {
     feedbackWait(true)
     try {
@@ -116,6 +122,7 @@ export default function CarsList() {
     }
   }
 
+  // Função para excluir um carro
   async function handleDeleteButtonClick(id) {
     if(await feedbackConfirm('Deseja realmente excluir este item?')) {
       feedbackWait(true)

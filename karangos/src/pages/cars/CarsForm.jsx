@@ -18,6 +18,7 @@ import TextInput from '@mui/material/TextField'
 
 export default function CarsForm() {
 
+  // Lista de cores dos carros em ordem alfabética disponíveis para o usúario escolher
   const colors = [
     { value: 'AMARELO', label: 'AMARELO' },
     { value: 'AZUL', label: 'AZUL' },
@@ -34,19 +35,22 @@ export default function CarsForm() {
     { value: 'VERMELHO', label: 'VERMELHO' },
   ]
 
+  // Máscara para o formato da placa do carro
   const platesMaskFormatChars = {
     '9': '[0-9]',    // somente dígitos
     '$': '[0-9A-J]',  // dígito de 0 a 9 ou uma letra de A a J.
     'A': '[A-Z]',
   }
 
- 
-  const years = [] // cria vetor
+  // Cria um vetor com os anos disponíveis, do ano atual até 1951
+  const years = [] 
   // Date() pega a data atual. ex: 8 de novembro de 2024. O getFullYear() pega só o ano, ex: 2024
   for (let year = new Date().getFullYear(); year >= 1951; year--) {   
     years.push(year) // add no vetor years
   }
 
+  /* Defini os valores padrão do formulário que são uma string vazia. selling_price e selling_date 
+  são null, porque são campos não obrigatórios. e imported é false porque é um bolleano */
   const formDefaults = {
     brand: '',
     model: '',
@@ -70,14 +74,13 @@ export default function CarsForm() {
     formModified
   } = state
 
-  // Se estivermos editando um carro, precisamos carregar
-  // seus dados assim que o componente for carregado
+  /*Se estivermos editando um carro, precisamos carregar seus dados assim que o componente for carregado */
   React.useEffect(() => {
-    // Sabemos que estamos editando (e não cadastrando um novo)
-    // carro quando a rota ativa contiver um parâmetro id
+    /*Sabemos que estamos editando (e não cadastrando um novo) carro quando a rota ativa contiver um parâmetro id */
     if (params.id) loadData()
   }, [])
 
+  // Função para carregar os dados de um carro existente da API
   async function loadData() {
     feedbackWait(true)
     try {
@@ -86,8 +89,7 @@ export default function CarsForm() {
       )
       const result = await response.json()
       
-      // Converte o formato da data armazenado no banco de dados
-      // para o formato reconhecido pelo componente DatePicker
+      /*Converte o formato da data armazenado no banco de dados para o formato reconhecido pelo componente DatePicker */
       if(result.selling_date) result.selling_date = parseISO(result.selling_date)
       setState({ ...state, cars: result, formModified: false })
     }
@@ -100,21 +102,17 @@ export default function CarsForm() {
     }
   }
 
-  /*
-    Preenche o campo do objeto cars conforme
-    o campo correspondente do formulário for
-    modificado
-  */
+  /* Preenche o campo do objeto cars conforme o campo correspondente do formulário for modificado */
   function handleFieldChange(event) {
-    // Tira uma cópia da variável de estado customer
+    // Tira uma cópia da variável de estado cars
     const carsCopy = { ...cars }
     // Altera em carsCopy apenas o campo da vez
     carsCopy[event.target.name] = event.target.value
-    // Atualiza a variável de estado, substituindo o objeto
-    // cars por sua cópia atualizada
+    // Atualiza a variável de estado, substituindo o objeto cars por sua cópia atualizada
     setState({ ...state, cars: carsCopy, formModified: true })
   }
 
+  // Função para salvar os dados do formulário
   async function handleFormSubmit(event) {
     event.preventDefault()      // Impede o recarregamento da página
     feedbackWait(true)
@@ -126,9 +124,9 @@ export default function CarsForm() {
         body: JSON.stringify(cars)
       }
 
-      // Infoca o fetch para enviar os dados ao back-end.
-      // Se houver parâmetro na rota, significa que estamos alterando
-      // um registro existente e, portanto, o verbo precisa ser PUT
+      /* Infoca o fetch para enviar os dados ao back-end.
+      Se houver parâmetro na rota, significa que estamos alterando
+      um registro existente e, portanto, o verbo precisa ser PUT */
       if(params.id) {
         reqOptions.method = 'PUT'
         await fetch(
@@ -144,6 +142,7 @@ export default function CarsForm() {
         )
       }
 
+      // Exibe uma mensagem de sucesso e vai para a página de listagem dos carros
       feedbackNotify('Item salvo com sucesso.', 'success', 4000, () => {
         // Retorna para a página de listagem
         navigate('..', { relative: 'path', replace: true })
@@ -159,6 +158,7 @@ export default function CarsForm() {
     }
   }
 
+  // Função para voltar para a página anterior
   async function handleBackButtonClick() {
     if(
       formModified && 
@@ -209,6 +209,7 @@ export default function CarsForm() {
             value={cars.color}
             onChange={handleFieldChange}
           > 
+          {/* Lista de cores para selecionar */}
           {colors.map(s => 
                 <MenuItem key={s.value} value={s.value}>
                   {s.label}
@@ -225,6 +226,7 @@ export default function CarsForm() {
             value={cars.year_manufacture}
             onChange={handleFieldChange}
           >
+            {/* Lista de anos para selecionar */}
             {years.map(y => 
                 <MenuItem key={y} value={y}>
                   {y}
@@ -232,6 +234,7 @@ export default function CarsForm() {
               )}
           </TextField>
 
+          {/* Checkbox para marcar se o carro é importado */}
           <div className="MuiFormControl-root">
             <FormControlLabel
               control={
@@ -246,7 +249,7 @@ export default function CarsForm() {
               label='É importado?'
             />
           </div>    
-
+          {/* Campo para placa do carro com a máscara*/}
           <InputMask
             mask='AAA-9$99'
             value={cars.plates}
@@ -269,6 +272,7 @@ export default function CarsForm() {
             label="Preço de venda"
             fullWidth
             required
+            type='number'
             value={cars.selling_price}
             onChange={handleFieldChange}
           />
