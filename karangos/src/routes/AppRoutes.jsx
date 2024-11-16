@@ -18,7 +18,6 @@ export default function AppRoutes(){
             <Route path="/cars" element = { <CarsList />} />
             <Route path="/cars/new" element = { <CarsForm />} />
             <Route path="/cars/:id" element = { <CarsForm />} />
-
         </Routes>
     )
 }
