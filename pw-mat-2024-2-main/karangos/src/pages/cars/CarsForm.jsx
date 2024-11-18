@@ -11,9 +11,11 @@ import Button from '@mui/material/Button'
 import InputMask from 'react-input-mask'
 import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import { useNavigate, useParams } from 'react-router-dom'
+import CheckBox from '@mui/material/Checkbox'
 
 export default function CarsForm() {
 
+  // Lista de cores disponíveis para o carro
   const colors = [
     { value: 'AMARELO', label: 'AMARELO' },
     { value: 'AZUL', label: 'AZUL' },
@@ -30,28 +32,30 @@ export default function CarsForm() {
     { value: 'VERMELHO', label: 'VERMELHO' },
   ]
 
-  const phoneMaskFormatChars = {
-    '9': '[0-9]',    // somente dígitos
-    '%': '[\s0-9]'   // dígitos ou espaço em branco (\s)
+  // Máscara para o campo de placa do carro
+  const plateMaskFormat = {
+    9: '[0-9]', // somente dígitos
+    $: '[0-9A-J]', // dígito de 0 a 9 ou uma letra de A a J.
+    A: '[A-Z]', // letra maiúscula
   }
 
+  // Valores iniciais do formulário (como um template)
   const formDefaults = {
-    name: '',
-    ident_document: '',
-    birth_date: null,
-    street_name: '',
-    house_number: '',
-    complements: '',
-    district: '',
-    municipality: '',
-    state: '',
-    phone: '',
-    email: ''
+    brand: '',
+    model: '',
+    color: '',
+    year_manufacture: '',
+    imported: 0,
+    plates: '',
+    selling_price: '',
+    selling_date: null
   }
 
+  // Navegação e parâmetros de URL
   const navigate = useNavigate()
   const params = useParams()
 
+  // Estado do formulário, com dados do carro e se houve modificação
   const [state, setState] = React.useState({
     Car: { ...formDefaults },
     formModified: false
@@ -61,14 +65,20 @@ export default function CarsForm() {
     formModified
   } = state
 
-  // Se estivermos editando um carro, precisamos carregar
-  // seus dados assim que o componente for carregado
+  const currentYear = new Date().getFullYear()
+  const minYear = 1951
+  const years = []
+  // Preenche a lista de anos de fabricação disponíveis
+  for (let year = currentYear; year >= minYear; year--) {
+    years.push(year)
+  }
+
+  // Carrega os dados do carro se estiver editando (com base no parâmetro id da URL)
   React.useEffect(() => {
-    // Sabemos que estamos editando (e não cadastrando um novo)
-    // carro quando a rota ativa contiver um parâmetro id
     if (params.id) loadData()
   }, [])
 
+  // Função para carregar os dados do carro quando estiver editando
   async function loadData() {
     feedbackWait(true)
     try {
@@ -76,10 +86,6 @@ export default function CarsForm() {
         import.meta.env.VITE_API_BASE + '/Cars/' + params.id 
       )
       const result = await response.json()
-      
-      // Converte o formato da data armazenado no banco de dados
-      // para o formato reconhecido pelo componente DatePicker
-      if(result.birth_date) result.birth_date = parseISO(result.birth_date)
 
       setState({ ...params, Car: result })
     }
@@ -92,49 +98,35 @@ export default function CarsForm() {
     }
   }
 
-  /*
-    Preenche o campo do objeto Car conforme
-    o campo correspondente do formulário for
-    modificado
-  */
+  // Função chamada ao alterar um campo do formulário
   function handleFieldChange(event) {
-    // Vamos observar no console as informações que chegam
-    // à função handleFieldChange
     console.log({ name: event.target.name, value: event.target.value })
-
-    // Tira uma cópia da variável de estado Car
+    
     const CarCopy = { ...Car }
-    // Altera em CarCopy apenas o campo da vez
     CarCopy[event.target.name] = event.target.value
-    // Atualiza a variável de estado, substituindo o objeto
-    // Car por sua cópia atualizada
     setState({ ...state, Car: CarCopy, formModified: true })
   }
 
+  // Função para submeter o formulário (criar ou editar o carro)
   async function handleFormSubmit(event) {
-    event.preventDefault()      // Impede o recarregamento da página
-
+    event.preventDefault()  // Impede o recarregamento da página
+    
     feedbackWait(true)
     try {
-      // Prepara as opções para o fetch
       const reqOptions = {
-        method: 'POST',
+        method: 'POST',  // Define o verbo HTTP para criar um novo registro
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(Car)
       }
 
-      // Infoca o fetch para enviar os dados ao back-end.
-      // Se houver parâmetro na rota, significa que estamos alterando
-      // um registro existente e, portanto, o verbo precisa ser PUT
+      // Se estivermos editando (parametro id presente), muda o verbo para PUT
       if(params.id) {
         reqOptions.method = 'PUT'
         await fetch(
           import.meta.env.VITE_API_BASE + '/Cars/' + params.id,
           reqOptions
         )
-      }
-      // Senão, envia com o método POST para criar um novo registro
-      else {
+      } else {
         await fetch(
           import.meta.env.VITE_API_BASE + '/Cars',
           reqOptions
@@ -142,8 +134,7 @@ export default function CarsForm() {
       }
 
       feedbackNotify('Item salvo com sucesso.', 'success', 4000, () => {
-        // Retorna para a página de listagem
-        navigate('..', { relative: 'path', replace: true })
+        navigate('..', { relative: 'path', replace: true })  // Navega de volta para a lista
       })
 
     }
@@ -156,44 +147,75 @@ export default function CarsForm() {
     }
   }
 
+  // Função para alterar o estado de um checkbox (ex: "importado")
+  async function handleCheckBoxChange(event) {
+    const { name, checked } = event.target
+    setState({
+       ...state,
+       Car: { ...Car, [name]: checked },  // Atualiza o estado com o valor do checkbox
+       formModified: true
+     })
+  }   
+
+  // Função para voltar à página anterior, com confirmação se houver alterações não salvas
   async function handleBackButtonClick() {
     if(
       formModified && 
       ! await feedbackConfirm('Há informações não salvas. Deseja realmente voltar?')
-    ) return // Sai da função sem fazer nada
+    ) return  // Sai sem fazer nada se o usuário cancelar
 
-    // Aqui o usuário respondeu que quer voltar e perder os dados
-    navigate('..', { relative: 'path', 'replace': true })
+    navigate('..', { relative: 'path', 'replace': true })  // Navega para a página anterior
   }
 
   return (
     <>
-      { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
       <Typography variant="h1" gutterBottom>
         { params.id ? `Editar carro #${params.id}` : 'Cadastrar novo carro' }
       </Typography>
 
       <Box className="form-fields">
         <form onSubmit={handleFormSubmit}>
-        <TextField
+
+          {/* Campos de entrada para Marca e Modelo */}
+          <TextField
+            variant="filled"
+            name="brand"
+            label="Marca"
+            fullWidth
+            required
+            value={Car.brand}
+            onChange={handleFieldChange}
+          />
+
+          <TextField
+            variant="filled"
+            name="model"
+            label="Modelo"
+            fullWidth
+            required
+            value={Car.model}
+            onChange={handleFieldChange}
+          />
+
+          {/* Campo para selecionar a cor do carro */}
+          <TextField
             variant="filled" 
             name="color"
-            label="color" 
+            label="Cor" 
             fullWidth
             required
             value={Car.color}
             select
             onChange={handleFieldChange}
           >
-            {
-              colors.map(s => 
-                <MenuItem key={s.value} value={s.value}>
-                  {s.label}
-                </MenuItem>
-              )
-            }
+            {colors.map(s => 
+              <MenuItem key={s.value} value={s.value}>
+                {s.label}
+              </MenuItem>
+            )}
           </TextField>
 
+          {/* Campo para selecionar o ano de fabricação */}
           <TextField
             name='year_manufacture'
             label='Ano de fabricação'
@@ -210,9 +232,106 @@ export default function CarsForm() {
               </MenuItem>
             ))}
           </TextField>
+
+          {/* Checkbox para indicar se o carro é importado */}
+          <div className="MuiFormControl-root">
+            <CheckBox
+              name='imported'
+              checked={Car.imported}
+              onChange={handleCheckBoxChange}
+              color='primary'
+            />
+            Importado
+          </div>
+
+          {/* Campo de entrada para a placa do carro com máscara */}
+          <InputMask
+            formatChars={plateMaskFormat}
+            mask="AAA-9$99"
+            value={Car.plates}
+            maskChar=" "
+            onChange={handleFieldChange}
+          >
+            { () => 
+              <TextField
+                variant="filled" 
+                name="plates"
+                label="Placa"
+                fullWidth
+                required
+              />
+            }
+          </InputMask>
+
+          {/* Campo para inserir o preço de venda */}
+          <TextField
+            variant="filled"
+            name="selling_price"
+            label="Preço de venda"
+            fullWidth
+            required
+            value={Car.selling_price}
+            onChange={(e) => {
+              const value = e.target.value.replace(/[^\d]/g, '')
+              handleFieldChange({ target: { name: 'selling_price', value } })
+            }}
+          />
+
+          {/* Campo para selecionar a data de venda */}
+          <LocalizationProvider 
+            dateAdapter={AdapterDateFns}
+            adapterLocale={ptBR}
+          >
+            <DatePicker
+              label="Data de venda"
+              value={Car.selling_date}
+              slotProps={{
+                textField: {
+                  variant: 'filled',
+                  fullWidth: true
+                }
+              }}
+              onChange={ date => {
+                const event = { target: { name: 'selling_date', value: date } }
+                handleFieldChange(event)
+              }}
+            />
+          </LocalizationProvider>
+
+          {/* Botões de Salvar e Voltar */}
+          <Box sx={{ 
+            display: 'flex',
+            justifyContent: 'space-around',
+            width: '100%'
+          }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              type="submit"
+            >
+              Salvar
+            </Button>
+
+            <Button
+              variant="outlined"
+              onClick={handleBackButtonClick}
+            >
+              Voltar
+            </Button>
+          </Box>
+
+          {/* Exibição dos dados do carro */}
+          <Box sx={{
+            fontFamily: 'monospace',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100vw'
+          }}>
+            {JSON.stringify(Car, null, ' ')}
+          </Box>
+
         </form>
       </Box>
-      
     </>
   )
 }
