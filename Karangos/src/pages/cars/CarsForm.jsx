@@ -36,9 +36,9 @@ export default function CarsForm() {
 
   const colorOptions = ["Azul", "Branco", "Cinza", "Preto", "Prata", "Verde", "Vermelho"].sort()
   
-  const currentYear = new Date().getFullYear()
-  const yearOptions = Array.from({ length: currentYear - 1951 + 1 }, (_, i) => currentYear - i)
-
+  const currentYear = new Date().getFullYear(); 
+  const yearOptions = Array.from({ length: currentYear - 1950 }, (_, i) => 1951 + i); 
+  
   useEffect(() => {
     if (params.id) loadData()
   }, [])
@@ -166,13 +166,12 @@ export default function CarsForm() {
           </div>
 
           <InputMask
-            mask="aaa-9A99"
+            mask="AAA-9A99"
             value={car.plates}
             onChange={handleFieldChange}
             formatChars={{
-              'a': '[A-Za-z]', 
-              '9': '[0-9]',     
-              'A': '[A-J0-9]'  
+              'A': '[A-J]',  // Aceita apenas letras maiúsculas de A a J
+              '9': '[0-9]'   // Aceita apenas números
             }}
           >
             {() => (
@@ -185,6 +184,7 @@ export default function CarsForm() {
               />
             )}
           </InputMask>
+
 
           <TextField
             variant="outlined" 
@@ -200,9 +200,11 @@ export default function CarsForm() {
               label="Data de venda"
               value={car.selling_date}
               onChange={date => handleFieldChange({ target: { name: 'selling_date', value: date } })}
-              slotProps={{ textField: { variant: 'outlined', fullWidth: true } }}
+              slotProps={{ textField: { variant: 'outlined', fullWidth: true } }} 
+              minDate={new Date(1951, 0, 1)} // Define o limite mínimo para o ano de 1951
             />
           </LocalizationProvider>
+
 
           <Box sx={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
             <Button variant="contained" color="secondary" type="submit">Salvar</Button>
