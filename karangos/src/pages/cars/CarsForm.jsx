@@ -20,24 +20,21 @@ export default function CarsForm() {
     { value: 'azul', label: 'azul' },
     { value: 'bege', label: 'bege' },
     { value: 'lilás', label: 'lilás' },
-    { value: 'oliva', label: 'oliva' }
+    { value: 'oliva', label: 'oliva' },
     { value: 'verde', label: 'verde' },
     { value: 'vermelho', label: 'vermelho' },
     { value: 'roxo', label: 'roxo' },
 
   ]
 
-  const phoneMaskFormatChars = {
-    '9': '[0-9]',    // somente dígitos
-    '$': '[\s0-9]'   // deve aceitar uma letra de A a J ou um dígito de 0 a 9.
-  }
 
+  const currentYear = new Date().getFullYear();
   const formDefaults = {
     brand: '',
     model: '',
     color: '',
     year_manufacture: null,
-    imported: '',
+    imported: 0,
     plates: '',
     selling_price: '',
     selling_date: '',
@@ -50,10 +47,8 @@ export default function CarsForm() {
     car: { ...formDefaults },
     formModified: false
   })
-  const {
-    car,
-    formModified
-  } = state
+
+  const { car, formModified } = state
 
   // Se estivermos editando um cliente, precisamos carregar
   // seus dados assim que o componente for carregado
@@ -106,7 +101,8 @@ export default function CarsForm() {
   }
 
   async function handleFormSubmit(event) {
-    event.preventDefault()      // Impede o recarregamento da página
+    // Impede o recarregamento da página
+    event.preventDefault()    
 
     feedbackWait(true)
     try {
@@ -171,7 +167,7 @@ export default function CarsForm() {
   selling_date: '',
   */
 
-  const currentYear = new Date().getFullYear();
+
 
   return (
     <>
@@ -232,144 +228,88 @@ export default function CarsForm() {
           </LocalizationProvider>
 
 
+          {/*COR*/}
+          <TextField
+            variant="outlined"
+            name="color"
+            label="Cor"
+            fullWidth
+            required
+            value={car.color}
+            select
+            onChange={handleFieldChange}
+          >
+            {listacores.sort((a, b) => a.label.localeCompare(b.label)).map(color => (
+              <MenuItem key={color.value} value={color.value}>
+                {color.label}
+              </MenuItem>
+            ))}
+          </TextField>
+
+
+
+
+          {/*CHECKBOX*/}
+          <div className="MuiFormControl-root">
+            <label>
+              <input
+                type="checkbox"
+                name="imported"
+                checked={car.imported === 1}
+                onChange={(event) => {
+                  const eventFake = { target: { name: 'imported', value: event.target.checked ? 1 : 0 } };
+                  handleFieldChange(eventFake);
+                }}
+              />
+              Importado
+            </label>
+          </div>
+
+
+
+
 
           {/*PLACA*/}
           <InputMask
             mask="aaa-9$99"
-            value={car.ident_document}
+            formatChars={{
+              a: '[A-Za-z]',
+              9: '[0-9]',
+              $: '[A-J0-9]'
+            }}
+            value={car.plates}
             onChange={handleFieldChange}
           >
-            {() =>
+            {() => (
               <TextField
                 variant="outlined"
                 name="plates"
-                label="Placa: "
+                label="Placa"
                 fullWidth
                 required
               />
-            }
+            )}
           </InputMask>
 
 
 
-
-
-
-          {/*
-            O evento onChange do componente DatePicker não passa
-            o parâmetro event, como no TextField, e sim a própria
-            data que foi modificada. Por isso, ao chamar a função
-            handleFieldChange no DatePicker, precisamos criar um
-            parâmetro event "fake" com as informações necessárias
-          */}
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={ptBR}
-          >
-            <DatePicker
-              label="Data de nascimento"
-              value={car.birth_date}
-              slotProps={{
-                textField: {
-                  variant: 'outlined',
-                  fullWidth: true
-                }
-              }}
-              onChange={date => {
-                const event = { target: { name: 'birth_date', value: date } }
-                handleFieldChange(event)
-              }}
-            />
-          </LocalizationProvider>
-
-
+          {/*PREÇO DE VENDA*/}
           <TextField
             variant="outlined"
-            name="house_number"
-            label="nº"
+            name="selling_price"
+            label="Preço de Venda"
             fullWidth
-            required
-            value={car.house_number}
+            type="number"
+            value={car.selling_price}
             onChange={handleFieldChange}
           />
 
-          <TextField
-            variant="outlined"
-            name="complements"
-            label="Complemento"
-            fullWidth
-            /* required */
-            value={car.complements}
-            onChange={handleFieldChange}
-          />
 
-          <TextField
-            variant="outlined"
-            name="district"
-            label="Bairro"
-            fullWidth
-            required
-            value={car.district}
-            onChange={handleFieldChange}
-          />
 
-          <TextField
-            variant="outlined"
-            name="municipality"
-            label="Município"
-            fullWidth
-            required
-            value={car.municipality}
-            onChange={handleFieldChange}
-          />
 
-          <TextField
-            variant="outlined"
-            name="state"
-            label="UF"
-            fullWidth
-            required
-            value={car.state}
-            select
-            onChange={handleFieldChange}
-          >
-            {
-              brazilianStates.map(s =>
-                <MenuItem key={s.value} value={s.value}>
-                  {s.label}
-                </MenuItem>
-              )
-            }
-          </TextField>
 
-          <InputMask
-            formatChars={phoneMaskFormatChars}
-            mask="(99) %9999-9999"
-            value={car.phone}
-            maskChar=" "
-            onChange={handleFieldChange}
-          >
-            {() =>
-              <TextField
-                variant="outlined"
-                name="phone"
-                label="Telefone/Celular"
-                fullWidth
-                required
-              />
-            }
-          </InputMask>
 
-          <TextField
-            variant="outlined"
-            name="email"
-            label="E-mail"
-            fullWidth
-            required
-            value={car.email}
-            onChange={handleFieldChange}
-          />
-
+          {/*BOTÕES*/}
           <Box sx={{
             display: 'flex',
             justifyContent: 'space-around',

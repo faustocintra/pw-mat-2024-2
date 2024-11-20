@@ -56,6 +56,8 @@ export default function CarsList() {
           ? params.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
           : ''
     },
+
+    
     {
       field: '_actions',
       headerName: 'Ações',
