@@ -58,7 +58,7 @@ export default function CarsForm() {
     year_manufacture: '',
     imported: false,
     plates: '',
-    selling_price: null,
+    selling_price: '',
     selling_date: null
   }
 
@@ -173,7 +173,7 @@ export default function CarsForm() {
     <>
       { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
       <Typography variant="h1" gutterBottom>
-        { params.id ? `Editar carro #${params.id}` : 'Cadastrar novo carro' }
+        {params.id ? `Editar veículo #${params.id}` : 'Cadastrar novo veículo'}
       </Typography>
 
       <Box className="form-fields">

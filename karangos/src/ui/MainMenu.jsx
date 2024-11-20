@@ -62,8 +62,7 @@ export default function MainMenu() {
           >
             Cadastro de clientes
         </MenuItem>
-
-        
+ 
         <MenuItem 
           onClick={handleClose}
           component={Link}

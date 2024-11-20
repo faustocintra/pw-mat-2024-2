@@ -135,7 +135,6 @@ export default function CarsList() {
 
         // Atualiza os dados do datagrid
         loadData()
-
         feedbackNotify('Exclusão efetuada com sucesso.')
       }
       catch (error) {
@@ -152,7 +151,7 @@ export default function CarsList() {
     <>
       { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
       <Typography variant="h1" gutterBottom>
-        Listagem de Carros
+        Listagem de veículos
       </Typography>
 
       <Box sx={{
@@ -167,7 +166,7 @@ export default function CarsList() {
             color="secondary"
             startIcon={ <AddCircleIcon /> }
           >
-            Novo carro
+            Novo veículo
           </Button>
         </Link>
       </Box>
