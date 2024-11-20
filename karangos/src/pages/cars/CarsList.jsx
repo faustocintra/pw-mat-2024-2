@@ -13,9 +13,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 
 
 
-
 export default function CarsList() {
-
   const columns = [
     { 
       field: 'id', 
@@ -23,156 +21,135 @@ export default function CarsList() {
       width: 90 
     },
     {
-      field: 'name',
-      headerName: 'Nome',
-      width: 200
-    },
-    {
-      field: 'birth_date',
-      headerName: 'Data Nasc.',
-      width: 150,
-      valueGetter: (value, row) => {
-        if(value){
-          const date = new Date(value)
-          return date.toLocaleDateString('pt-BR')
-        }
-      }
-    },
-    {
-      field: 'municipality',
-      headerName: 'Município/UF',
+      field: 'brand_model',
+      headerName: 'Marca/Modelo',
       width: 200,
-      valueGetter: (value, row) => row.municipality + '/' + row.state
+      renderCell: (params) => `${params.row.brand} ${params.row.model}`
     },
     {
-      field: 'phone',
-      headerName: 'Fone/Celular',
-      width: 160
+      field: 'year_manufacture',
+      headerName: 'Ano de Fabricação',
+      width: 150
     },
     {
-      field: 'email',
-      headerName: 'E-mail',
-      width: 200
+      field: 'color',
+      headerName: 'Cor',
+      width: 150
     },
-
+    {
+      field: 'imported',
+      headerName: 'Importado',
+      width: 120,
+      renderCell: (params) => (params.value === 1 ? 'SIM' : '')
+    },
+    {
+      field: 'plates',
+      headerName: 'Placas',
+      width: 150
+    },
+    {
+      field: 'selling_price',
+      headerName: 'Preço de Venda',
+      width: 160,
+      renderCell: (params) => 
+        params.value 
+          ? params.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
+          : ''
+    },
     {
       field: '_actions',
       headerName: 'Ações',
       width: 150,
       sortable: false,
-      renderCell: params =>{
-
-        return <>
-        <Link to={'./' + params.id}>
+      renderCell: (params) => (
+        <>
+          <Link to={'./' + params.id}>
+            <IconButton aria-label="editar">
+              <EditIcon />
+            </IconButton>
+          </Link>
           <IconButton 
-          aria-label="editar"
+            aria-label="excluir"
+            onClick={() => handleDeleteButtonClick(params.id)}
           >
-            <EditIcon />
+            <DeleteForeverIcon color="error" />
           </IconButton>
-
-        </Link>
-
-        <IconButton aria-label="excluir"
-        onClick= { () => handleDeleteButtonClick(params.id)}
-        >
-          <DeleteForeverIcon color="error" />
-        </IconButton>
-
         </>
-
-      }
-    },
-
-
+      )
+    }
   ];
 
   const [state, setState] = React.useState({
-    customers: []
-  })
-  const {
-    customers
-  } = state
+    cars: []
+  });
+  const { cars } = state;
 
   React.useEffect(() => {
-    loadData()
-  }, [])  // Vetor de dependências vazio, executa uma vez no mount
+    loadData();
+  }, []); // Executa uma vez no mount
 
   async function loadData() {
-    feedbackWait(true)
+    feedbackWait(true);
     try {
-      const response = await fetch(
-        import.meta.env.VITE_API_BASE + '/customers?by=name'
-      )
-      const result = await response.json()
+      const response = await fetch(import.meta.env.VITE_API_BASE2 + '/cars?by=brand');
+      const result = await response.json();
 
-      setState({ ...state, customers: result })
+      setState({ ...state, cars: result });
     }
     catch (error) {
-      console.log(error)
-      feedbackNotify('ERRO: ' + error.message, 'error')
+      console.log(error);
+      feedbackNotify('ERRO: ' + error.message, 'error');
     }
-    finally{
-      feedbackWait(false)
+    finally {
+      feedbackWait(false);
     }
   }
 
-  async function handleDeleteButtonClick(id){
-    if (await feedbackConfirm('Deseja realmente excluir este item?')){
-      feedbackWait(true)
-    try {
-      //Envia a requisição para a exclusão
-      await fetch(
-        import.meta.env.VITE_API_BASE + `/customers/${id}`
-        )
-      {method: 'DELETE'}
+  async function handleDeleteButtonClick(id) {
+    if (await feedbackConfirm('Deseja realmente excluir este item?')) {
+      feedbackWait(true);
+      try {
+        await fetch(import.meta.env.VITE_API_BASE2 + `/cars/${id}`, { method: 'DELETE' });
 
-      //Atualiza os dados do datagrid
-      loadData()
-
-      feedbackNotify('Exclusão efetuada com sucesso !')
+        loadData(); // Atualiza os dados do DataGrid
+        feedbackNotify('Exclusão efetuada com sucesso!');
+      }
+      catch (error) {
+        console.log(error);
+        feedbackNotify('ERRO: ' + error.message, 'error');
+      }
+      finally {
+        feedbackWait(false);
+      }
     }
-    catch (error) {
-      console.log (error)
-      feedbackNotify ('ERRO: ' + error.message, 'error')
-    }
-    finally{
-      feedbackWait(false)
-    }
-   }
   }
 
   return (
     <>
-      { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
       <Typography variant="h1" gutterBottom>
         Listagem de Veículos
       </Typography>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'right', //Alinhando à direita
-        mb:2 //Margem inferior (margin-bottom)
-      }} >
-      <Link to=".new">
-        <Button variant="contained" 
-        size="large"
-        color="secondary"
-        startIcon={< AddCircleIcon /> }>
-          Novo Cliente
-        </Button>
-      </Link>
-
+      <Box sx={{ display: 'flex', justifyContent: 'right', mb: 2 }}>
+        <Link to="./new">
+          <Button
+            variant="contained"
+            size="large"
+            color="secondary"
+            startIcon={<AddCircleIcon />}
+          >
+            Novo Veículo
+          </Button>
+        </Link>
       </Box>
 
       <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={customers}
+          rows={cars}
           columns={columns}
           initialState={{
             pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
+              paginationModel: { pageSize: 5 }
+            }
           }}
           pageSizeOptions={[5]}
           checkboxSelection
@@ -180,5 +157,5 @@ export default function CarsList() {
         />
       </Paper>
     </>
-  )
+  );
 }
