@@ -11,48 +11,69 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 
-export default function CustomersList() {
+export default function CarsList() {
 
   const columns = [
     { 
       field: 'id', 
       headerName: 'Cód.', 
-      width: 90 
+      width: 90,
+      type: 'number',
     },
+
     {
-      field: 'name',
-      headerName: 'Nome',
-      width: 200
-    },
-    {
-      field: 'birth_date',
-      headerName: 'Data Nasc.',
-      width: 150,
-      valueGetter: (value, row) => {
-        if(value) {
-          const date = new Date(value)
-          return date.toLocaleDateString('pt-BR')
-        }
-        else return ''
-      }
-    },
-    {
-      field: 'municipality',
-      headerName: 'Município/UF',
+      field: 'brand',
+      headerName: 'Marca/Modelo',
       width: 200,
+      renderCell: (params) => `${params.row.brand} / ${params.row.model}`,
       //coloca dois campos na mesma célula
-      valueGetter: (value, row) => row.municipality + '/' + row.state
     },
+    
     {
-      field: 'phone',
-      headerName: 'Fone/Celular',
-      width: 160
+      field: 'year_manufacture',
+      headerName: 'Ano de fabricação.',
+      width: 150,
     },
+
     {
-      field: 'email',
-      headerName: 'E-mail',
-      width: 200
+      field: 'color',
+      headerName: 'Cor do veículo',
+      width: 150,
     },
+
+    {
+      field: 'imported',
+      headerName: 'Veículo importado?',
+      width: 100,
+      renderCell: (value) => (value.row.imported ? 'SIM' : ''),
+    },
+
+    {
+      field: 'plates',
+      headerName: 'Placa do Veículo',
+      width: 150,
+    },
+
+    {
+      field: 'selling_date',
+      headerName: 'Data da Venda',
+      width: 150,
+      sortable: false,
+      //formata um valo de data para dd/mm/aaaa
+      valueFormatter: (value) =>
+        value ? new Date(value).toLocaleDateString('pt-BR') : '',
+    }, 
+
+    {
+      field: 'selling_price',
+      headerName: 'Preço de Venda',
+      width: 150,
+      renderCell: (params) => params.row.selling_price?.toLocaleString('pt-BR', {
+        style: 'currency',
+         currency: 'BRL',
+      }),
+    },
+
     {
       field: '_actions',
       headerName: 'Ações',
@@ -78,10 +99,10 @@ export default function CustomersList() {
   ];
 
   const [state, setState] = React.useState({
-    customers: []
+    cars: []
   })
   const {
-    customers
+    cars
   } = state
 
   React.useEffect(() => {
@@ -92,11 +113,11 @@ export default function CustomersList() {
     feedbackWait(true)
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + '/customers?by=name'
+        import.meta.env.VITE_API_BASE + '/cars'
       )
       const result = await response.json()
 
-      setState({ ...state, customers: result })
+      setState({ ...state, cars: result })
     }
     catch (error) {
       console.log(error)
@@ -113,7 +134,7 @@ export default function CustomersList() {
       try {
         // Envia a requisição para exclusão
         await fetch(
-          import.meta.env.VITE_API_BASE + `/customers/${id}`,
+          import.meta.env.VITE_API_BASE + `/cars/${id}`,
           { method: 'DELETE' }
         )
 
@@ -136,7 +157,7 @@ export default function CustomersList() {
     <>
       { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
       <Typography variant="h1" gutterBottom>
-        Listagem de clientes
+        Listagem de veículos
       </Typography>
 
       <Box sx={{
@@ -151,14 +172,14 @@ export default function CustomersList() {
             color="secondary"
             startIcon={ <AddCircleIcon /> }
           >
-            Novo cliente
+            Novo veículo
           </Button>
         </Link>
       </Box>
 
       <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={customers}
+          rows={cars}
           columns={columns}
           initialState={{
             pagination: {
