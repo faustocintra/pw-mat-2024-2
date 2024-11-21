@@ -23,19 +23,19 @@ export default function MainMenu() {
 
   return (
     <div>
-      
 
-      <IconButton 
-      edge="start" 
-      color="inherit" 
-      aria-label="menu" 
-      sx={{ mr: 2 }}
-      aria-controls={open ? 'basic-menu' : undefined}
-      aria-haspopup="true"
-      aria-expanded={open ? 'true' : undefined}
-      onClick={handleClick}
+
+      <IconButton
+        edge="start"
+        color="inherit"
+        aria-label="menu"
+        sx={{ mr: 2 }}
+        aria-controls={open ? 'basic-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? 'true' : undefined}
+        onClick={handleClick}
       >
-            <MenuIcon />
+        <MenuIcon />
       </IconButton>
 
 
@@ -50,53 +50,59 @@ export default function MainMenu() {
       >
 
 
-        <MenuItem 
-        onClick={handleClose}
-        component={Link}
-        to='/'
-        divider
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to='/'
+          divider
         >
-         Início
-         </MenuItem>
-
-
-         <MenuItem 
-        onClick={handleClose}
-        component={Link}
-        to='/customers'
-        >
-        Listagem de clientes
-         </MenuItem>
-
-
-        <MenuItem 
-        onClick={handleClose}
-        component={Link}
-        to='/customers/new'
-        >
-        Cadastro de clientes
-         </MenuItem>
-
-
-         <MenuItem 
-        onClick={handleClose}
-        component={Link}
-        to='/cars'
-        >
-        Listagem de Veículos
-         </MenuItem>
-
-
-        <MenuItem 
-        onClick={handleClose}
-        component={Link}
-        to='/cars/new'
-        >
-        Cadastro de Veículos
-         </MenuItem>
+          Início
+        </MenuItem>
 
 
         
+
+
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to='/customers/new'
+        >
+          Cadastro de clientes
+        </MenuItem>
+
+
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to='/customers'
+        >
+          Listagem de clientes
+        </MenuItem>
+
+
+        
+
+
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to='/cars/new'
+        >
+          Cadastro de Veículos
+        </MenuItem>
+        
+
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to='/cars'
+        >
+          Listagem de Veículos
+        </MenuItem>
+
+
+
       </Menu>
     </div>
   );

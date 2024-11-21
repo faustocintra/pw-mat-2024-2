@@ -2,7 +2,7 @@ import Typography from '@mui/material/Typography'
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
-import{ feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
+import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import IconButton from '@mui/material/IconButton'
@@ -13,12 +13,13 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 
 
 
+
 export default function CarsList() {
   const columns = [
-    { 
-      field: 'id', 
-      headerName: 'Cód.', 
-      width: 90 
+    {
+      field: 'id',
+      headerName: 'Cód.',
+      width: 90
     },
     {
       field: 'brand_model',
@@ -51,13 +52,28 @@ export default function CarsList() {
       field: 'selling_price',
       headerName: 'Preço de Venda',
       width: 160,
-      renderCell: (params) => 
-        params.value 
-          ? params.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
+     
+        renderCell: (params) =>
+        params.value && !isNaN(params.value)
+          ? Number(params.value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
           : ''
+
     },
 
-    
+    {
+      field: 'selling_date',
+      headerName: 'Data de Venda',
+      width: 150,
+      renderCell: (params) => {
+        if (params.value) {
+          const date = new Date(params.value);
+          return date.toLocaleDateString('pt-BR'); // Formata como dd/mm/yyyy
+        }
+        return '';
+      }
+    },
+
+
     {
       field: '_actions',
       headerName: 'Ações',
@@ -70,7 +86,7 @@ export default function CarsList() {
               <EditIcon />
             </IconButton>
           </Link>
-          <IconButton 
+          <IconButton
             aria-label="excluir"
             onClick={() => handleDeleteButtonClick(params.id)}
           >

@@ -12,6 +12,15 @@ import InputMask from 'react-input-mask'
 import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import { useNavigate, useParams } from 'react-router-dom'
 
+
+
+
+
+
+//import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+
+
+
 export default function CarsForm() {
 
   /*const brazilianStates */
@@ -29,6 +38,13 @@ export default function CarsForm() {
 
 
   const currentYear = new Date().getFullYear();
+  // Gerar uma lista de anos de 1951 até o ano atual (em ordem decrescente)
+  const years = [];
+  for (let year = currentYear; year >= 1951; year--) {
+    years.push(year);
+  }
+
+
   const formDefaults = {
     brand: '',
     model: '',
@@ -37,7 +53,7 @@ export default function CarsForm() {
     imported: 0,
     plates: '',
     selling_price: '',
-    selling_date: '',
+    selling_date: null,
   }
 
   const navigate = useNavigate()
@@ -102,47 +118,49 @@ export default function CarsForm() {
 
   async function handleFormSubmit(event) {
     // Impede o recarregamento da página
-    event.preventDefault()    
+    event.preventDefault();
 
-    feedbackWait(true)
+    feedbackWait(true);
     try {
+      // Filtra os campos do objeto 'car', removendo valores 'null' ou strings vazias
+      const filteredCar = Object.fromEntries(
+        Object.entries(car).filter(([_, value]) => value !== null && value !== '')
+      );
+
       // Prepara as opções para o fetch
       const reqOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(car)
-      }
+        body: JSON.stringify(filteredCar)
+      };
 
-      // Infoca o fetch para enviar os dados ao back-end.
       // Se houver parâmetro na rota, significa que estamos alterando
       // um registro existente e, portanto, o verbo precisa ser PUT
       if (params.id) {
-        reqOptions.method = 'PUT'
+        reqOptions.method = 'PUT';
         await fetch(
           import.meta.env.VITE_API_BASE2 + '/cars/' + params.id,
           reqOptions
-        )
+        );
       }
       // Senão, envia com o método POST para criar um novo registro
       else {
         await fetch(
           import.meta.env.VITE_API_BASE2 + '/cars',
           reqOptions
-        )
+        );
       }
 
       feedbackNotify('Item salvo com sucesso.', 'success', 4000, () => {
         // Retorna para a página de listagem
-        navigate('..', { relative: 'path', replace: true })
-      })
+        navigate('..', { relative: 'path', replace: true });
+      });
 
-    }
-    catch (error) {
-      console.log(error)
-      feedbackNotify('ERRO: ' + error.message, 'error')
-    }
-    finally {
-      feedbackWait(false)
+    } catch (error) {
+      console.log(error);
+      feedbackNotify('ERRO: ' + error.message, 'error');
+    } finally {
+      feedbackWait(false);
     }
   }
 
@@ -208,7 +226,7 @@ export default function CarsForm() {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <DatePicker
               label="Ano de fabricação"
-              views={['year']}  // Apenas visualização de ano
+              views={['year']}  // Exibir apenas o ano
               value={car.year_manufacture}
               minDate={new Date(1951, 0, 1)}  // Ano mínimo: 1951
               maxDate={new Date(currentYear, 0, 1)}  // Ano máximo: ano atual
@@ -217,14 +235,22 @@ export default function CarsForm() {
                 const event = { target: { name: 'year_manufacture', value: year } };
                 handleFieldChange(event);
               }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  fullWidth
-                />
-              )}
-            />
+              // Usando o novo slot `textField` para personalizar o campo de entrada
+              textField={{
+                variant: 'outlined',
+                fullWidth: true,
+                select: true, // Aqui estamos dizendo que queremos um campo de seleção
+                SelectProps: {
+                  native: true,
+                },
+              }}
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </DatePicker>
           </LocalizationProvider>
 
 
@@ -275,13 +301,14 @@ export default function CarsForm() {
             formatChars={{
               a: '[A-Za-z]',
               9: '[0-9]',
-              $: '[A-J0-9]'
+              $: '[A-J0-9]',
             }}
             value={car.plates}
             onChange={handleFieldChange}
           >
-            {() => (
+            {(inputProps) => (
               <TextField
+                {...inputProps} // Passa as propriedades necessárias para o input
                 variant="outlined"
                 name="plates"
                 label="Placa"
@@ -303,6 +330,25 @@ export default function CarsForm() {
             value={car.selling_price}
             onChange={handleFieldChange}
           />
+
+       
+          {/* DATA DE VENDA */}
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+            <DatePicker
+              label="Data de Venda"
+              value={car.selling_date}
+              onChange={(date) => {
+                const event = { target: { name: 'selling_date', value: date } };
+                handleFieldChange(event);
+              }}
+              // Usando o novo slot `textField`
+              textField={{
+                variant: 'outlined',
+                fullWidth: true,
+                helperText: 'Opcional',  // Mensagem de ajuda
+              }}
+            />
+          </LocalizationProvider>
 
 
 
