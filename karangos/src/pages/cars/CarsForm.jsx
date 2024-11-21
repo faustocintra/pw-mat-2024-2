@@ -1,4 +1,5 @@
-import React from 'react'
+//import React from 'react'
+import React, { useRef } from 'react';
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -11,6 +12,10 @@ import Button from '@mui/material/Button'
 import InputMask from 'react-input-mask'
 import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import { useNavigate, useParams } from 'react-router-dom'
+import MaskedInput from 'react-text-mask';
+
+//import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 
 
@@ -22,6 +27,54 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 
 export default function CarsForm() {
+
+  const formDefaults = {
+    brand: '',
+    model: '',
+    color: '',
+    year_manufacture: null,
+    imported: 0,
+    plates: '',
+    selling_price: '',
+    selling_date: null,
+  }
+
+  // Usa formDefaults como inicialização
+  const [formData, setFormData] = useState(formDefaults);
+
+
+
+  // Captura o ID da URL
+  const { id } = useParams(); // Captura o ID da URL
+
+
+
+  async function fetchCarDetails(id) {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE2}/${id}`);
+      if (!response.ok) {
+        throw new Error('Falha ao buscar os detalhes do carro');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Erro ao buscar os detalhes do carro:', error);
+      return null;
+    }
+  }
+
+  useEffect(() => {
+    if (id) {
+      fetchCarDetails(id).then((data) => {
+        if (data) setFormData({ ...formDefaults, ...data });
+        // Combina dados recebidos com os valores padrão (evita campos indefinidos)
+      });
+    }
+  }, [id]);
+
+
+
+  const inputRef = useRef(null);
 
   /*const brazilianStates */
   const listacores = [
@@ -45,16 +98,7 @@ export default function CarsForm() {
   }
 
 
-  const formDefaults = {
-    brand: '',
-    model: '',
-    color: '',
-    year_manufacture: null,
-    imported: 0,
-    plates: '',
-    selling_price: '',
-    selling_date: null,
-  }
+
 
   const navigate = useNavigate()
   const params = useParams()
@@ -74,28 +118,31 @@ export default function CarsForm() {
     if (params.id) loadData()
   }, [])
 
+
+
+
   async function loadData() {
-    feedbackWait(true)
+    feedbackWait(true);
     try {
-      const response = await fetch(
-        import.meta.env.VITE_API_BASE2 + '/cars/' + params.id
-      )
-      const result = await response.json()
+      const response = await fetch(import.meta.env.VITE_API_BASE2 + '/' + params.id);
+      const result = await response.json();
+      console.log(result);
 
-      // Converte o formato da data armazenado no banco de dados
-      // para o formato reconhecido pelo componente DatePicker
-      if (result.year_manufacture) result.year_manufacture = parseISO(result.year_manufacture)
+      // Verifica se a data está no formato correto (string ISO ou já Date)
+      if (result.selling_date) {
+        result.selling_date = parseISO(result.selling_date);  // Converte para Date, se necessário
+      }
 
-      setState({ ...params, car: result })
-    }
-    catch (error) {
-      console.log(error)
-      feedbackNotify('ERRO: ' + error.message, 'error')
-    }
-    finally {
-      feedbackWait(false)
+      setState({ ...params, car: result });
+    } catch (error) {
+      console.log(error);
+      feedbackNotify('ERRO: ' + error.message, 'error');
+    } finally {
+      feedbackWait(false);
     }
   }
+
+
 
   /*
     Preenche o campo do objeto car conforme
@@ -187,6 +234,8 @@ export default function CarsForm() {
 
 
 
+
+
   return (
     <>
       { /* gutterBottom coloca um espaçamento extra abaixo do componente */}
@@ -226,32 +275,25 @@ export default function CarsForm() {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <DatePicker
               label="Ano de fabricação"
-              views={['year']}  // Exibir apenas o ano
-              value={car.year_manufacture}
-              minDate={new Date(1951, 0, 1)}  // Ano mínimo: 1951
-              maxDate={new Date(currentYear, 0, 1)}  // Ano máximo: ano atual
+              views={['year']} // Apenas anos
+              value={car.year_manufacture ? new Date(car.year_manufacture, 0, 1) : null}
               onChange={(date) => {
-                const year = date ? date.getFullYear() : '';
+                const year = date ? date.getFullYear() : null;
                 const event = { target: { name: 'year_manufacture', value: year } };
                 handleFieldChange(event);
               }}
-              // Usando o novo slot `textField` para personalizar o campo de entrada
               textField={{
                 variant: 'outlined',
                 fullWidth: true,
-                select: true, // Aqui estamos dizendo que queremos um campo de seleção
-                SelectProps: {
-                  native: true,
-                },
+                required: true
               }}
-            >
-              {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </DatePicker>
+            />
           </LocalizationProvider>
+
+
+
+
+
 
 
           {/*COR*/}
@@ -295,20 +337,18 @@ export default function CarsForm() {
 
 
 
-          {/*PLACA*/}
-          <InputMask
-            mask="aaa-9$99"
-            formatChars={{
-              a: '[A-Za-z]',
-              9: '[0-9]',
-              $: '[A-J0-9]',
-            }}
+
+          {/* PLACA */}
+          <MaskedInput
+            mask={[/[A-Za-z]/, /[A-Za-z]/, /[A-Za-z]/, '-', /\d/, /[A-J0-9]/, /\d/, /\d/]}
+            placeholder="Digite a placa"
+            guide={false}
             value={car.plates}
             onChange={handleFieldChange}
-          >
-            {(inputProps) => (
+            render={(ref, props) => (
               <TextField
-                {...inputProps} // Passa as propriedades necessárias para o input
+                {...props} // Passa as propriedades do MaskedInput
+                inputRef={ref} // Ref necessário para integrar com MaskedInput
                 variant="outlined"
                 name="plates"
                 label="Placa"
@@ -316,7 +356,8 @@ export default function CarsForm() {
                 required
               />
             )}
-          </InputMask>
+          />
+
 
 
 
@@ -331,24 +372,28 @@ export default function CarsForm() {
             onChange={handleFieldChange}
           />
 
-       
-          {/* DATA DE VENDA */}
+
+
+
+
+
+
+          {/*DATA DE VENDA*/}
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <DatePicker
               label="Data de Venda"
-              value={car.selling_date}
+              value={car.selling_date ? new Date(car.selling_date) : null} // Certifica-se de que seja um Date válido
               onChange={(date) => {
-                const event = { target: { name: 'selling_date', value: date } };
+                const formattedDate = date ? date.toISOString() : null; // Mantém o formato completo da data
+                const event = { target: { name: 'selling_date', value: formattedDate } };
                 handleFieldChange(event);
               }}
-              // Usando o novo slot `textField`
-              textField={{
-                variant: 'outlined',
-                fullWidth: true,
-                helperText: 'Opcional',  // Mensagem de ajuda
-              }}
+              renderInput={(params) => (
+                <TextField {...params} variant="outlined" fullWidth helperText="Opcional" />
+              )}
             />
           </LocalizationProvider>
+
 
 
 
@@ -369,6 +414,8 @@ export default function CarsForm() {
               Salvar
             </Button>
 
+
+
             <Button
               variant="outlined"
               onClick={handleBackButtonClick}
@@ -376,6 +423,8 @@ export default function CarsForm() {
               Voltar
             </Button>
           </Box>
+
+
 
           <Box sx={{
             fontFamily: 'monospace',
@@ -385,6 +434,8 @@ export default function CarsForm() {
           }}>
             {JSON.stringify(car, null, ' ')}
           </Box>
+
+
 
         </form>
       </Box>

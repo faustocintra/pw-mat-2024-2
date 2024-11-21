@@ -11,6 +11,9 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
 
 
 
@@ -48,17 +51,18 @@ export default function CarsList() {
       headerName: 'Placas',
       width: 150
     },
+
+
     {
       field: 'selling_price',
       headerName: 'Preço de Venda',
       width: 160,
-     
-        renderCell: (params) =>
+      renderCell: (params) =>
         params.value && !isNaN(params.value)
           ? Number(params.value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
           : ''
-
     },
+
 
     {
       field: 'selling_date',
@@ -86,12 +90,15 @@ export default function CarsList() {
               <EditIcon />
             </IconButton>
           </Link>
+
+
           <IconButton
             aria-label="excluir"
             onClick={() => handleDeleteButtonClick(params.id)}
           >
             <DeleteForeverIcon color="error" />
           </IconButton>
+          
         </>
       )
     }
@@ -105,6 +112,8 @@ export default function CarsList() {
   React.useEffect(() => {
     loadData();
   }, []); // Executa uma vez no mount
+
+
 
   async function loadData() {
     feedbackWait(true);
@@ -123,14 +132,55 @@ export default function CarsList() {
     }
   }
 
+  async function fetchCarDetails(id) {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE2}/${id}`);
+      if (!response.ok) {
+        throw new Error('Falha ao buscar os detalhes do carro');
+      }
+      const data = await response.json();
+      return data; // Retorna os dados do carro
+    } catch (error) {
+      console.error('Erro ao buscar os detalhes do carro:', error);
+      return null;
+    }
+  }
+
+
+
   async function handleDeleteButtonClick(id) {
+    console.log("ID recebido para exclusão:", id);
     if (await feedbackConfirm('Deseja realmente excluir este item?')) {
       feedbackWait(true);
       try {
-        await fetch(import.meta.env.VITE_API_BASE2 + `/cars/${id}`, { method: 'DELETE' });
+        // Faz a requisição DELETE para o backend
+        const response = await fetch(import.meta.env.VITE_API_BASE2 + `/${id}`, { method: 'DELETE' });
+        console.log("response:", response);
+        console.log("response status:", response.status);
+        console.log("response statusText:", response.statusText);
+        console.log("response body:", await response.text());
 
-        loadData(); // Atualiza os dados do DataGrid
+        // Verifica se a resposta foi bem-sucedida (status 200 ou 204)
+        if (!response.ok) {
+          throw new Error('Falha ao excluir o item');
+        }
+
+        else {
+
+          await loadData();  // Chama novamente o loadData após exclusão
+
+          feedbackNotify('Exclusão efetuada com sucesso!');
+        }
+
+        // Atualiza a lista de carros localmente (removendo o carro excluído)
+        /*
+        setState(prevState => ({
+          ...prevState,
+          cars: prevState.cars.filter(car => car.id !== id) // Remove o carro excluído
+        }));
+
         feedbackNotify('Exclusão efetuada com sucesso!');
+        */
       }
       catch (error) {
         console.log(error);
@@ -141,6 +191,8 @@ export default function CarsList() {
       }
     }
   }
+
+
 
   return (
     <>
