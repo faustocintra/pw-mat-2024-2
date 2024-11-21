@@ -39,7 +39,7 @@ export default function CarsForm() {
     A: '[A-Z]', // letra maiúscula
   }
 
-  // Valores iniciais do formulário (como um template)
+  // Valores iniciais do formulário
   const formDefaults = {
     brand: '',
     model: '',
@@ -73,7 +73,7 @@ export default function CarsForm() {
     years.push(year)
   }
 
-  // Carrega os dados do carro se estiver editando (com base no parâmetro id da URL)
+  // Carrega os dados do carro se estiver editando
   React.useEffect(() => {
     if (params.id) loadData()
   }, [])
@@ -107,7 +107,7 @@ export default function CarsForm() {
     setState({ ...state, Car: CarCopy, formModified: true })
   }
 
-  // Função para submeter o formulário (criar ou editar o carro)
+  // Função para submeter o formulário
   async function handleFormSubmit(event) {
     event.preventDefault()  // Impede o recarregamento da página
     
@@ -119,7 +119,6 @@ export default function CarsForm() {
         body: JSON.stringify(Car)
       }
 
-      // Se estivermos editando (parametro id presente), muda o verbo para PUT
       if(params.id) {
         reqOptions.method = 'PUT'
         await fetch(
@@ -147,7 +146,7 @@ export default function CarsForm() {
     }
   }
 
-  // Função para alterar o estado de um checkbox (ex: "importado")
+  // Função para alterar o estado de um checkbox
   async function handleCheckBoxChange(event) {
     const { name, checked } = event.target
     setState({
