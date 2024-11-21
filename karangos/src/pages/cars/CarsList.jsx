@@ -17,6 +17,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 export default function CarsList() {
   const columns = [
+    // Definindo campos para a listagem
     {
       field: "id",
       headerName: "Cód.",
@@ -27,6 +28,7 @@ export default function CarsList() {
       headerName: "Marca - Modelo",
       width: 200,
       renderCell: (params) => {
+        // Coloca marca e modelo na mesma coluna
         return (
           <span>
             {params.row.brand} - {params.row.model}
@@ -48,7 +50,7 @@ export default function CarsList() {
       field: "imported",
       headerName: "Importado ou não",
       width: 200,
-      renderCell: (value) => (value.row.imported ? "SIM" : ""),
+      renderCell: (value) => (value.row.imported ? "SIM" : ""), // Se o campo imported for true, ele converte para SIM no list, caso nao, fica sem valor
     },
     {
       field: "plates",
@@ -61,6 +63,7 @@ export default function CarsList() {
       width: 200,
       renderCell: (params) =>
         params.row.selling_price?.toLocaleString("pt-BR", {
+          // Define o tipo de formatação da moeda
           style: "currency",
           currency: "BRL",
         }),
@@ -78,7 +81,7 @@ export default function CarsList() {
       renderCell: (params) => {
         return (
           <>
-            <Link to={"./" + params.id}>
+            <Link to={`./${params.id}`}>
               <IconButton aria-label="editar">
                 <EditIcon />
               </IconButton>

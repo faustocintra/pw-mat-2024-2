@@ -19,6 +19,7 @@ import { Checkbox, FormControlLabel } from "@mui/material";
 
 export default function CarsForm() {
   const colors = [
+    // Campo com chave e valor, basicamente fazendo o molde da tabela de cores
     { value: "AMARELO", label: "AMARELO" },
     { value: "AZUL", label: "AZUL" },
     { value: "BRANCO", label: "BRANCO" },
@@ -31,13 +32,14 @@ export default function CarsForm() {
     { value: "ROXO", label: "ROXO" },
     { value: "VERDE", label: "VERDE" },
     { value: "VERMELHO", label: "VERMELHO" },
-  ].sort();
+  ].sort(); // Ordena por ordem alfabetica
 
   const currentYear = new Date().getFullYear(); // Pega o ano atual
   const minYear = 1951; // Limita o ano minimo com base nas intruções
   const years = []; // Lista que vai conter todos os anos, do atual até o ano limite.
-  let year = currentYear;
+  let year = currentYear; // Variavel que recebe o ano atual
   while (year >= minYear) {
+    // Looping que pega todos os anos entre o ano atual e o ano minimo
     years.push(year);
     year--;
   }
@@ -48,6 +50,7 @@ export default function CarsForm() {
   };
 
   const plateMaskFormatChars = {
+    // Mascara das placas, ele cria atribuições do que pode ser incluido em cada caracter
     9: "[0-9]", // somente numeros
     A: "[A-Z]", // Letras maiusculas de A a Z
     $: "[0-9A-J]", // numero de 0 a 9 ou uma letra de A até J
@@ -85,18 +88,9 @@ export default function CarsForm() {
     feedbackWait(true);
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + "/cars/" + params.id
+        import.meta.env.VITE_API_BASE + "/Cars/" + params.id
       );
       const result = await response.json();
-
-      // Converte o formato da data armazenado no banco de dados
-      // para o formato reconhecido pelo componente DatePicker
-      if (result.year_manufacture)
-        result.year_manufacture = parseISO(result.year_manufacture);
-      // Condicional que converte a data de venda para o formato conhecido
-      else if (result.selling_date)
-        result.selling_date = parseISO(result.selling_date);
-
       setState({ ...params, car: result });
     } catch (error) {
       console.log(error);
@@ -187,7 +181,7 @@ export default function CarsForm() {
       <Box className="form-fields">
         <form onSubmit={handleFormSubmit}>
           {/* autoFocus = foco do teclado no primeiro campo */}
-          <TextField
+          <TextField // Campo de marca, obrigatorio
             variant="outlined"
             name="brand"
             label="Marca do carro"
@@ -199,7 +193,7 @@ export default function CarsForm() {
           />
 
           {/* autoFocus = foco do teclado no primeiro campo */}
-          <TextField
+          <TextField // Campo de modelo, obrigatorio
             variant="outlined"
             name="model"
             label="Modelo"
@@ -209,6 +203,23 @@ export default function CarsForm() {
             onChange={handleFieldChange}
           />
 
+          <TextField // Campo de cor, obrigatorio, em formato select, utilizando a estrutura criada anteriormente
+            variant="outlined"
+            name="color"
+            label="Cor"
+            fullWidth
+            required
+            value={car.color}
+            select
+            onChange={handleFieldChange}
+          >
+            {colors.map((s) => (
+              <MenuItem key={s.value} value={s.value}>
+                {s.label}
+              </MenuItem>
+            ))}
+          </TextField>
+
           {/*
             O evento onChange do componente DatePicker não passa
             o parâmetro event, como no TextField, e sim a própria
@@ -217,7 +228,7 @@ export default function CarsForm() {
             parâmetro event "fake" com as informações necessárias
           */}
 
-          <TextField
+          <TextField // Campo de ano de fabricação, obrigatorio, em formato select, utilizando a lista de anos criada anteriormente
             variant="filled"
             name="year_manufacture"
             label="Ano de Fabricação"
@@ -235,7 +246,7 @@ export default function CarsForm() {
           </TextField>
 
           <div className="MuiFormControl-root">
-            <FormControlLabel
+            <FormControlLabel // Classe mui utilizada para botão de importado
               control={
                 <Checkbox
                   name="imported"
@@ -250,7 +261,7 @@ export default function CarsForm() {
             />
           </div>
 
-          <InputMask
+          <InputMask // Definição de formato de mascara para as placas, utilizando a formatação definida no inicio do codigo
             formatChars={plateMaskFormatChars}
             mask="AAA-9$99"
             value={car.plates}
@@ -267,30 +278,23 @@ export default function CarsForm() {
             )}
           </InputMask>
 
-          <TextField
+          <TextField // Preço de venda, nao obrigatorio do tipo numero
             variant="outlined"
-            name="color"
-            label="Cor"
+            name="selling_price"
+            label="Preço de venda"
+            type="number"
             fullWidth
-            required
-            value={car.color}
-            select
+            value={car.selling_price}
             onChange={handleFieldChange}
-          >
-            {colors.map((s) => (
-              <MenuItem key={s.value} value={s.value}>
-                {s.label}
-              </MenuItem>
-            ))}
-          </TextField>
+          />
 
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
             adapterLocale={ptBR}
           >
-            <DatePicker
+            <DatePicker // Data de venda formatada no modelo ptBR, sem limitações até então por nao ter sido requisitado no trabalho
               label="Data de venda"
-              value={car.selling_date}
+              value={car.selling_date ? new Date(car.selling_date) : null}
               slotProps={{
                 textField: {
                   variant: "outlined",
@@ -303,16 +307,6 @@ export default function CarsForm() {
               }}
             />
           </LocalizationProvider>
-
-          <TextField
-            variant="outlined"
-            name="selling_price"
-            label="Preço de venda"
-            type="number"
-            fullWidth
-            value={car.selling_price}
-            onChange={handleFieldChange}
-          />
 
           <Box
             sx={{
