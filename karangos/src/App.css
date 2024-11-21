@@ -3,7 +3,7 @@
   visibility: hidden;
 }
 
-/*  Reexibe os bot~es do datagrid caso o mouse esteja por sobre a linha*/
+/*  Reexibe os botões do datagrid caso o mouse esteja por sobre a linha*/
 .MuiDataGrid-row:hover button{
   visibility: visible;
 }
