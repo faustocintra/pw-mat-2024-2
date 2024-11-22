@@ -30,7 +30,20 @@ export default function BottomBar() {
             fontSize="small" 
             sx={{ mb: -0.5 }} 
           /> 
-          por <a href="mailto:professor@faustocintra.com.br">Prof. Fausto Cintra</a>
+          por <a >Leonardo abelo</a>
+      </Typography>
+      <Typography 
+        variant="caption" 
+        gutterBottom 
+        sx={{ 
+          display: 'block',
+          '& a': {
+            color: 'secondary.light'
+          }
+        }}
+      >E-mail 
+          
+      <a>leonardo.barros15@fatec.sp.gov.br</a>
       </Typography>
     </Toolbar>
   )

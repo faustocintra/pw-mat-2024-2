@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { ptBR } from 'date-fns/locale/pt-BR'
 import { parseISO } from 'date-fns'
 import MenuItem from '@mui/material/MenuItem'
@@ -12,47 +12,45 @@ import InputMask from 'react-input-mask'
 import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import { useNavigate, useParams } from 'react-router-dom'
 
-export default function CustomersForm() {
 
-  const brazilianStates = [
-    { value: 'DF', label: 'Distrito Federal' },
-    { value: 'ES', label: 'Espírito Santo' },
-    { value: 'GO', label: 'Goiás' },
-    { value: 'MS', label: 'Mato Grosso do Sul' },
-    { value: 'MG', label: 'Minas Gerais' },
-    { value: 'PR', label: 'Paraná' },
-    { value: 'RJ', label: 'Rio de Janeiro' },
-    { value: 'SP', label: 'São Paulo' }
+export default function CarsForm() {
+
+  const color = [
+    { value: 'amarelo', label: 'Amarelo' },
+    { value: 'azul', label: 'Azul' },
+    { value: 'branca', label: 'Branca' },
+    { value: 'chumbo', label: 'Chumbo' },
+    { value: 'cinza', label: 'Cinza' },
+    { value: 'preto', label: 'Preto' },
+    { value: 'vermelho', label: 'Vermelho' },
   ]
 
-  const phoneMaskFormatChars = {
-    '9': '[0-9]',    
-    '%': '[s0-9]'   
+  const plateMaskFormatChars = {
+    'A': '[a-zA-Z]',        
+    '$': '[a-jA-J0-9]',     
+    '9': '[0-9]',       
   }
 
-  const formDefaults = {
-    name: '',
-    ident_document: '',
-    birth_date: null,
-    street_name: '',
-    house_number: '',
-    complements: '',
-    district: '',
-    municipality: '',
-    state: '',
-    phone: '',
-    email: ''
+   const formDefaults = {
+    brand: '',
+    model: '',
+    year_manufacture: null,
+    color: '',
+    imported: false,
+    plate: '',
+    selling_price: '',
+    selling_date: null,
   }
 
   const navigate = useNavigate()
   const params = useParams()
 
   const [state, setState] = React.useState({
-    customer: { ...formDefaults },
+    cars : { ...formDefaults },
     formModified: false
   })
   const {
-    customer,
+    cars ,
     formModified
   } = state
 
@@ -66,13 +64,13 @@ export default function CustomersForm() {
     feedbackWait(true)
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + '/customers/' + params.id 
+        import.meta.env.VITE_API_BASE + '/cars/' + params.id 
       )
       const result = await response.json()
-           
-      if(result.birth_date) result.birth_date = parseISO(result.birth_date)
+      
+      if(result.year_manufacture) result.year_manufacture = parseISO(result.year_manufacture)
 
-      setState({ ...params, customer: result })
+      setState({ ...params,cars : result })
     }
     catch(error) {
       console.log(error)
@@ -83,41 +81,41 @@ export default function CustomersForm() {
     }
   }
 
+  
   function handleFieldChange(event) {
     
     console.log({ name: event.target.name, value: event.target.value })
 
+    const carsCopy = { ...cars }
+   
+    carsCopy[event.target.name] = event.target.value
     
-    const customerCopy = { ...customer }
-    
-    customerCopy[event.target.name] = event.target.value
-    
-    setState({ ...state, customer: customerCopy, formModified: true })
+    setState({ ...state, cars: carsCopy, formModified: true })
   }
 
   async function handleFormSubmit(event) {
     event.preventDefault()      
     feedbackWait(true)
     try {
-     
+      
       const reqOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(customer)
+        body: JSON.stringify(cars)
       }
 
-     
+      
       if(params.id) {
         reqOptions.method = 'PUT'
         await fetch(
-          import.meta.env.VITE_API_BASE + '/customers/' + params.id,
+          import.meta.env.VITE_API_BASE + '/cars/' + params.id,
           reqOptions
         )
       }
       
       else {
         await fetch(
-          import.meta.env.VITE_API_BASE + '/customers',
+          import.meta.env.VITE_API_BASE + '/cars',
           reqOptions
         )
       }
@@ -151,121 +149,106 @@ export default function CustomersForm() {
     <>
       
       <Typography variant="h1" gutterBottom>
-        { params.id ? `Editar cliente #${params.id}` : 'Cadastrar novo cliente' }
+        { params.id ? `Editar Carro #${params.id}` : 'Cadastrar Carro' }
       </Typography>
 
       <Box className="form-fields">
         <form onSubmit={handleFormSubmit}>
 
+         
           <TextField
             variant="outlined" 
-            name="name"
-            label="Nome completo"
+            name="brand"
+            label="Marca"
             fullWidth
             required
             autoFocus
-            value={customer.name}
+            value={cars.brand}
             onChange={handleFieldChange}
           />
-
+          
           <InputMask
-            mask="999.999.999-99"
-            value={customer.ident_document}
+            formatChars={plateMaskFormatChars}
+            mask="AAA-$999"
+            value={cars.plate}
+            maskChar = " "
             onChange={handleFieldChange}
           >
             { () => 
                 <TextField
                   variant="outlined" 
-                  name="ident_document"
-                  label="CPF" 
+                  name="plate"
+                  label="Placa" 
                   fullWidth
                   required
                 />
             }
           </InputMask>
 
-         
+          
           <LocalizationProvider 
-            dateAdapter={AdapterDateFns}
-            adapterLocale={ptBR}
+              dateAdapter={AdapterDateFns} 
+              adapterLocale={ptBR}
           >
-            <DatePicker
-              label="Data de nascimento"
-              value={customer.birth_date}
-              slotProps={{
-                textField: {
-                  variant: 'outlined',
-                  fullWidth: true
-                }
-              }}
-              onChange={ date => {
-                const event = { target: { name: 'birth_date', value: date } }
-                handleFieldChange(event)
-              }}
-            />
+                <DatePicker
+                      label="Ano de Fabricação"
+                      value={cars.year_manufacture}
+                      views={['year']} 
+                      minDate={new Date(1951, 0, 1)} 
+                      maxDate={new Date()}
+                      slotProps={{
+                        textField: {
+                          variant: 'outlined',
+                          fullWidth: true
+                        }
+                      }} 
+                        onChange={(date) => {
+                          const event = { target: { name: 'year_manufacture', value: date } };
+                          handleFieldChange(event);
+                      }}
+                />
           </LocalizationProvider>
 
           <TextField
             variant="outlined" 
-            name="street_name"
-            label="Logradouro (Rua, Av., etc.)" 
+            name="model"
+            label="Modelo" 
             fullWidth
             required
-            value={customer.street_name}
+            value={cars.model}
+            onChange={handleFieldChange}
+          />
+         
+          <TextField
+            variant="outlined" 
+            name="selling_price"
+            label="Preço de venda"
+            fullWidth 
+            value={cars.selling_price}
             onChange={handleFieldChange}
           />
 
           <TextField
             variant="outlined" 
-            name="house_number"
-            label="nº" 
+            name="selling_date"
+            label="Data da Venda" 
             fullWidth
-            required
-            value={customer.house_number}
+            value={cars.selling_date}
             onChange={handleFieldChange}
           />
-
+          
           <TextField
             variant="outlined" 
-            name="complements"
-            label="Complemento" 
-            fullWidth
-            value={customer.complements}
-            onChange={handleFieldChange}
-          />
-
-          <TextField
-            variant="outlined" 
-            name="district"
-            label="Bairro" 
+            name="color"
+            label="Cor" 
             fullWidth
             required
-            value={customer.district}
-            onChange={handleFieldChange}
-          />
-
-          <TextField
-            variant="outlined" 
-            name="municipality"
-            label="Município" 
-            fullWidth
-            required
-            value={customer.municipality}
-            onChange={handleFieldChange}
-          />
-
-          <TextField
-            variant="outlined" 
-            name="state"
-            label="UF" 
-            fullWidth
-            required
-            value={customer.state}
+            value={cars.color}
             select
             onChange={handleFieldChange}
           >
             {
-              brazilianStates.map(s => 
+              color.map(s => 
                 <MenuItem key={s.value} value={s.value}>
                   {s.label}
                 </MenuItem>
@@ -273,34 +256,7 @@ export default function CustomersForm() {
             }
           </TextField>
 
-          <InputMask
-            formatChars={phoneMaskFormatChars}
-            mask="(99) %9999-9999"
-            value={customer.phone}
-            maskChar=" "
-            onChange={handleFieldChange}
-          >
-            { () => 
-              <TextField
-                variant="outlined" 
-                name="phone"
-                label="Telefone/Celular" 
-                fullWidth
-                required
-              />
-            }
-          </InputMask>
-
-          <TextField
-            variant="outlined" 
-            name="email"
-            label="E-mail" 
-            fullWidth
-            required
-            value={customer.email}
-            onChange={handleFieldChange}
-          />
-
+                                          
           <Box sx={{ 
             display: 'flex',
             justifyContent: 'space-around',
@@ -328,7 +284,7 @@ export default function CustomersForm() {
             flexDirection: 'column',
             width: '100vw'
           }}>
-            {JSON.stringify(customer, null, ' ')}
+            {JSON.stringify(cars, null, ' ')}
           </Box>
 
         </form>

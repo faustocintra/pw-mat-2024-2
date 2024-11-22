@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography'
-import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import { DataGrid } from '@mui/x-data-grid';
+import * as React from 'react'
+import Paper from '@mui/material/Paper'
+import { DataGrid } from '@mui/x-data-grid'
 import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
@@ -11,119 +11,116 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 
-export default function CustomersList() {
-
+export default function CarsList() {
   const columns = [
-    { 
-      field: 'id', 
+    { field: 'id', 
       headerName: 'Cód.', 
       width: 90 
     },
     {
-      field: 'name',
-      headerName: 'Nome',
-      width: 200
-    },
-    {
-      field: 'birth_date',
-      headerName: 'Data Nasc.',
-      width: 150,
-      valueGetter: (value, row) => {
-        if(value) {
-          const date = new Date(value)
-          return date.toLocaleDateString('pt-BR')
-        }
-        else return ''
-      }
-    },
-    {
-      field: 'municipality',
-      headerName: 'Município/UF',
+      field: 'brand_model',
+      headerName: 'Marca/Modelo',
       width: 200,
-      valueGetter: (value, row) => row.municipality + '/' + row.state
+      valueGetter: (params) => 
+        `${params.row.brand & ''} 
+         ${params.row.model & ''} 
+        `
+        .trim(),
+    },
+    
+    {
+      field: 'selling_date',
+      headerName: 'Ano de Fabricação',
+      width: 150,
+      valueGetter: (params) => {
+        const date = params.row.selling_date ? new Date(params.row.selling_date) : null
+        return date ? date.toLocaleDateString('pt-BR') : ''
+      },
+    },
+    { 
+      field: 'color', 
+      headerName: 'Cor', 
+      width: 160 
     },
     {
-      field: 'phone',
-      headerName: 'Fone/Celular',
-      width: 160
-    },
-    {
-      field: 'email',
-      headerName: 'E-mail',
-      width: 200
+      field: 'imported',
+      headerName: 'Importado',
+      width: 200,
+      editable: true,
+        type: 'boolean',
     },
     {
       field: '_actions',
       headerName: 'Ações',
       width: 150,
       sortable: false,
-      renderCell: params => {
-        return <>
-          <Link to={'./' + params.id}>
+      renderCell: (params) => (
+        <>
+          <Link to={`./${params.row.id}`} key={`edit-${params.row.id}`}>
             <IconButton aria-label="editar">
               <EditIcon />
             </IconButton>
           </Link>
-
-          <IconButton 
+          <IconButton
             aria-label="excluir"
-            onClick={() => handleDeleteButtonClick(params.id)}
+            key={`delete-${params.row.id}`}
+            onClick={() => handleDeleteButtonClick(params.row.id)}
           >
             <DeleteForeverIcon color="error" />
           </IconButton>
         </>
-      }
-    }
-  ];
+      ),
+    },
+  ]
 
   const [state, setState] = React.useState({
-    customers: []
+    cars: []
   })
-  const {
-    customers
+
+  const { 
+    cars 
   } = state
 
   React.useEffect(() => {
     loadData()
-  }, [])
-  
+  }, []) 
+
   async function loadData() {
     feedbackWait(true)
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + '/customers?by=name'
+        import.meta.env.VITE_API_BASE + '/cars?by=name'       
       )
       const result = await response.json()
 
-      setState({ ...state, customers: result })
-    }
+      setState({...state, cars: result })
+    } 
     catch (error) {
       console.log(error)
       feedbackNotify('ERRO: ' + error.message, 'error')
-    }
+    } 
     finally {
       feedbackWait(false)
     }
   }
 
   async function handleDeleteButtonClick(id) {
-    if(await feedbackConfirm('Deseja realmente excluir este item?')) {
+    if (await feedbackConfirm('Deseja realmente excluir este item?')) {
       feedbackWait(true)
       try {
-       
-        await fetch(
-          import.meta.env.VITE_API_BASE + `/customers/${id}`,
-          { method: 'DELETE' }
-        )
-      
+
+        await fetch(import.meta.env.VITE_API_BASE + `/cars/${id}`, {
+          method: 'DELETE'
+        })
+
         loadData()
 
         feedbackNotify('Exclusão efetuada com sucesso.')
-      }
+      } 
       catch (error) {
         console.log(error)
         feedbackNotify('ERRO: ' + error.message, 'error')
-      }
+      } 
       finally {
         feedbackWait(false)
       }
@@ -132,31 +129,32 @@ export default function CustomersList() {
 
   return (
     <>
-      
       <Typography variant="h1" gutterBottom>
-        Listagem de clientes
+        Lista de Carros
       </Typography>
 
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'right', 
-        mb: 2   
-      }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'right', // Alinhado à direita
+          mb: 2, // Margem inferior (margin-bottom)
+        }}
+      >
         <Link to="./new">
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             size="large"
             color="secondary"
-            startIcon={ <AddCircleIcon /> }
+            startIcon={<AddCircleIcon />}
           >
-            Novo cliente
+            Novo Carro
           </Button>
         </Link>
       </Box>
 
       <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={customers}
+          rows={cars}
           columns={columns}
           initialState={{
             pagination: {
