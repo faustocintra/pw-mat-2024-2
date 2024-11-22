@@ -6,6 +6,7 @@ import CustomersList from '../pages/customers/CustomersList'
 import CustomersForm from '../pages/customers/CustomersForm' 
 import CarsList from '../pages/cars/CarsList'
 import CarsForm from '../pages/cars/CarsForm'
+import Autora from '../pages/Autora'
 
 export default function AppRoutes() {
   return (
@@ -19,6 +20,9 @@ export default function AppRoutes() {
       <Route path="/cars" element={ <CarsList /> } />
       <Route path="/cars/new" element={ <CarsForm /> } />
       <Route path="/cars/:id" element={ <CarsForm /> } />
+
+      //11. cria a rota pro componente
+      <Route path="/autora" element={ <Autora /> } />
 
     </Routes>
   )
