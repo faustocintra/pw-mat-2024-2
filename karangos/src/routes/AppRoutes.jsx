@@ -7,6 +7,8 @@ import CustomersForm from "../pages/customers/CustomersForm";
 import CarsList from "../pages/cars/CarsList";
 import CarsForm from "../pages/cars/CarsForm";
 
+import Author from "../pages/Author";
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -19,6 +21,8 @@ export default function AppRoutes() {
       <Route path="/cars" element={<CarsList />} />
       <Route path="/cars/new" element={<CarsForm />} />
       <Route path="/cars/:id" element={<CarsForm />} />
+
+      <Route path="/author" element={<Author />} />
     </Routes>
   );
 }

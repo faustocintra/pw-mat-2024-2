@@ -27,8 +27,7 @@ export default function BottomBar() {
       >
         Desenvolvido e mantido com
         <CoffeeIcon fontSize="small" sx={{ mb: -0.5 }} />
-        por{" "}
-        <a href="mailto:professor@faustocintra.com.br">Prof. Fausto Cintra</a>
+        por <a href="mailto:zmurilo2010@gmail.com">Murilo Sanches</a>
       </Typography>
     </Toolbar>
   );
