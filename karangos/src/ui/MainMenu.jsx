@@ -3,7 +3,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 export default function MainMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -17,10 +17,10 @@ export default function MainMenu() {
 
   return (
     <div>
-      <IconButton 
-        edge="start" 
-        color="inherit" 
-        aria-label="menu" 
+      <IconButton
+        edge="start"
+        color="inherit"
+        aria-label="menu"
         sx={{ mr: 2 }}
         aria-controls={open ? 'basic-menu' : undefined}
         aria-haspopup="true"
@@ -38,7 +38,7 @@ export default function MainMenu() {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem 
+        <MenuItem
           onClick={handleClose}
           component={Link}
           to="/"
@@ -47,7 +47,7 @@ export default function MainMenu() {
           Início
         </MenuItem>
 
-        <MenuItem 
+        <MenuItem
           onClick={handleClose}
           component={Link}
           to="/customers"
@@ -55,14 +55,38 @@ export default function MainMenu() {
           Listagem de clientes
         </MenuItem>
 
-        <MenuItem 
+        <MenuItem
           onClick={handleClose}
           component={Link}
           to="/customers/new"
         >
           Cadastro de clientes
         </MenuItem>
-        
+
+        {/* Entradas para veículos */}
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to="/cars"
+        >
+          Listagem de Veículos
+        </MenuItem>
+
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to="/cars/new"
+        >
+          Cadastro de Veículos
+        </MenuItem>
+
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to="/sobre-o-autor"
+        >
+          Sobre o Autor
+        </MenuItem>
       </Menu>
     </div>
   );
