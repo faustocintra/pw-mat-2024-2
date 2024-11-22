@@ -97,7 +97,7 @@ export default function CarsList() {
     feedbackWait(true)
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_TRABALHO + '/?by=name'
+        import.meta.env.VITE_API_TRABALHO + '/cars'
       )
       const result = await response.json()
 
