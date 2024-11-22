@@ -43,11 +43,11 @@ export default function MainMenu() {
           Página inicial
         </MenuItem>
 
-        <MenuItem onClick={handleClose} component={Link} to="/cars">
+        <MenuItem onClick={handleClose} component={Link} to="/car">
           Listagem de veículos
         </MenuItem>
 
-        <MenuItem onClick={handleClose} component={Link} to="/cars/new" divider>
+        <MenuItem onClick={handleClose} component={Link} to="/car/new" divider>
           Cadastro de veículos
         </MenuItem>
 
