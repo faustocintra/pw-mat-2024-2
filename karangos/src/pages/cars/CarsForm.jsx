@@ -11,38 +11,47 @@ import Button from '@mui/material/Button'
 import InputMask from 'react-input-mask'
 import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import { useNavigate, useParams } from 'react-router-dom'
-import { colors } from '@mui/material'
+import { Checkbox, FormControlLabel } from '@mui/material'
 
 export default function CarsForm() {
 
-  const brazilianStates = [
-    { value: 'DF', label: 'Distrito Federal' },
-    { value: 'ES', label: 'Espírito Santo' },
-    { value: 'GO', label: 'Goiás' },
-    { value: 'MS', label: 'Mato Grosso do Sul' },
-    { value: 'MG', label: 'Minas Gerais' },
-    { value: 'PR', label: 'Paraná' },
-    { value: 'RJ', label: 'Rio de Janeiro' },
-    { value: 'SP', label: 'São Paulo' }
+  const colors = [
+    { value: 'Amarelo', label: 'Amarelo' },
+    { value: 'Azul', label: 'Azul' },
+    { value: 'Branco', label: 'Branco' },
+    { value: 'Ciano', label: 'Ciano' },
+    { value: 'Cinza', label: 'Cinza' },
+    { value: 'Laranja', label: 'Laranja' },
+    { value: 'Prata', label: 'Prata' },
+    { value: 'Preto', label: 'Preto' },
+    { value: 'Roxo', label: 'Roxo' },
+    { value: 'Verde', label: 'Verde' },
+    { value: 'Vermelho', label: 'Vermelho' }
   ]
 
-  const phoneMaskFormatChars = {
-    '9': '[0-9]',    // somente dígitos
-    '%': '[\s0-9]'   // dígitos ou espaço em branco (\s)
-  }
-
   const formDefaults = {
-    name: '',
-    ident_document: '',
-    birth_date: null,
-    street_name: '',
-    house_number: '',
-    complements: '',
-    district: '',
-    municipality: '',
-    state: '',
-    phone: '',
-    email: ''
+    brand: '',
+    model: '',
+    color: '',
+    year_manufacture: '',
+    imported: '',
+    plates: '',
+    selling_price: '',
+    selling_date: null
+  }
+  const anosDecrescente = (() => {
+    const anoAtual = new Date().getFullYear()
+    const anosFabricacao = []
+    for (let ano = anoAtual; ano >= 1951; ano--) {
+      anosFabricacao.push(ano)
+    }
+    return anosFabricacao
+  })()
+  
+  const plateMaskFormatChars = {
+    '9': '[0-9]',
+    '$': '[A-J-0-9]',
+    'A': '[A-Z]'
   }
 
   const navigate = useNavigate()
@@ -57,11 +66,11 @@ export default function CarsForm() {
     formModified
   } = state
 
-  // Se estivermos editando um cliente, precisamos carregar
+  // Se estivermos editando um carro, precisamos carregar
   // seus dados assim que o componente for carregado
   React.useEffect(() => {
     // Sabemos que estamos editando (e não cadastrando um novo)
-    // cliente quando a rota ativa contiver um parâmetro id
+    // carro quando a rota ativa contiver um parâmetro id
     if (params.id) loadData()
   }, [])
 
@@ -75,7 +84,7 @@ export default function CarsForm() {
       
       // Converte o formato da data armazenado no banco de dados
       // para o formato reconhecido pelo componente DatePicker
-      if(result.birth_date) result.birth_date = parseISO(result.birth_date)
+      if(result.selling_date) result.selling_date = parseISO(result.selling_date)
 
       setState({ ...params, car: result })
     }
@@ -89,7 +98,7 @@ export default function CarsForm() {
   }
 
   /*
-    Preenche o campo do objeto customer conforme
+    Preenche o campo do objeto car conforme
     o campo correspondente do formulário for
     modificado
   */
@@ -98,13 +107,13 @@ export default function CarsForm() {
     // à função handleFieldChange
     console.log({ name: event.target.name, value: event.target.value })
 
-    // Tira uma cópia da variável de estado customer
-    const customerCopy = { ...car }
-    // Altera em customerCopy apenas o campo da vez
-    customerCopy[event.target.name] = event.target.value
+    // Tira uma cópia da variável de estado car
+    const carCopy = { ...car }
+    // Altera em carCopy apenas o campo da vez
+    carCopy[event.target.name] = event.target.value
     // Atualiza a variável de estado, substituindo o objeto
-    // customer por sua cópia atualizada
-    setState({ ...state, car: customerCopy, formModified: true })
+    // car por sua cópia atualizada
+    setState({ ...state, car: carCopy, formModified: true })
   }
 
   async function handleFormSubmit(event) {
@@ -183,6 +192,7 @@ export default function CarsForm() {
             value={car.brand}
             onChange={handleFieldChange}
           />
+
           <TextField
             variant="outlined" 
             name="model"
@@ -192,27 +202,43 @@ export default function CarsForm() {
             value={car.model}
             onChange={handleFieldChange}
           />
+
           <TextField
             variant="outlined" 
             name="color"
-            label="cor"
+            label="Cor"
             fullWidth
             required
             value={car.cor}
             select
             onChange={handleFieldChange}
           >
-           {colors}
+           {
+            colors.map(s => 
+              <MenuItem key={s.value} value={s.value}>
+                {s.label}
+              </MenuItem>
+            )
+           }
           </TextField>
+
           <TextField
-            variant="outlined" 
+            variant="outlined"
             name="year_manufacture"
-            label="Ano de fabricação"
+            label="Ano de Fabricação"
             fullWidth
             required
-            value={car.year_manufacture}
-            onChange={handleFieldChange}
-          />
+            select // Torna o campo um dropdown
+            value={car.year_manufacture || ''} // Valor selecionado
+            onChange={handleFieldChange} // Atualiza o estado
+          >
+            {anosDecrescente.map((ano) => (
+              <MenuItem key={ano} value={ano}>
+                {ano}
+              </MenuItem>
+            ))}
+          </TextField>
+
           <TextField
             variant="outlined" 
             name="imported"
@@ -222,33 +248,72 @@ export default function CarsForm() {
             value={car.imported}
             onChange={handleFieldChange}
           />
-          <TextField
-            variant="outlined" 
-            name="plates"
-            label="Placas"
-            fullWidth
-            required
+          
+          <FormControlLabel
+            sx={{display: 'inline', width: '50%', justifyContent: 'space-around'}}
+            control={<Checkbox
+              name="imported"
+              variant="filled"
+              value={car.imported}
+              onChange={(event) => handleFieldChange({
+                target: {
+                  name: 'imported',
+                  value: event.target.checked
+                }
+              })}
+              />}
+            label="Importado?"
+          />
+
+          <InputMask
+            mask="AAA-9$99"
+            formatChars={plateMaskFormatChars}
+            maskChar=" "
             value={car.plates}
             onChange={handleFieldChange}
-          />
+          >
+            {
+              () =>
+                <TextField
+                  name="plates"
+                  label="Placa"
+                  variant="filled"
+                  required
+                  fullWidth
+                />
+            }
+          </InputMask>
+
           <TextField
-            variant="outlined" 
             name="selling_price"
-            label="Preço de venda"
+            label="Preço de Venda"
+            variant="filled"
+            type='Number'
             fullWidth
-            value={car.selling_price}
-            onChange={handleFieldChange}
-          />
-          <TextField
-            variant="outlined" 
-            name="selling_date"
-            label="Data de venda"
-            fullWidth
-            value={car.selling_date}
+            placeholder="R$"
+            value={Number(car.selling_price)}
             onChange={handleFieldChange}
           />
 
-          
+          <LocalizationProvider 
+            dateAdapter={AdapterDateFns}
+            adapterLocale={ptBR}
+          >
+            <DatePicker
+              label="Data de venda"
+              value={car.selling_date}
+              slotProps={{
+                textField: {
+                  variant: 'outlined',
+                  fullWidth: true
+                }
+              }}
+              onChange={ date => {
+                const event = { target: { name: 'selling_date', value: date } }
+                handleFieldChange(event)
+              }}
+            />
+          </LocalizationProvider>
 
           <Box sx={{ 
             display: 'flex',

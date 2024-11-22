@@ -41,7 +41,7 @@ export default function CarsList() {
       headerName: 'Importado',
       width: 200,
 
-      renderCell: params => (params.value == 1 ? 'Sim' : 'Não') 
+      renderCell: params => (params.value == 1 ? 'SIM' : '') 
     },
     {
       field: 'plates',
