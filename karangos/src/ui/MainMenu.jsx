@@ -18,10 +18,10 @@ export default function MainMenu() {
 
   return (
     <div>
-      <IconButton 
-        edge="start" 
-        color="inherit" 
-        aria-label="menu" 
+      <IconButton
+        edge="start"
+        color="inherit"
+        aria-label="menu"
         sx={{ mr: 2 }}
         aria-controls={open ? 'basic-menu' : undefined}
         aria-haspopup="true"
@@ -39,7 +39,7 @@ export default function MainMenu() {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem 
+        <MenuItem
           onClick={handleClose}
           component={Link}
           to="/"
@@ -48,7 +48,7 @@ export default function MainMenu() {
           Início
         </MenuItem>
 
-        <MenuItem 
+        <MenuItem
           onClick={handleClose}
           component={Link}
           to="/customers"
@@ -56,7 +56,7 @@ export default function MainMenu() {
           Listagem de clientes
         </MenuItem>
 
-        <MenuItem 
+        <MenuItem
           onClick={handleClose}
           component={Link}
           to="/customers/new"
@@ -65,21 +65,29 @@ export default function MainMenu() {
         </MenuItem>
 
         <MenuItem
-        onClick={handleClose}
-        component={Link}
-        to="cars"
+          onClick={handleClose}
+          component={Link}
+          to="cars"
         >
           Lista de carros
         </MenuItem>
 
         <MenuItem
-        onClick={handleClose}
-        component={Link}
-        to="/cars/new"
+          onClick={handleClose}
+          component={Link}
+          to="/cars/new"
         >
           Cadastro de carros
         </MenuItem>
-        
+
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to="/Autor"
+        >
+          Sobre o Autor
+        </MenuItem>
+
       </Menu>
     </div>
   );
