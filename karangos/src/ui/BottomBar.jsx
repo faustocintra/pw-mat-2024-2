@@ -1,30 +1,37 @@
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import CoffeeIcon from '@mui/icons-material/Coffee'
 
 export default function BottomBar() {
-  /* sx = estilos estendidos do MUI, estede styles */
+  /* sx = estilos estendidos do MUI, estende styles */
   return (
-    <Toolbar variant="dense" 
-    
-    sx={{   backgroundColor: 'action.disabledBackground',
-            justifyContent: 'center',
-            position: 'fixed',
-            bottom: 0, 
-            width: '100vw'
-    }}
+    <Toolbar 
+      variant="dense"
+      sx={{ 
+        backgroundColor: 'action.disabledBackground',
+        justifyContent: 'center',
+        position: 'fixed',
+        bottom: 0,
+        width: '100vw'
+      }}
     >
       <Typography 
-      variant="caption" 
-      gutterBottom 
-      sx={{ 
-        display: "block", 
-        '& a': {
+        variant="caption" 
+        gutterBottom 
+        sx={{ 
+          display: 'block',
+          '& a': {
             color: 'secondary.light'
-        }
-      }}
+          }
+        }}
       >
-        Desenvolvido e mantido com Energético por <a href="mailto:rafael.ricardosilva2004@gmail.com">Rafael Silva</a>
+        Desenvolvido e mantido com 
+          <CoffeeIcon 
+            fontSize="small" 
+            sx={{ mb: -0.5 }} 
+          /> 
+          por <a href="rafael.ricardosilva2004@gmail.com">Rafael Ricardo Silva</a>
       </Typography>
     </Toolbar>
-  );
+  )
 }
