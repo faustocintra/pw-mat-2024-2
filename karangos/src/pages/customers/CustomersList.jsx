@@ -174,6 +174,7 @@ export default function CustomersList() {
       <Typography variant="h1" gutterBottom>
         Listagem de clientes
       </Typography>
+
       <Box sx={{
         display: 'flex',
         justifyContent: 'right', //Alinhando à direita
@@ -187,7 +188,6 @@ export default function CustomersList() {
             Novo Cliente
           </Button>
         </Link>
-
       </Box>
 
       <Paper elevation={8} sx={{ height: 500, width: '100%' }}>

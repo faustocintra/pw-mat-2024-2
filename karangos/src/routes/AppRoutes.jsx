@@ -7,6 +7,8 @@ import CustomersForm from '../pages/customers/CustomersForm'
 import CarsList from '../pages/cars/CarsList'
 import CarsForm from '../pages/cars/CarsForm'
 
+import SobreAutor from './SobreAutor'
+
 
 export default function AppRoutes(){
 return (
@@ -29,6 +31,8 @@ return (
 <Route path="/cars/new" element ={< CarsForm />} />
 
 <Route path="/cars/:id" element ={< CarsForm />} />
+
+<Route path="/SobreAutor" element ={< SobreAutor />} />
 
 
 </Routes>

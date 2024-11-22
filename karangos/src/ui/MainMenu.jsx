@@ -101,6 +101,14 @@ export default function MainMenu() {
           Listagem de Veículos
         </MenuItem>
 
+        <MenuItem
+          onClick={handleClose}
+          component={Link}
+          to='/SobreAutor'
+        >
+          Sobre o Autor
+        </MenuItem>
+
 
 
       </Menu>
