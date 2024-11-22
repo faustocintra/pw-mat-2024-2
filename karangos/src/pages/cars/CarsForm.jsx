@@ -13,6 +13,7 @@ import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback
 import { useNavigate, useParams } from 'react-router-dom'
 import MaskedInput from 'react-text-mask';
 import { useState, useEffect } from 'react';
+import { NumericFormat } from 'react-number-format';
 
 
 
@@ -30,18 +31,48 @@ export default function CarsForm() {
   }
 
   // Usa formDefaults como inicialização
-  const [formData, setFormData] = useState(formDefaults);
+  //const [formData, setFormData] = useState(formDefaults);
 
-  // Captura o ID da URL
+
+
+
+
+
+  /*USA O USEPARAMS() PARA CAPTURAR APENAS O ID
+  permite acessar os parâmetros de uma URL no seu componente, 
+  geralmente quando você está usando rotas dinâmicas.
+  Ex: A URL pode ser algo como /car/1234, onde 1234 é o valor do parâmetro id.
+  O React Router sabe qual URL está aberta porque ele lida com o roteamento 
+  da aplicação, e o useParams() acessa essa URL e extrai os parâmetros dela 
+  automaticamente.
+  */
   const { id } = useParams(); // Captura o ID da URL
+
+  /*a função dentro do useEffect será executada sempre que o valor de id mudar.*/
+  useEffect(() => {
+    if (id) {
+      /*O método then() é usado para lidar com a resposta da função fetchCarDetails(id).
+       Quando os dados são recebidos com sucesso (ou seja, quando a Promise resolve), 
+       o parâmetro data contém esses dados.*/
+      fetchCarDetails(id).then((data) => {
+        // Combina O FormDefaults com os dados recebidos da consulta ao BD.
+        if (data) setFormData({ ...formDefaults, ...data });
+      });
+    }
+    //toda vez que o parâmetro "id" mudar.
+  }, [id]);
+
 
   async function fetchCarDetails(id) {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE2}/${id}`);
       if (!response.ok) {
+        //sai do try
         throw new Error('Falha ao buscar os detalhes do carro');
       }
+      //se tiver resposta coloca dentro de data
       const data = await response.json();
+      //e retorna data
       return data;
     } catch (error) {
       console.error('Erro ao buscar os detalhes do carro:', error);
@@ -49,61 +80,48 @@ export default function CarsForm() {
     }
   }
 
-  useEffect(() => {
-    if (id) {
-      fetchCarDetails(id).then((data) => {
-        if (data) setFormData({ ...formDefaults, ...data });
-        // Combina dados recebidos com os valores padrão (evita campos indefinidos)
-      });
-    }
-  }, [id]);
 
 
-
-  const inputRef = useRef(null);
-
-  /*const brazilianStates */
-  const listacores = [
-    { value: 'amarelo', label: 'amarelo' },
-    { value: 'azul', label: 'azul' },
-    { value: 'bege', label: 'bege' },
-    { value: 'lilás', label: 'lilás' },
-    { value: 'oliva', label: 'oliva' },
-    { value: 'verde', label: 'verde' },
-    { value: 'vermelho', label: 'vermelho' },
-    { value: 'roxo', label: 'roxo' },
-
-  ]
-
-
-  const currentYear = new Date().getFullYear();
-  // Gerar uma lista de anos de 1951 até o ano atual (em ordem decrescente)
-  const years = [];
-  for (let year = currentYear; year >= 1951; year--) {
-    years.push(year);
-  }
+  //const inputRef = useRef(null);
 
 
 
 
 
 
-//CAR
-  const [state, setState] = React.useState({
-    car: { ...formDefaults },
-    formModified: false
-  })
-  const { car, formModified } = state
 
- //PARAMS
+
+
+  /*USA O USEPARAMS() PARA CAPTURAR TODOS OS PARAMS
+  hook fornecido pelo React Router que retorna um objeto contendo
+   todos os parâmetros da URL atual.
+   se a URL for algo como http://example.com/cars/123 será igual a "123".
+
+  */
   const params = useParams()
   React.useEffect(() => {
     if (params.id) loadData()
+    /*o array de dependências está vazio ([]), 
+      o que significa que o efeito será executado apenas uma vez, 
+      logo após a primeira renderização do componente.
+      Ou seja: quando a página for carregado*/
   }, [])
 
 
 
-  //FUNÇÕES
+  /*CAR - você está criando um estado state com duas propriedades:
+ car (com os valores de formDefaults),
+ formModified (inicializado como false).*/
+  const [state, setState] = React.useState({
+    car: { ...formDefaults },
+    formModified: false
+  })
+
+  /* aqui o car está sendo desestruturado da variável state
+  Se torna uma variável que armazena o valor de state.car*/
+  const { car, formModified } = state
+
+  //FUNÇÃO LOADDATA()
   async function loadData() {
     feedbackWait(true);
     try {
@@ -113,13 +131,29 @@ export default function CarsForm() {
 
       // Verifica se a data está no formato correto (string ISO ou já Date)
       if (result.selling_date) {
-        result.selling_date = parseISO(result.selling_date);  // Converte para Date, se necessário
+        // pega STRING e transforma para objeto DATE
+        result.selling_date = parseISO(result.selling_date);
       }
 
+      /*
+      O operador de espalhamento (...) pega todas as propriedades do objeto params 
+      e as coloca no novo objeto.
+      A propriedade car é definida com o valor de result, 
+      que é o resultado da chamada fetch, provavelmente contendo os dados do carro
+       (como detalhes do carro). Este valor provavelmente é um objeto com as 
+       informações detalhadas do carro. 
+       Ou seja: o car, que vem de FormDefaults, será atualizado com o valor tirado do BD
+       A propriedade car receberá o valor de result.
+      */
       setState({ ...params, car: result });
+
+
     } catch (error) {
       console.log(error);
       feedbackNotify('ERRO: ' + error.message, 'error');
+      /*O bloco finally é parte de um tratamento de exceções em JavaScript, 
+      e ele sempre será executado independentemente de um erro ter ocorrido 
+      ou não dentro do bloco try ou catch.*/
     } finally {
       feedbackWait(false);
     }
@@ -127,26 +161,12 @@ export default function CarsForm() {
 
 
 
-  /*
-    Preenche o campo do objeto car conforme
-    o campo correspondente do formulário for
-    modificado
+
+
+  /*Quando você chama useNavigate(), ele retorna a função navigate, 
+  que pode ser usada para redirecionar o usuário para outra página ou rota.
+ 
   */
-  function handleFieldChange(event) {
-    // Vamos observar no console as informações que chegam
-    // à função handleFieldChange
-    console.log({ name: event.target.name, value: event.target.value })
-
-    // Tira uma cópia da variável de estado car
-    const carCopy = { ...car }
-    // Altera em carCopy apenas o campo da vez
-    carCopy[event.target.name] = event.target.value
-    // Atualiza a variável de estado, substituindo o objeto
-    // car por sua cópia atualizada
-    setState({ ...state, car: carCopy, formModified: true })
-  }
-
-
   const navigate = useNavigate()
   async function handleFormSubmit(event) {
     // Impede o recarregamento da página
@@ -184,6 +204,9 @@ export default function CarsForm() {
 
       // Após salvar com sucesso, notifica o usuário e redireciona para a listagem
       feedbackNotify('Item salvo com sucesso.', 'success', 4000, () => {
+        /* No meu código, a função navigate() está sendo usada no handleFormSubmit
+        para redirecionar o usuário para a página anterior após salvar os dados 
+        do formulário com sucesso no feedbackNotify */
         navigate('..', { relative: 'path', replace: true });
       });
 
@@ -191,20 +214,85 @@ export default function CarsForm() {
       console.log(error);
       feedbackNotify('ERRO: ' + error.message, 'error');
     } finally {
+      /* garantir que, após a requisição (seja ela bem-sucedida ou falha), 
+      a interface do usuário mostre que o carregamento foi concluído, 
+      desligando o "feedback de espera".*/
       feedbackWait(false);
     }
   }
 
 
+ 
+
+
+
+  /*HANDLFIELDCHANGE
+   MUDA O FORMULÁRIO, MUDA O OBJETO CAR.
+   */
+  function handleFieldChange(event) {
+    // Vamos observar no console as informações que chegam
+    // à função handleFieldChange
+    console.log({ name: event.target.name, value: event.target.value })
+
+    /* Tira uma cópia da variável de estado car - que continha os default,
+    mas depois recebeu os valores do BD
+    */
+    const carCopy = { ...car }
+
+    // Altera em carCopy apenas o campo da vez
+    carCopy[event.target.name] = event.target.value
+
+    // Atualiza a variável de estado, substituindo o objeto
+    // car por sua cópia que foi atualizada e agora o formulário foi passado para true
+    setState({ ...state, car: carCopy, formModified: true })
+  }
+
+
   async function handleBackButtonClick() {
     if (
+      //se o formulário que recebeu valores do BD for modificado
       formModified &&
+      //e se o usuário não confirmar que quer voltar
       ! await feedbackConfirm('Há informações não salvas. Deseja realmente voltar?')
     ) return // Sai da função sem fazer nada
 
-    // Aqui o usuário respondeu que quer voltar e perder os dados
+    /* Aqui o usuário respondeu que quer voltar e perder os dados
+    "".."vai para o diretório pai da URL atual.
+    se a URL atual for /car/123/edit, ao usar '..' 
+    você será redirecionado para /car/123, subindo um nível na hierarquia.
+    PATH: a navegação será feita com base na estrutura da URL atual.
+    TRUE: a nova URL substituirá a atual na pilha de navegação.
+
+    */
     navigate('..', { relative: 'path', 'replace': true })
   }
+
+
+  /*const brazilianStates */
+  const listacores = [
+    { value: 'amarelo', label: 'amarelo' },
+    { value: 'azul', label: 'azul' },
+    { value: 'bege', label: 'bege' },
+    { value: 'lilás', label: 'lilás' },
+    { value: 'oliva', label: 'oliva' },
+    { value: 'verde', label: 'verde' },
+    { value: 'vermelho', label: 'vermelho' },
+    { value: 'roxo', label: 'roxo' },
+
+  ]
+
+
+
+  /*recebe o ano atual obtido por meio do objeto Date do JavaScript.
+  retorna o ano atual da data no formato de 4 dígitos (por exemplo, 2024).*/
+  const currentYear = new Date().getFullYear();
+  /*Gerar uma lista de anos de 1951 até o ano atual (em ordem decrescente)
+  por causa do for que faz decréscimo*/
+  const years = [];
+  for (let year = currentYear; year >= 1951; year--) {
+    years.push(year);
+  }
+
 
 
 
@@ -261,7 +349,7 @@ export default function CarsForm() {
               }}
             />
           </LocalizationProvider>
-         
+
 
 
           {/*COR*/}
@@ -306,11 +394,14 @@ export default function CarsForm() {
             placeholder="Digite a placa"
             guide={false}
             value={car.plates}
-            onChange={handleFieldChange}
+            onChange={(event) => {
+              const upperCaseValue = event.target.value.toUpperCase(); // Converte para maiúsculas
+              handleFieldChange({ target: { name: 'plates', value: upperCaseValue } }); // Atualiza o estado
+            }}
             render={(ref, props) => (
               <TextField
                 {...props} // Passa as propriedades do MaskedInput
-                inputRef={ref} // Ref necessário para integrar com MaskedInput
+                inputRef={ref} // Ref necessário para integração com MaskedInput
                 variant="outlined"
                 name="plates"
                 label="Placa"
@@ -324,15 +415,25 @@ export default function CarsForm() {
           />
 
 
-          {/*PREÇO DE VENDA*/}
-          <TextField
+
+          {/* PREÇO DE VENDA */}
+          <NumericFormat
+            value={car.selling_price}
+            onValueChange={(values) => {
+              const { value } = values; // `value` retorna o número bruto sem formatação
+              handleFieldChange({ target: { name: 'selling_price', value } }); // Atualiza o estado com o número bruto
+            }}
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="R$ "
+            fixedDecimalScale
+            decimalScale={2} // Duas casas decimais
+            customInput={TextField} // Usa TextField do Material-UI
             variant="outlined"
             name="selling_price"
             label="Preço de Venda"
             fullWidth
-            type="number"
-            value={car.selling_price}
-            onChange={handleFieldChange}
+            required
           />
 
 
@@ -364,7 +465,7 @@ export default function CarsForm() {
             justifyContent: 'space-around',
             width: '100%'
           }}>
-            
+
             <Button
               variant="contained"
               color="secondary"

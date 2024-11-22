@@ -18,19 +18,26 @@ export default function CustomersList() {
     {
       field: 'id',
       headerName: 'Cód.',
-      width: 90
+      width: 30
     },
     {
       field: 'name',
       headerName: 'Nome',
-      width: 200
+      width: 220
+    },
+
+
+    {
+      field: 'ident_document',
+      headerName: 'CPF',
+      width: 130
     },
 
 
     {
       field: 'birth_date',
       headerName: 'Data Nasc.',
-      width: 150,
+      width: 100,
       valueGetter: (value, row) => {
         if (value) {
           const date = new Date(value)
@@ -39,12 +46,6 @@ export default function CustomersList() {
       }
     },
     
-
-   
-
-
-
-
     {
       field: 'municipality',
       headerName: 'Município/UF',
@@ -52,19 +53,16 @@ export default function CustomersList() {
       valueGetter: (value, row) => row.municipality + '/' + row.state
     },
 
-
-
-
-
     {
       field: 'phone',
       headerName: 'Fone/Celular',
-      width: 160
+      width: 130
     },
+
     {
       field: 'email',
       headerName: 'E-mail',
-      width: 200
+      width: 240
     },
 
     {
@@ -155,15 +153,6 @@ export default function CustomersList() {
           feedbackNotify('Exclusão efetuada com sucesso!');
         }
 
-        // Atualiza a lista de carros localmente (removendo o carro excluído)
-        /*
-        setState(prevState => ({
-          ...prevState,
-          cars: prevState.cars.filter(car => car.id !== id) // Remove o carro excluído
-        }));
-
-        feedbackNotify('Exclusão efetuada com sucesso!');
-        */
       }
       catch (error) {
         console.log(error);
@@ -201,15 +190,13 @@ export default function CustomersList() {
 
       </Box>
 
-      <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
+      <Paper elevation={8} sx={{ height: 500, width: '100%' }}>
         <DataGrid
           rows={customers}
           columns={columns}
           initialState={{
             pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
+              paginationModel: { pageSize: 7 }
             },
           }}
           pageSizeOptions={[5]}

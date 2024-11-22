@@ -208,7 +208,7 @@ export default function CustomersForm() {
       <Box className="form-fields">
         <form onSubmit={handleFormSubmit}>
 
-          {/* TELEFONE */}
+          {/* NOME COMPLETO */}
           {/* autoFocus = foco do teclado no primeiro campo */}
           <TextField
             variant="outlined"
@@ -246,8 +246,6 @@ export default function CustomersForm() {
           />
 
 
-
-
           {/* DATA DE NASCIMENTO */}
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <DatePicker
@@ -264,10 +262,6 @@ export default function CustomersForm() {
           </LocalizationProvider>
 
 
-
-
-
-
           {/* LOGRADOURO*/}
           <TextField
             variant="outlined"
@@ -280,7 +274,8 @@ export default function CustomersForm() {
           />
 
 
-          {/* HOUSE NUMBER */}
+
+          {/* Nº DA CASA*/}
           <TextField
             variant="outlined"
             name="house_number"
@@ -288,8 +283,20 @@ export default function CustomersForm() {
             fullWidth
             required
             value={customer.house_number}
-            onChange={handleFieldChange}
+            onChange={(e) => {
+              // Filtra tudo que não for número
+              const value = e.target.value.replace(/\D/g, '');
+              handleFieldChange({
+                target: {
+                  name: e.target.name,
+                  value: value,
+                },
+              });
+            }}
           />
+
+
+
 
           {/* COMPLEMENTO */}
           <TextField
@@ -347,9 +354,6 @@ export default function CustomersForm() {
           </TextField>
 
 
-
-
-
           {/* TELEFONE */}
           <MaskedInput
             mask={[
@@ -378,8 +382,6 @@ export default function CustomersForm() {
               />
             )}
           />
-
-
 
 
           <TextField

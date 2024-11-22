@@ -11,8 +11,8 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 
-import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+//import { useParams } from 'react-router-dom';
+//import { useState, useEffect } from 'react';
 
 
 
@@ -22,18 +22,18 @@ export default function CarsList() {
     {
       field: 'id',
       headerName: 'Cód.',
-      width: 90
+      width: 5
     },
     {
       field: 'brand_model',
       headerName: 'Marca/Modelo',
-      width: 200,
+      width: 150,
       renderCell: (params) => `${params.row.brand} ${params.row.model}`
     },
     {
       field: 'year_manufacture',
       headerName: 'Ano de Fabricação',
-      width: 150
+      width: 50
     },
     {
       field: 'color',
@@ -44,12 +44,12 @@ export default function CarsList() {
       field: 'imported',
       headerName: 'Importado',
       width: 120,
-      renderCell: (params) => (params.value === 1 ? 'SIM' : '')
+      renderCell: (params) => (params.value === 1 ? 'SIM' : 'NÃO')
     },
     {
       field: 'plates',
       headerName: 'Placas',
-      width: 150
+      width: 130
     },
 
 
@@ -81,7 +81,7 @@ export default function CarsList() {
     {
       field: '_actions',
       headerName: 'Ações',
-      width: 150,
+      width: 130,
       sortable: false,
       renderCell: (params) => (
         <>
@@ -167,20 +167,12 @@ export default function CarsList() {
 
         else {
 
-          await loadData();  // Chama novamente o loadData após exclusão
+          // Chama novamente o loadData após exclusão
+          await loadData(); 
 
           feedbackNotify('Exclusão efetuada com sucesso!');
         }
 
-        // Atualiza a lista de carros localmente (removendo o carro excluído)
-        /*
-        setState(prevState => ({
-          ...prevState,
-          cars: prevState.cars.filter(car => car.id !== id) // Remove o carro excluído
-        }));
-
-        feedbackNotify('Exclusão efetuada com sucesso!');
-        */
       }
       catch (error) {
         console.log(error);
@@ -212,13 +204,13 @@ export default function CarsList() {
         </Link>
       </Box>
 
-      <Paper elevation={8} sx={{ height: 400, width: '100%' }}>
+      <Paper elevation={8} sx={{ height: 500, width: '100%' }}>
         <DataGrid
           rows={cars}
           columns={columns}
           initialState={{
             pagination: {
-              paginationModel: { pageSize: 5 }
+              paginationModel: { pageSize: 7 }
             }
           }}
           pageSizeOptions={[5]}
