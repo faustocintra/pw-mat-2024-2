@@ -9,20 +9,10 @@ import { ptBR } from 'date-fns/locale/pt-BR'
 import { parseISO } from 'date-fns'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
-import InputMask from 'react-input-mask'
 import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import { useNavigate, useParams } from 'react-router-dom'
 import MaskedInput from 'react-text-mask';
-
-//import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-
-
-
-
-
-
-//import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 
 
@@ -42,12 +32,8 @@ export default function CarsForm() {
   // Usa formDefaults como inicialização
   const [formData, setFormData] = useState(formDefaults);
 
-
-
   // Captura o ID da URL
   const { id } = useParams(); // Captura o ID da URL
-
-
 
   async function fetchCarDetails(id) {
     try {
@@ -100,27 +86,24 @@ export default function CarsForm() {
 
 
 
-  const navigate = useNavigate()
-  const params = useParams()
 
+
+//CAR
   const [state, setState] = React.useState({
     car: { ...formDefaults },
     formModified: false
   })
-
   const { car, formModified } = state
 
-  // Se estivermos editando um cliente, precisamos carregar
-  // seus dados assim que o componente for carregado
+ //PARAMS
+  const params = useParams()
   React.useEffect(() => {
-    // Sabemos que estamos editando (e não cadastrando um novo)
-    // cliente quando a rota ativa contiver um parâmetro id
     if (params.id) loadData()
   }, [])
 
 
 
-
+  //FUNÇÕES
   async function loadData() {
     feedbackWait(true);
     try {
@@ -163,6 +146,8 @@ export default function CarsForm() {
     setState({ ...state, car: carCopy, formModified: true })
   }
 
+
+  const navigate = useNavigate()
   async function handleFormSubmit(event) {
     // Impede o recarregamento da página
     event.preventDefault();
@@ -181,25 +166,24 @@ export default function CarsForm() {
         body: JSON.stringify(filteredCar)
       };
 
-      // Se houver parâmetro na rota, significa que estamos alterando
-      // um registro existente e, portanto, o verbo precisa ser PUT
+      // Se estivermos editando um carro (ou seja, se 'params.id' existir), usamos o PUT
       if (params.id) {
-        reqOptions.method = 'PUT';
+        reqOptions.method = 'PUT'; // Muda para PUT
         await fetch(
-          import.meta.env.VITE_API_BASE2 + '/cars/' + params.id,
+          `${import.meta.env.VITE_API_BASE2}/${params.id}`, // Usa o ID para identificar o carro
           reqOptions
         );
       }
-      // Senão, envia com o método POST para criar um novo registro
+      // Caso contrário, estamos criando um novo carro, então usamos POST
       else {
         await fetch(
-          import.meta.env.VITE_API_BASE2 + '/cars',
+          `${import.meta.env.VITE_API_BASE2}/cars`, // Envia para a rota de criação
           reqOptions
         );
       }
 
+      // Após salvar com sucesso, notifica o usuário e redireciona para a listagem
       feedbackNotify('Item salvo com sucesso.', 'success', 4000, () => {
-        // Retorna para a página de listagem
         navigate('..', { relative: 'path', replace: true });
       });
 
@@ -211,6 +195,7 @@ export default function CarsForm() {
     }
   }
 
+
   async function handleBackButtonClick() {
     if (
       formModified &&
@@ -220,19 +205,6 @@ export default function CarsForm() {
     // Aqui o usuário respondeu que quer voltar e perder os dados
     navigate('..', { relative: 'path', 'replace': true })
   }
-
-  /*
-  brand: '',
-  model: '',
-  color: '',
-  year_manufacture: null,
-  imported: '',
-  plates: '',
-  selling_price: '',
-  selling_date: '',
-  */
-
-
 
 
 
@@ -282,18 +254,14 @@ export default function CarsForm() {
                 const event = { target: { name: 'year_manufacture', value: year } };
                 handleFieldChange(event);
               }}
-              textField={{
-                variant: 'outlined',
-                fullWidth: true,
-                required: true
+              slots={{
+                textField: (params) => (
+                  <TextField {...params} variant="outlined" fullWidth required />
+                )
               }}
             />
           </LocalizationProvider>
-
-
-
-
-
+         
 
 
           {/*COR*/}
@@ -315,8 +283,6 @@ export default function CarsForm() {
           </TextField>
 
 
-
-
           {/*CHECKBOX*/}
           <div className="MuiFormControl-root">
             <label>
@@ -332,10 +298,6 @@ export default function CarsForm() {
               Importado
             </label>
           </div>
-
-
-
-
 
 
           {/* PLACA */}
@@ -354,11 +316,12 @@ export default function CarsForm() {
                 label="Placa"
                 fullWidth
                 required
+                InputLabelProps={{
+                  shrink: true, // Força o rótulo a sempre subir
+                }}
               />
             )}
           />
-
-
 
 
           {/*PREÇO DE VENDA*/}
@@ -375,9 +338,6 @@ export default function CarsForm() {
 
 
 
-
-
-
           {/*DATA DE VENDA*/}
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <DatePicker
@@ -388,9 +348,7 @@ export default function CarsForm() {
                 const event = { target: { name: 'selling_date', value: formattedDate } };
                 handleFieldChange(event);
               }}
-              renderInput={(params) => (
-                <TextField {...params} variant="outlined" fullWidth helperText="Opcional" />
-              )}
+              slots={{ textField: (params) => <TextField {...params} variant="outlined" fullWidth helperText="Opcional" /> }}
             />
           </LocalizationProvider>
 
@@ -406,6 +364,7 @@ export default function CarsForm() {
             justifyContent: 'space-around',
             width: '100%'
           }}>
+            
             <Button
               variant="contained"
               color="secondary"

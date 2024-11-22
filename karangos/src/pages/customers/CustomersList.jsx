@@ -2,7 +2,7 @@ import Typography from '@mui/material/Typography'
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
-import{ feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
+import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import IconButton from '@mui/material/IconButton'
@@ -12,38 +12,50 @@ import Button from '@mui/material/Button'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 
 
-
-
 export default function CustomersList() {
 
   const columns = [
-    { 
-      field: 'id', 
-      headerName: 'Cód.', 
-      width: 90 
+    {
+      field: 'id',
+      headerName: 'Cód.',
+      width: 90
     },
     {
       field: 'name',
       headerName: 'Nome',
       width: 200
     },
+
+
     {
       field: 'birth_date',
       headerName: 'Data Nasc.',
       width: 150,
       valueGetter: (value, row) => {
-        if(value){
+        if (value) {
           const date = new Date(value)
           return date.toLocaleDateString('pt-BR')
         }
       }
     },
+    
+
+   
+
+
+
+
     {
       field: 'municipality',
       headerName: 'Município/UF',
       width: 200,
       valueGetter: (value, row) => row.municipality + '/' + row.state
     },
+
+
+
+
+
     {
       field: 'phone',
       headerName: 'Fone/Celular',
@@ -60,23 +72,23 @@ export default function CustomersList() {
       headerName: 'Ações',
       width: 150,
       sortable: false,
-      renderCell: params =>{
+      renderCell: params => {
 
         return <>
-        <Link to={'./' + params.id}>
-          <IconButton 
-          aria-label="editar"
+          <Link to={'./' + params.id}>
+            <IconButton
+              aria-label="editar"
+            >
+              <EditIcon />
+            </IconButton>
+
+          </Link>
+
+          <IconButton aria-label="excluir"
+            onClick={() => handleDeleteButtonClick(params.id)}
           >
-            <EditIcon />
+            <DeleteForeverIcon color="error" />
           </IconButton>
-
-        </Link>
-
-        <IconButton aria-label="excluir"
-        onClick= { () => handleDeleteButtonClick(params.id)}
-        >
-          <DeleteForeverIcon color="error" />
-        </IconButton>
 
         </>
 
@@ -105,61 +117,87 @@ export default function CustomersList() {
       )
       const result = await response.json()
 
+      //console.log('Dados retornados da API:', result); 
+
       setState({ ...state, customers: result })
     }
     catch (error) {
       console.log(error)
       feedbackNotify('ERRO: ' + error.message, 'error')
     }
-    finally{
+    finally {
       feedbackWait(false)
     }
   }
 
-  async function handleDeleteButtonClick(id){
-    if (await feedbackConfirm('Deseja realmente excluir este item?')){
-      feedbackWait(true)
-    try {
-      //Envia a requisição para a exclusão
-      await fetch(
-        import.meta.env.VITE_API_BASE + `/customers/${id}`
-        )
-      {method: 'DELETE'}
+  
+  async function handleDeleteButtonClick(id) {
+    console.log("ID recebido para exclusão:", id);
+    if (await feedbackConfirm('Deseja realmente excluir este item?')) {
+      feedbackWait(true);
+      try {
+        // Faz a requisição DELETE para o backend
+        const response = await fetch(import.meta.env.VITE_API_BASE + `/${id}`, { method: 'DELETE' });
+        console.log("response:", response);
+        console.log("response status:", response.status);
+        console.log("response statusText:", response.statusText);
+        console.log("response body:", await response.text());
 
-      //Atualiza os dados do datagrid
-      loadData()
+        // Verifica se a resposta foi bem-sucedida (status 200 ou 204)
+        if (!response.ok) {
+          throw new Error('Falha ao excluir o item');
+        }
 
-      feedbackNotify('Exclusão efetuada com sucesso !')
+        else {
+
+          await loadData();  // Chama novamente o loadData após exclusão
+
+          feedbackNotify('Exclusão efetuada com sucesso!');
+        }
+
+        // Atualiza a lista de carros localmente (removendo o carro excluído)
+        /*
+        setState(prevState => ({
+          ...prevState,
+          cars: prevState.cars.filter(car => car.id !== id) // Remove o carro excluído
+        }));
+
+        feedbackNotify('Exclusão efetuada com sucesso!');
+        */
+      }
+      catch (error) {
+        console.log(error);
+        feedbackNotify('ERRO: ' + error.message, 'error');
+      }
+      finally {
+        feedbackWait(false);
+      }
     }
-    catch (error) {
-      console.log (error)
-      feedbackNotify ('ERRO: ' + error.message, 'error')
-    }
-    finally{
-      feedbackWait(false)
-    }
-   }
   }
+
+
+
+
 
   return (
     <>
-      { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
+      { /* gutterBottom coloca um espaçamento extra abaixo do componente */}
       <Typography variant="h1" gutterBottom>
         Listagem de clientes
       </Typography>
       <Box sx={{
         display: 'flex',
         justifyContent: 'right', //Alinhando à direita
-        mb:2 //Margem inferior (margin-bottom)
+        mb: 2 //Margem inferior (margin-bottom)
       }} >
-      <Link to=".new">
-        <Button variant="contained" 
-        size="large"
-        color="secondary"
-        startIcon={< AddCircleIcon /> }>
-          Novo Cliente
-        </Button>
-      </Link>
+        <Link to=".new">
+          <Button variant="contained"
+            size="large"
+            color="secondary"
+            startIcon={< AddCircleIcon />}>
+            Novo Cliente
+          </Button>
+        </Link>
 
       </Box>
 
@@ -175,7 +213,7 @@ export default function CustomersList() {
             },
           }}
           pageSizeOptions={[5]}
-          checkboxSelection
+          //checkboxSelection
           disableRowSelectionOnClick
         />
       </Paper>

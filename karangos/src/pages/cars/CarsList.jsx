@@ -155,10 +155,10 @@ export default function CarsList() {
       try {
         // Faz a requisição DELETE para o backend
         const response = await fetch(import.meta.env.VITE_API_BASE2 + `/${id}`, { method: 'DELETE' });
-        console.log("response:", response);
-        console.log("response status:", response.status);
-        console.log("response statusText:", response.statusText);
-        console.log("response body:", await response.text());
+        //console.log("response:", response);
+        //console.log("response status:", response.status);
+        //console.log("response statusText:", response.statusText);
+        //console.log("response body:", await response.text());
 
         // Verifica se a resposta foi bem-sucedida (status 200 ou 204)
         if (!response.ok) {
@@ -222,7 +222,7 @@ export default function CarsList() {
             }
           }}
           pageSizeOptions={[5]}
-          checkboxSelection
+          //checkboxSelection
           disableRowSelectionOnClick
         />
       </Paper>

@@ -12,23 +12,16 @@ import InputMask from 'react-input-mask'
 import { feedbackWait, feedbackNotify, feedbackConfirm } from '../../ui/Feedback'
 import { useNavigate, useParams } from 'react-router-dom'
 
+
+
+import MaskedInput from 'react-text-mask';
+
+//import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
+
+
 export default function CustomersForm() {
-
-  const brazilianStates = [
-    { value: 'DF', label: 'Distrito Federal' },
-    { value: 'ES', label: 'Espírito Santo' },
-    { value: 'GO', label: 'Goiás' },
-    { value: 'MS', label: 'Mato Grosso do Sul' },
-    { value: 'MG', label: 'Minas Gerais' },
-    { value: 'PR', label: 'Paraná' },
-    { value: 'RJ', label: 'Rio de Janeiro' },
-    { value: 'SP', label: 'São Paulo' }
-  ]
-
-  const phoneMaskFormatChars = {
-    '9': '[0-9]',    // somente dígitos
-    '%': '[\s0-9]'   // dígitos ou espaço em branco (\s)
-  }
 
   const formDefaults = {
     name: '',
@@ -44,23 +37,38 @@ export default function CustomersForm() {
     email: ''
   }
 
+  const brazilianStates = [
+    { value: 'DF', label: 'Distrito Federal' },
+    { value: 'ES', label: 'Espírito Santo' },
+    { value: 'GO', label: 'Goiás' },
+    { value: 'MS', label: 'Mato Grosso do Sul' },
+    { value: 'MG', label: 'Minas Gerais' },
+    { value: 'PR', label: 'Paraná' },
+    { value: 'RJ', label: 'Rio de Janeiro' },
+    { value: 'SP', label: 'São Paulo' }
+  ]
+
+
+
+
+
   const navigate = useNavigate()
   const params = useParams()
 
+
+
+  //CUSTOMER
   const [state, setState] = React.useState({
     customer: { ...formDefaults },
     formModified: false
   })
-  const {
-    customer,
-    formModified
-  } = state
 
-  // Se estivermos editando um cliente, precisamos carregar
-  // seus dados assim que o componente for carregado
+
+  const { customer, formModified } = state
+
+
+  //PARAMS
   React.useEffect(() => {
-    // Sabemos que estamos editando (e não cadastrando um novo)
-    // cliente quando a rota ativa contiver um parâmetro id
     if (params.id) loadData()
   }, [])
 
@@ -68,17 +76,17 @@ export default function CustomersForm() {
     feedbackWait(true)
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE + '/customers/' + params.id 
+        import.meta.env.VITE_API_BASE + '/' + params.id
       )
       const result = await response.json()
-      
+
       // Converte o formato da data armazenado no banco de dados
       // para o formato reconhecido pelo componente DatePicker
-      if(result.birth_date) result.birth_date = parseISO(result.birth_date)
+      //if (result.birth_date) result.birth_date = parseISO(result.birth_date)
 
       setState({ ...params, customer: result })
     }
-    catch(error) {
+    catch (error) {
       console.log(error)
       feedbackNotify('ERRO: ' + error.message, 'error')
     }
@@ -106,27 +114,53 @@ export default function CustomersForm() {
     setState({ ...state, customer: customerCopy, formModified: true })
   }
 
+
+
   async function handleFormSubmit(event) {
     event.preventDefault()      // Impede o recarregamento da página
 
     feedbackWait(true)
     try {
+
+      // Filtra os campos do objeto 'customer', removendo valores 'null' ou strings vazias
+      /*const filteredCustomer = Object.fromEntries(
+        Object.entries(customer).filter(([_, value]) => value !== null && value !== '')
+      );*/
+
+
+
+
+      const filteredCustomer = { ...customer }; // Envia todos os campos
+
+      // Adicionando um log para verificar a data antes do envio
+      console.log('Dados antes do envio para a API:', filteredCustomer);
+
+      // Se a data de nascimento no objeto 'customer' estiver no formato errado, podemos ajustá-la
+      if (customer.birth_date) {
+        const date = new Date(customer.birth_date);
+        filteredCustomer.birth_date = date.toISOString(); // Converte a data para o formato ISO padrão
+      }
+
+      console.log('filteredCustomer com a data corrigida:', filteredCustomer);
+
+
+
       // Prepara as opções para o fetch
       const reqOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(customer)
+        body: JSON.stringify(filteredCustomer)
       }
 
       // Infoca o fetch para enviar os dados ao back-end.
       // Se houver parâmetro na rota, significa que estamos alterando
       // um registro existente e, portanto, o verbo precisa ser PUT
-      if(params.id) {
+      if (params.id) {
         reqOptions.method = 'PUT'
         await fetch(
-          import.meta.env.VITE_API_BASE + '/customers/' + params.id,
+          `${import.meta.env.VITE_API_BASE}/${params.id}`, // Usa o ID para identificar o carro
           reqOptions
-        )
+        );
       }
       // Senão, envia com o método POST para criar um novo registro
       else {
@@ -142,7 +176,7 @@ export default function CustomersForm() {
       })
 
     }
-    catch(error) {
+    catch (error) {
       console.log(error)
       feedbackNotify('ERRO: ' + error.message, 'error')
     }
@@ -151,9 +185,12 @@ export default function CustomersForm() {
     }
   }
 
+
+
+
   async function handleBackButtonClick() {
-    if(
-      formModified && 
+    if (
+      formModified &&
       ! await feedbackConfirm('Há informações não salvas. Deseja realmente voltar?')
     ) return // Sai da função sem fazer nada
 
@@ -163,17 +200,18 @@ export default function CustomersForm() {
 
   return (
     <>
-      { /* gutterBottom coloca um espaçamento extra abaixo do componente */ }
+      { /* gutterBottom coloca um espaçamento extra abaixo do componente */}
       <Typography variant="h1" gutterBottom>
-        { params.id ? `Editar cliente #${params.id}` : 'Cadastrar novo cliente' }
+        {params.id ? `Editar cliente #${params.id}` : 'Cadastrar novo cliente'}
       </Typography>
 
       <Box className="form-fields">
         <form onSubmit={handleFormSubmit}>
 
+          {/* TELEFONE */}
           {/* autoFocus = foco do teclado no primeiro campo */}
           <TextField
-            variant="outlined" 
+            variant="outlined"
             name="name"
             label="Nome completo"
             fullWidth
@@ -183,103 +221,116 @@ export default function CustomersForm() {
             onChange={handleFieldChange}
           />
 
-          <InputMask
-            mask="999.999.999-99"
+
+          {/* CPF */}
+          <MaskedInput
+            mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
+            placeholder="Digite o CPF"
+            guide={false} // Evita preencher automaticamente a máscara
             value={customer.ident_document}
             onChange={handleFieldChange}
-          >
-            { () => 
-                <TextField
-                  variant="outlined" 
-                  name="ident_document"
-                  label="CPF" 
-                  fullWidth
-                  required
-                />
-            }
-          </InputMask>
+            render={(ref, props) => (
+              <TextField
+                {...props} // Passa as propriedades do MaskedInput
+                inputRef={ref} // Ref necessário para integração com MaskedInput
+                variant="outlined"
+                name="ident_document"
+                label="CPF"
+                fullWidth
+                required
+                InputLabelProps={{
+                  shrink: true, // Força o rótulo a sempre subir
+                }}
+              />
+            )}
+          />
 
-          {/*
-            O evento onChange do componente DatePicker não passa
-            o parâmetro event, como no TextField, e sim a própria
-            data que foi modificada. Por isso, ao chamar a função
-            handleFieldChange no DatePicker, precisamos criar um
-            parâmetro event "fake" com as informações necessárias
-          */}
-          <LocalizationProvider 
-            dateAdapter={AdapterDateFns}
-            adapterLocale={ptBR}
-          >
+
+
+
+          {/* DATA DE NASCIMENTO */}
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <DatePicker
-              label="Data de nascimento"
-              value={customer.birth_date}
-              slotProps={{
-                textField: {
-                  variant: 'outlined',
-                  fullWidth: true
-                }
+              label="Data de Nascimento"
+              value={customer.birth_date && !isNaN(new Date(customer.birth_date)) ? new Date(customer.birth_date) : null}
+              onChange={(date) => {
+                // Formata a data para 'YYYY-MM-DD'
+                const formattedDate = date ? date.toISOString().split('T')[0] : null;
+                const event = { target: { name: 'birth_date', value: formattedDate } }; // Nome correto do campo
+                handleFieldChange(event);
               }}
-              onChange={ date => {
-                const event = { target: { name: 'birth_date', value: date } }
-                handleFieldChange(event)
-              }}
+              slots={{ textField: (params) => <TextField {...params} variant="outlined" fullWidth helperText="Opcional" /> }}
             />
           </LocalizationProvider>
 
+
+
+
+
+
+          {/* LOGRADOURO*/}
           <TextField
-            variant="outlined" 
+            variant="outlined"
             name="street_name"
-            label="Logradouro (Rua, Av., etc.)" 
+            label="Logradouro (Rua, Av., etc.)"
             fullWidth
             required
             value={customer.street_name}
             onChange={handleFieldChange}
           />
 
+
+          {/* HOUSE NUMBER */}
           <TextField
-            variant="outlined" 
+            variant="outlined"
             name="house_number"
-            label="nº" 
+            label="nº"
             fullWidth
             required
             value={customer.house_number}
             onChange={handleFieldChange}
           />
 
+          {/* COMPLEMENTO */}
           <TextField
-            variant="outlined" 
+            variant="outlined"
             name="complements"
-            label="Complemento" 
+            label="Complemento"
             fullWidth
             /* required */
             value={customer.complements}
             onChange={handleFieldChange}
           />
 
+          {/* BAIRRO */}
           <TextField
-            variant="outlined" 
+            variant="outlined"
             name="district"
-            label="Bairro" 
+            label="Bairro"
             fullWidth
             required
             value={customer.district}
             onChange={handleFieldChange}
           />
 
+
+          {/* MUNICÍPIO */}
           <TextField
-            variant="outlined" 
+            variant="outlined"
             name="municipality"
-            label="Município" 
+            label="Município"
             fullWidth
             required
             value={customer.municipality}
             onChange={handleFieldChange}
           />
 
+
+          {/* UF */}
           <TextField
-            variant="outlined" 
+            variant="outlined"
             name="state"
-            label="UF" 
+            label="UF"
             fullWidth
             required
             value={customer.state}
@@ -287,7 +338,7 @@ export default function CustomersForm() {
             onChange={handleFieldChange}
           >
             {
-              brazilianStates.map(s => 
+              brazilianStates.map(s =>
                 <MenuItem key={s.value} value={s.value}>
                   {s.label}
                 </MenuItem>
@@ -295,35 +346,57 @@ export default function CustomersForm() {
             }
           </TextField>
 
-          <InputMask
-            formatChars={phoneMaskFormatChars}
-            mask="(99) %9999-9999"
+
+
+
+
+          {/* TELEFONE */}
+          <MaskedInput
+            mask={[
+              '(', /\d/, /\d/, ')', ' ',
+              /[\s0-9]/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/
+            ]}
+            placeholder="(99) 99999-9999"
+            guide={false} // Evita preencher automaticamente a máscara
             value={customer.phone}
-            maskChar=" "
-            onChange={handleFieldChange}
-          >
-            { () => 
+            onChange={(event) => {
+              const updatedValue = event.target.value;
+              handleFieldChange({ target: { name: 'phone', value: updatedValue } });
+            }}
+            render={(ref, props) => (
               <TextField
-                variant="outlined" 
+                {...props} // Passa as propriedades do MaskedInput
+                inputRef={ref} // Ref necessário para integração com MaskedInput
+                variant="outlined"
                 name="phone"
-                label="Telefone/Celular" 
+                label="Telefone/Celular"
                 fullWidth
                 required
+                InputLabelProps={{
+                  shrink: true, // Força o rótulo a sempre subir
+                }}
               />
-            }
-          </InputMask>
+            )}
+          />
+
+
+
 
           <TextField
-            variant="outlined" 
+            variant="outlined"
             name="email"
-            label="E-mail" 
+            label="E-mail"
             fullWidth
             required
             value={customer.email}
             onChange={handleFieldChange}
           />
 
-          <Box sx={{ 
+
+
+
+
+          <Box sx={{
             display: 'flex',
             justifyContent: 'space-around',
             width: '100%'
@@ -354,8 +427,8 @@ export default function CustomersForm() {
           </Box>
 
         </form>
-      </Box>
-      
+      </Box >
+
     </>
   )
 }
