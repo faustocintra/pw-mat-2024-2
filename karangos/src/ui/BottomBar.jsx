@@ -27,10 +27,10 @@ export default function BottomBar() {
       >
         Desenvolvido e mantido com 
           <CoffeeIcon 
-            fontSize="small" 
+            fontSize="small"
             sx={{ mb: -0.5 }} 
           /> 
-          por <a href="mailto:professor@faustocintra.com.br">Prof. Fausto Cintra</a>
+          por <a href="mailto:zluna.dev@gmail.com">Iago Matheus</a>
       </Typography>
     </Toolbar>
   )

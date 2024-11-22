@@ -350,7 +350,6 @@ export default function CustomersForm() {
             flexDirection: 'column',
             width: '100vw'
           }}>
-            {JSON.stringify(customer, null, ' ')}
           </Box>
 
         </form>
