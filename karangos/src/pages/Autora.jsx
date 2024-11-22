@@ -37,7 +37,7 @@ export default function Autora() {
           <CardMedia
             sx={{ height: 345 }}
             image={foto}
-            title="selfie"
+            title="foto-anajulia"
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
